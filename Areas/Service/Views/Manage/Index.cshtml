@@ -129,6 +129,7 @@ $(function () {
     //jsTree
     $.getJSON("/Service/Manage/GetTree",
         function (result) {
+            result[0].state = { opened: true };
             $('#jsTree').jstree({
                 "core": {
                     'data': result

@@ -45,14 +45,40 @@ namespace BS.Microservice.Web.DAL
         {
             var res = new List<TreeModel>
             {
-                new TreeModel {id = "0", parent = "#", text = "全部"},
-                new TreeModel {id = "1", parent = "#", text = "一级服务"},
-                new TreeModel {id = "2", parent = "#", text = "二级服务"}
+                new TreeModel {id = "0", parent = "#", text = "全部"}
             };
-            var p = DBContext.Mongo.Distinct(DBContext.DbName, COL, "ServiceName");
-            var pTree = p.Select((t, i) => new TreeModel {id = "1_" + t, parent = "1", text = t.ToString()});
-            var s = DBContext.Mongo.Distinct(DBContext.DbName, COL, "SecondaryName");
-            var sTree = s.Select((t, i) => new TreeModel { id = "2_" + t, parent = "2", text = t.ToString() });
+            var tree =
+                DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
+                    .GetCollection(COL)
+                    .FindAllAs<ServiceEntity>()
+                    .Select(t => new {t._id, t.ServiceName, t.SecondaryName});
+            var pTree =
+                tree.GroupBy(t => t.ServiceName)
+                    .Select(t => new TreeModel {id ="1_"+ t.Key, parent = "0", text = t.Key});
+            var sec = tree.GroupBy(t => t.SecondaryName);
+            var sTree = (from s in sec
+                let first = tree.Where(x => x.SecondaryName == s.Key)
+                from f in first
+                select new TreeModel
+                {
+                    id = "2_" + s.Key + "_" + f.ServiceName,
+                    parent = "1_" + f.ServiceName,
+                    text = s.Key
+                }).ToList();
+            //var sTree =
+            //    tree.GroupBy(t => t.SecondaryName)
+            //        .Select(
+            //            t =>
+            //                new TreeModel
+            //                {
+            //                    id = "2_" + t.Key,
+            //                    parent = "1_" + tree.First(x => x.SecondaryName == t.Key).ServiceName,
+            //                    text = t.Key
+            //                });
+            //var p = DBContext.Mongo.Distinct(DBContext.DbName, COL, "ServiceName");
+            //var pTree = p.Select((t, i) => new TreeModel {id = "1_" + t, parent = "1", text = t.ToString()});
+            //var s = DBContext.Mongo.Distinct(DBContext.DbName, COL, "SecondaryName");
+            //var sTree = s.Select((t, i) => new TreeModel { id = "2_" + t, parent = "2", text = t.ToString() });
             res.AddRange(pTree);
             res.AddRange(sTree);
             return res;
@@ -105,7 +131,10 @@ namespace BS.Microservice.Web.DAL
                     }
                     else if (arr[0] == "2")
                     {
-                        queryList.Add(Query<ServiceEntity>.EQ(t => t.SecondaryName, arr[1]));
+                        var q = Query<ServiceEntity>.EQ(t => t.SecondaryName, arr[1]);
+                        queryList.Add(arr.Length > 2
+                            ? Query.And(q, Query<ServiceEntity>.EQ(t => t.ServiceName, arr[2]))
+                            : q);
                     }
                 }
                 if (!string.IsNullOrWhiteSpace(keyword))
