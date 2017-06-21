@@ -57,6 +57,37 @@
         console.log(event.code + "-------------" + event.key);
     }
 </script>
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        服务名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
+        @Html.TextBoxFor(modelItem => modelItem.ServiceName, new { @placeholder = "服务名称", @class = "form-control", @required = "" })
+    </div>
+
+    <label class="control-label">
+        二级服务名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
+        @Html.TextBoxFor(modelItem => modelItem.SecondaryName, new { @placeholder = "二级服务名称", @class = "form-control", @required = "" })
+    </div>
+</div>
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        部署机器<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
+        @Html.TextBoxFor(modelItem => modelItem.Host, new { @placeholder = "部署机器", @class = "form-control", @required = "" })
+    </div>
+    <label class="control-label">
+        版本<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
+        @Html.TextBoxFor(modelItem => modelItem.Version, new { @placeholder = "版本", @class = "form-control", @required = "" })
+    </div>
+</div>
+
+
 <div class="form-group form-groupm" style="padding-left: 20px;" id="inAddrdiv">
     <label class="control-label" for="inputAddons">
         内网地址</label>
@@ -102,7 +133,7 @@
         备注</label>
     <div class="input-group " style="width: 100%;">
         <div class="form-control-wrap">
-            @Html.TextBoxFor(modelItem => modelItem.Remark, new { @class = "form-control empty" })
+            @Html.TextAreaFor(modelItem => modelItem.Remark, new { @class = "form-control empty",rows=3 })
         </div>
     </div>
 </div>

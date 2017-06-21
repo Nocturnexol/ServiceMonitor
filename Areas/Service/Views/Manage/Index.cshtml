@@ -65,7 +65,7 @@ function regService(id){
 
 
 $(function () {
-        var title = '用户列表';
+        var title = '服务列表';
         var url = '/Service/Manage/GetDataList';
         var postData = { keyword: $("#keyword").val() };
         var col = [
@@ -90,7 +90,8 @@ $(function () {
             } },
             { name: '服务ID', width: 40,index: 'PrimaryId' },  
             { name: '二级服务ID',width: 40, index: 'SecondaryId' },
-            { name: '最近启动时间', index: 'StartupDate',formatter:'datetime' },
+            { name: '最近启动时间', index: 'StartupDate', formatter: 'datetime' },
+             { name: '是否审核', index: 'IsApproved', formatter: function (id, a, b) { return id?"是":"否"} },
             { name: '是否启用报警', index: 'IsAlert',formatter:function(id, a, b){return "<span onclick='OpenorCloseAlert("+b._id+")' style='cursor: pointer;'>"+(id?"已启用":"未启用")+"</span>";}},
             { name: '版本', index: 'Version' },
             { name: '备注', index: 'Remark' }

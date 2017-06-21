@@ -31,6 +31,6 @@
     <label class="col-sm-2 control-label">
         备注&nbsp;</label>
     <div class="col-sm-10">
-        @Html.TextBoxFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control" })
+        @Html.TextAreaFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control",rows=3 })
     </div>
 </div>
