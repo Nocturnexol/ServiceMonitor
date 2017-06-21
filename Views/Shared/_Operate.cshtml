@@ -1,0 +1,201 @@
+﻿@{
+    string controllerName = ViewContext.RouteData.Values["action"] as string;
+    string areaName = ViewContext.RouteData.DataTokens["area"] as string;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width" />
+    @RenderSection("header", required: false)
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/bundles/js/html5")
+    <![endif]-->
+    @Scripts.Render("~/Resource/js/jquery.min.js")
+    @Styles.Render("~/bundles/css/layout")
+    @Scripts.Render("~/bundles/js/layout")
+    @Scripts.Render("~/Resource/js/Calendar/My97DatePicker/WdatePicker.js")
+    @Scripts.Render("~/Resource/js/plugins/layer/layer.min.js")
+
+    <script type="text/javascript">
+        var InitRoad = false;
+        $(function () {
+            $(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green" });
+        });
+        $(function () {
+            $(document).keydown(function (event) {
+                if (event.keyCode == 13) {
+                    event.stopPropagation();
+                    return false;
+                }
+
+            });
+
+
+            var indx = parent.layer.getFrameIndex(window.name);
+            $("form:first").ajaxForm({
+                dataType: 'json', // 返回值类型
+                success: function (data) { // ajax回调方法
+                    if (data.IsSuccess) {
+                        //2016-02-14lijing调整，保存成功加上提示消息
+                        var Messages = "保存成功";
+                        if (data.Message != null && data.Message != "" && data.Message != undefined) {
+                            Messages += data.Message;
+                        }
+                        parent.layer.alert(Messages, { icon: 1 }, function (index) {
+                            if (data.IsContinue == undefined || !data.IsContinue) {
+                             @if (controllerName.IndexOf("Edit") < 0)
+                             {
+                                     <text>
+                                           if(parent.popWindow!=undefined&&parent.popWindow!=null){
+                                     parent.popWindow.XPage.Refresh();
+                                    }else{
+                                          parent.XPage.Refresh();
+                                          }
+                                    </text>
+                             }
+                             else
+                             {
+                                   <text>
+                                   if(parent.popWindow!=undefined&&parent.popWindow!=null){
+                                        parent.popWindow.XPage.ReLoad();
+                                    }else{
+                                        parent.XPage.ReLoad();
+                                    }
+                                    </text>
+                             }
+                                parent.layer.close(index);
+
+                                if (data.RedirectUrl != undefined && data.RedirectUrl != null) {
+                                    if (parent.creatIframe != undefined && $.isFunction(parent.creatIframe)) {
+                                        parent.creatIframe(data.RedirectUrl, data.Text);
+                                    }
+                                }
+                                parent.layer.close(indx);
+                            } else {
+                                @if (controllerName.IndexOf("Edit") < 0)
+                                {
+                                    <text>
+                                      if(parent.popWindow!=undefined&&parent.popWindow!=null){
+                                             parent.popWindow.XPage.Refresh();
+                                    }else{
+                                          parent.XPage.Refresh();
+                                          }
+                                    </text>
+                                }
+                                else
+                                {
+                                   <text>
+                                      if(parent.popWindow!=undefined&&parent.popWindow!=null){
+                                    parent.popWindow.XPage.ReLoad();
+                                    }else{
+                                     parent.XPage.ReLoad();
+                                    }
+                                    </text>
+                                }
+                                parent.layer.close(index);
+                                if($('.i-checks')!=undefined&&$('.i-checks').length>0){
+                                    $('.i-checks').iCheck('uncheck')
+                                }
+                                $("form:first")[0].reset();
+                                if ($(".chosen-select") != undefined) {
+                                    $(".chosen-select").val("");
+
+                                    $(".chosen-select").trigger("chosen:updated");
+                                }
+
+                                if (data.ResultData != undefined) {
+                                    for (var item in data.ResultData) {
+                                        $("#" + item).val(data.ResultData[item]);
+                                    }
+
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        parent.layer.alert("保存失败!" + data.Message, { icon: 2 });
+                    }
+                }
+            });
+        });
+
+        $(function () {
+            var height = $(window).height() - 50;
+            $('.form-center').css('height', height);
+            $(window).resize(function () {
+                var height = $(window).height() - 50;
+                $('.form-center').css('height', height);
+
+            });
+
+            if (!InitRoad) {
+                var config = {
+                    ".chosen-select": { width: "100%" },
+                    ".chosen-select-deselect": {
+                        allow_single_deselect: !0
+                    },
+                    ".chosen-select-no-single": {
+                        disable_search_threshold: 10
+                    },
+                    ".chosen-select-no-results": {
+                        no_results_text: "Oops, nothing found!"
+                    },
+                    ".chosen-select-width": {
+                        width: "95%"
+                    }
+                };
+                for (var selector in config) $(selector).chosen(config[selector]);
+                InitRoad = true;
+            }
+        });
+        function changevalue(id) {
+            $("#IsContinue").val(id);
+        }
+    </script>
+    <style type="text/css">
+        .form-groupm
+        {
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+    </style>
+</head>
+<body style="overflow-x: hidden">
+    <div class="ibox-content form-horizontal" style="height: 100%; padding: 0; margin: 0;">
+        @using (Html.BeginForm())
+        {
+            @Html.Hidden("IsContinue")
+            <div style="overflow-x: hidden; overflow-y: auto;" class="form-center">
+                <div style="padding: 10px 20px 0px 0px">
+                    @RenderBody()
+                </div>
+            </div>
+            <div style="position: relative; bottom: 0px; height: 49px; border-top: 1px solid #DCDCDC;
+                padding: 10px; color: #333; width: 100%;">
+                <input type="submit" class="btn btn-primary form-submit" value="保 存" style="float: right;
+                    margin-left: 20px;" onclick="changevalue(0)" />
+                @if (controllerName.IndexOf("Edit") < 0)
+                {
+                    <input type="submit" data-type="continue" class="btn btn-primary form-submit" value="保存并继续添加"
+                        style="float: right;" onclick="changevalue(1)" />
+                }
+            </div>
+        }
+    </div>
+    <!--[if lt IE 9]>
+    <script type="text/javascript">
+        $(function () {
+            $("input[type='submit']").click(function (event) {
+               if( !OnDataCheck()){
+               event.stopPropagation();
+               }
+            });
+        });
+    </script>
+    <![endif]-->
+</body>
+</html>

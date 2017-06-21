@@ -1,0 +1,149 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.AddUrl = "/Service/Manage/Create";
+    ViewBag.EditUrl = "/Service/Manage/Edit/";
+    ViewBag.SecondItem = "服务管理";
+    ViewBag.Is450 = true;
+    ViewBag.FirstItem = "服务管理";
+}
+<link href="~/Resource/Css/tree.min.css" rel="stylesheet" />
+<style>
+    .jqGrid_wrapper {
+        width: 82%;
+        float: right;
+    }
+    .treejg {
+        overflow: hidden;
+        padding-right: 10px;
+        border: 1px solid #ddd;
+        padding-top: 6px;
+        padding-left: 10px;
+        border-radius: 4px;
+        float: left;
+        display: block;
+        height: 484px;
+        outline: none;
+    }</style>
+<div id="leftTree" class="treejg col-md-2" tabindex="5002">
+    <div>
+        <span>服务</span>
+    </div>
+    <div id="jsTree">
+    </div>
+</div>
+<script src="~/Resource/js/jstree.min.js"></script>
+<script type="text/javascript">
+function regService(id){
+    layer.confirm("确认要审批通过并注册服务么？",{icon:3,title:"提示"},function(){
+        
+      $.ajax({
+	                url: "/Service/Manage/RegService",
+	                type: "POST",
+	                data: { id: id },
+	                success: function (n) {
+	                    n.IsSuccess ? (layer.alert("审批通过成功", { icon: 1 }), $("#" + id).trigger("reloadGrid")) : layer.alert("审批失败：" + n.Message, { icon: 2 });
+	                }
+	            }
+                );
+    
+
+    });
+}
+
+
+$(function () {
+        var title = '用户列表';
+        var url = '/Service/Manage/GetDataList';
+        var postData = { keyword: $("#keyword").val() };
+        var col = [
+            { name: '主键', index: '_id', key: true, hidden: true },
+            { name: '服务名称', index: 'ServiceName' },
+            { name: '二级服务名称', index: 'SecondaryName' },
+            { name: '部署机器', index: 'Host' },
+            { name: '服务ID', width: 40,index: 'PrimaryId' },  
+            { name: '二级服务ID',width: 40, index: 'SecondaryId' },
+            { name: '最近启动时间', index: 'StartupDate',formatter:'datetime' },
+            { name: '是否启用报警', index: 'IsAlert',formatter:function(id, a, b){return "<span onclick='OpenorCloseAlert("+b._id+")' style='cursor: pointer;'>"+(id?"已启用":"未启用")+"</span>";}},
+            { name: '版本', index: 'Version' },
+            { name: '备注', index: 'Remark' }
+        ];
+        var oper=null;
+        @if (BtnList.Contains("编辑") || BtnList.Contains("审批") || BtnList.Contains("删除"))
+        {
+        <text>
+         oper = { name: '操作', index: '_id', title: false, sortable: false, width: 40, align: "center", formatter: function (id, a, b) {
+                    return "</text>if (BtnList.Contains("编辑"))
+                                   {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id +"\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
+                                   +"</text>if (BtnList.Contains("审批"))
+                                            {<text><a title='审批' href='javascript:;' onclick='regService(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='fa fa-file-powerpoint-o'></i></a></text>}<text>"
+                   + "</text>if (BtnList.Contains("详细"))
+                             {<text><a title='详细' data-title='服务详情' onclick='tablayout(this,\""+ b.ServiceName+"-"+ b.SecondaryName+"("+b.Version+ ")\")'  _href='/Service/Manage/Detail?id=" + b._id +"' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6bf;</i></a></text>}<text>"
+                                
+                   
+                    +"</text>if (BtnList.Contains("删除"))
+                             {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>"
+                    ;          
+                }
+                };
+        </text>
+        }
+        if(oper!=null)
+        col.push(oper);
+        var config={
+            title: title,
+            url: url,
+            postData: postData,
+            col: col,
+        
+        };
+        JQ.InitGrid(config);
+
+    $.getJSON("/Service/Manage/GetTree",
+        function (result) {
+            $('#jsTree').jstree({
+                "core": {
+                    'data': result
+                },
+                types: {
+                    "default": {
+                        icon: " jstree-icon glyphicon glyphicon-th-large"
+                    },
+                    file: {
+                        icon: "jstree-icon fa fa-file"
+                    }
+                },
+                plugins: ["types", "dnd"]
+            }).on("changed.jstree",
+                function(c, data) {
+                    console.log(data.selected);
+                    if (data.selected[0] !== "1" && data.selected[0] !== "2")
+                        XPage.Search({ id: data.selected[0] });
+                });
+        });
+
+});
+	function OpenorCloseAlert(id){
+	  layer.confirm("确认要启用或关闭报警么？",{icon:3,title:"提示"},function(){
+      $.ajax({
+	                url: "/Service/Manage/OpenorCloseAlert",
+	                type: "POST",
+	                data: { id: id },
+	                success: function (n) {
+	                    n.IsSuccess ? (layer.alert(n.Message+"成功", { icon: 1 }), $("#" + id).trigger("reloadGrid")) : layer.alert("启用或关闭报警：" + n.Message, { icon: 2 });
+	                }
+	    }
+      );
+    });
+	}
+	
+</script>
+@section Search {
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        搜索：
+    </label>
+    <div class="col-sm-12">
+        <input id="keyword" name="keyword" type="text" class="input form-control" placeholder="搜索" />
+    </div>
+}

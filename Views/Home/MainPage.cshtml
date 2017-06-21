@@ -1,0 +1,211 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>@BS.Common.UseTools.GetProjectTitle() - 主页 </title>
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/bundles/js/html5")
+    <![endif]-->
+    @Styles.Render("~/bundles/css/default")
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg  pace-done" style="overflow: hidden">
+    <div class="pace  pace-inactive">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99" style="width: 100%;">
+            <div class="pace-progress-inner">
+            </div>
+        </div>
+        <div class="pace-activity">
+        </div>
+    </div>
+    <div id="wrapper">
+        <!--顶部品牌栏开始-->
+        <nav class="navbar navbar-default navbar-fixed-top navbar-zdy " style="margin-bottom: 0px;
+            background-color: #033db1; border-color: #363a3e; float: left; width: 100%;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div class="navbar-brand">
+                        <img alt="image" src="/Resource/images/logo3_1.png" style="margin-top: -15px;" /></div>
+                </div>
+                <div style="float: right">
+                    <ul class="nav navbar-top-links navbar-right navbar-messages">
+                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                            href="#" style="padding-bottom: 0px; font-size: 14px;">@BS.Microservice.Web.Common.CurrentHelper.CurrentUser.User.UserName,你好
+                            <lable class="caret"></lable>
+                        </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a href="#" onclick="changePassword()">修改密码</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!--顶部品牌栏结束-->
+        <!--左侧导航开始-->
+        <div class="navbar-default navbar-static-side " role="navigation" style="display: block;
+            top: 50px;">
+            <div class="nav-close">
+                <i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse" style="width: auto; height: 100%;">
+                <a class="navbar-minimalize  navmenu" href="#" style="line-height: 43px;"><i class="fa fa-bars">
+                </i><span style="" class="navmenuspan">&nbsp;&nbsp;全部菜单</span> </a>
+                <ul class="nav nav-list" id="side-menu" style="display: block;">
+                    <li><a class="J_menuItem" href="/Home/Index"><i class="ic icon-home"></i><span class="nav-label">
+                        首页 </span></a></li>
+                    @{
+                        List<BS.Microservice.Web.Model.FunctionalAuthority> list = BS.Microservice.Web.Common.CommonHelper.GetFunctionalAuthoirty();
+                        var list_mian = list.Select(p => new { m = p.Module_Name, n = p.Module_Id }).Distinct().OrderBy(p => p.n).ToList();
+                    }
+                    @foreach (var node in list_mian)
+                    {
+                        int Ncount = 0;
+                        string sClass = "";
+                        var list_Detail = list.Where(k => k.Module_Id == node.n).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Rigth_Url, d = p.Group_Name, e = p.Group_Id }).Distinct().OrderBy(p => p.e).OrderBy(p => p.b).ToList();
+                        if (list_Detail.Count > 0)
+                        {
+                        <li><a href="#">
+                            @{
+                            if (node.m == "系统设置")
+                            {
+                                sClass = "icon-setting1";
+                            }
+                            else if (node.m == "服务管理")
+                            {
+                                sClass = "icon-basedate";
+                            }
+                            }
+                            <i class="@sClass"></i><span class="nav-label">@node.m</span> <span class="fa arrow">
+                            </span></a>
+                            <ul class="nav-second-level collapse submenu" aria-expanded="true">
+                                @{
+                            //存放Node
+                            List<string> HasNode = new List<string>();
+                                      
+                                }
+                                @foreach (var node2 in list_Detail)
+                                {
+
+                                    Ncount++;
+                                    if (!HasNode.Exists(p => p == node2.a))
+                                    {
+                                        HasNode.Add(node2.a);
+                                    <li>
+                                        @{
+                                        var list_Third = list.Where(k => k.Module_Id == node.n && k.Group_Name == node2.d && k.Module_Name != node2.d).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Rigth_Url }).Distinct().OrderBy(p => p.b).ToList();
+                                    
+                                        }
+                                        @if (list_Third.Count > 0)
+                                        {
+                                            <a class="J_menuItem"  data-index="@Ncount"><i class="fa fa-angle-double-right"></i>@node2.d<span
+                                                class="fa arrow" style="top: 5px;"></span></a>
+
+                                            <ul class="nav nav-third-level collapse" aria-expanded="true">
+                                                @foreach (var node3 in list_Third)
+                                                {
+                                                    HasNode.Add(node3.a);
+                                                    <li><a class="J_menuItem" href="@node3.c" data-index="@Ncount" style="font-size: 13px;font-weight: 100;">@node3.a</a></li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <a class="J_menuItem" href="@node2.c" data-index="@Ncount"><i class="fa fa-angle-double-right">
+                                            </i>@node2.a </a>
+                                        }
+                                    </li>
+                                    }
+                                    else
+                                    {
+                                        continue;
+
+                                    }
+
+
+                                }
+                            </ul>
+                        </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <!--左侧导航结束-->
+        <!--右侧部分开始-->
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+            </div>
+            <div class="row content-tabs">
+                <button class="roll-nav roll-left J_tabLeft">
+                    <i class="fa fa-backward"></i>
+                </button>
+                <div class="page-tabs J_menuTabs">
+                    <div class="page-tabs-content" style="float: left;">
+                        <a href="javascript:;" class="active J_menuTab" data-id="/Home/Index">首页 </a>
+                    </div>
+                </div>
+                <button class="roll-nav roll-right J_tabRight">
+                    <i class="fa fa-forward"></i>
+                </button>
+                <div class="btn-group roll-nav roll-right">
+                    <button class="dropdown J_tabClose" data-toggle="dropdown" style="float: left;">
+                        关闭操作 <i class="caret" style="float: right; margin-top: 25%;"></i>
+                    </button>
+                    <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                        <li class="J_tabCloseAll"><a>关闭全部选项卡 </a></li>
+                        <li class="J_tabCloseOther"><a>关闭其他选项卡 </a></li>
+                    </ul>
+                </div>
+                <a href="/Home/LogOut" class="roll-nav roll-right J_tabExit fontcolor"><i class="fa fa fa-sign-out">
+                </i>退出 </a>
+            </div>
+            <div class="row J_mainContent" id="content-main">
+                <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/Home/Index"
+                    frameborder="0" data-id="/Home/Index" seamless></iframe>
+            </div>
+        </div>
+    </div>
+    <!--右侧部分结束-->
+    @Scripts.Render("~/Resource/js/base.js")
+    @Scripts.Render("~/Resource/js/jquery.min.js")
+    @Scripts.Render("~/Resource/js/bootstrap.js")
+    @Scripts.Render("~/Resource/js/plugins/metisMenu/metisMenu.min.js")
+    @Scripts.Render("~/Resource/js/plugins/slimscroll/jquery.slimscroll.min.js")
+    @Scripts.Render("~/Resource/js/plugins/layer/layer.min.js")
+    @Scripts.Render("~/Resource/js/contabs.min.js")
+    <!--[if IE 8]>
+    <script type="text/javascript">
+        $(function () {
+            if ($(window).width() < 768)
+                $("#content-main").css("height", $(window).height() - 90);
+            else
+                $("#content-main").css("height", $(window).height() - 130);
+            $(window).resize(function () {
+                if ($(window).width() < 768)
+                    $("#content-main").css("height", $(window).height() - 90);
+                else
+                    $("#content-main").css("height", $(window).height() - 130);
+
+            });
+        });
+    </script>
+    <![endif]-->
+    <script type="text/javascript">
+        $(function () {
+            $(".nav .nav-third-level>li>a").hover(
+                    function () {
+                        $(this).css("color", "white");
+                    }, function () {
+                        $(this).css("color", "#555");
+                    }
+                )
+        }) 
+    </script>
+</body>
+</html>

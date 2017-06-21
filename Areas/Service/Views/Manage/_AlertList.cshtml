@@ -1,0 +1,59 @@
+﻿@model int
+@{
+    ViewBag.Title = "报警通知人";
+    ViewBag.BlockTitle = "报警通知人";
+    Layout = "~/Views/Shared/_Block.cshtml";
+    object id = ViewData["serverId"];
+    object PrimaryId = ViewData["PrimaryId"];
+    ViewBag.AddUrl = "/Service/Manage/CreateContact?id=" + id + "&pid=" + PrimaryId;
+    ViewBag.EditUrl = "/Service/Manage/EditContact/";
+    ViewBag.DeleteUrl = "/Service/Manage/DeleteContact/";
+    ViewBag.Index = Model;
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            postData: { "serviceId": "@id" },
+            id: 'jqGridList_@Model',
+            pagerId: 'jqGridPager_@Model',
+            multiselect: true,
+            height: '100%',
+            col: [
+                    { index: '_id', name: 'key', key: true, hidden: true },
+                    { index: 'UserName', name: '姓名', sortable: false },
+                    { index: 'Tel', name: '手机号', sortable: false },
+                    { index: 'Email', name: '邮箱', sortable: false },
+                    { index: 'WeiXin_UID', name: '企业微信号UID', sortable: false },
+                    { index: 'DingTalk_UID', name: '企业钉钉号UID', sortable: false },
+                    { index: 'AlarmType', name: '报警通知方式', sortable: false },
+                    { index: 'Remark', name: '备注', sortable: false },
+                    { index: '_id', name: '操作', sortable: false,
+                        formatter: function (id, a, b) {
+                            var html = "";
+                            html += "&nbsp;&nbsp;<a title='编辑' href='javascript:void(0);' onclick='edit(\"@ViewBag.EditUrl\",\"@ViewBag.Title\",\"jqGridList_@Model\",\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>";
+                            html += "&nbsp;&nbsp;<a title='删除' href='javascript:void(0);' onclick='delSingleRow(\"@ViewBag.DeleteUrl\",\"jqGridList_@Model\",\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                            return html;
+                        }
+                    }
+                    ],
+            url: "/Service/Manage/GetPageDataListForContacts"
+        };
+        //首次加载时绑定数据
+        JQ.InitGrid(config);
+    });
+    function SyncAlertData(id) {
+        $.ajax({
+            url: "/Service/Manage/SyncAlertData",
+            type: "POST",
+            data: { id: id },
+            success: function (n) {
+                n.IsSuccess ? (layer.alert("同步成功", { icon: 1 }), $("#" + id).trigger("reloadGrid")) : layer.alert("同步失败：" + n.Message, { icon: 2 });
+            }
+        });
+    }
+</script>
+@section Button{
+    <button type="button" class="btn btn-default " onclick="SyncAlertData(@id)">
+        <i class="fa fa-dedent"></i>&nbsp;同步到主服务
+    </button>
+}

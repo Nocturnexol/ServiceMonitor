@@ -1,0 +1,8 @@
+﻿.checkbox label, .radio label
+{
+   padding-left: 0px; 
+   padding-right: 20px; 
+    }
+    .form-group {
+    margin-bottom: 10px;
+}

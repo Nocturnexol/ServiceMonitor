@@ -1,0 +1,220 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	text-decoration:none;
+	font-family:"微软雅黑";
+	font-size:12px;
+	}
+*{
+	margin:0px;
+	padding:0px;
+	}
+
+/* 顶部  */
+.toppan{
+	background:url(/Resource/imagestopBg.png) no-repeat;
+	height:60px;
+	}
+.logo{ background:url(/Resource/imageslogo.png) no-repeat; margin-top:10px; margin-left:20px; width:324px;height:38px; float:left;}
+.topright{ margin-top:22px; margin-right:20px; font-size:12px; color:#fff; float:right;}
+.clear{ clear:both;}
+
+/* 搜索条件  */
+.searchPan{background-color:#ededed;}
+.Screeningsear{ margin:0px; padding:0px;}
+.seaCondition{ width:680px;margin-top:10px; margin-left:20px; float:left;}
+.seaCondition ul li{ list-style:none;margin-left:10px; height:26px; line-height:26px;float:left;}
+.ssdrop{width:70px; height:26px; line-height:26px;  margin-bottom:0px; padding:0px;border:1px solid #c8c8c8;}
+.seaCondition  img{ border:0px;}
+.searleft{ margin-left:20px; padding-top:10px;  float:left; font-size:12px;}
+.seacheck{ margin-top:8px; margin-left:20px; font-size:13px;float:left;}
+.imgclic{ margin-left:3px; padding-top:10px; float:left;}
+/* 搜索导航   */
+
+.consear{ margin-left:20px;margin-top:5px;font-size:14px; padding-bottom:10px;}
+.consear ul li{ list-style:none; float:left;}
+.consear a:link,.consear a:visited,.consear a:active{ text-decoration:none; color:#666;}
+.consear a:hover{text-decoration:none;color:#D80C0C;}
+.cpsel a:link,.cpsel a:visited,.cpsel a:active{ text-decoration:none;color:#D80C0C;font-weight:bold;}
+.cpsel a:hover{text-decoration:none;color:#666;font-weight:bold;}
+
+
+
+
+
+
+.conitem input{ margin:0px; padding:0px;}
+input[type="checkbox" i]{margin: 3px 0.5ex;padding: initial;background-color:#fff;border:0;width:20px;height:20px; border:1px solid #c8c8c8;}
+img{ border:0px;}
+.hideResult
+{
+    background: url(/Resource/images/left.png) no-repeat center center;
+   
+    float: left;
+    overflow: hidden;
+    width: 14px;
+    cursor: pointer;
+ 
+    height: 100%;
+    z-index: 1;
+}
+.hideResult2
+{
+    background: FLOAT: left;
+    overflow: hidden;
+    width: 14px;
+    cursor: pointer;
+    bottom: 2px;
+   
+    float: left;
+    background: url(/Resource/images/right.png) no-repeat center center;
+    left: 0px !important;
+    z-index: 1;
+
+}
+.left
+{
+   float:left;
+    width:342px;
+    border-right:1px solid #999;
+  
+}
+.left .title
+{
+    border-right: #999 1px solid;
+    border-top: #999 1px solid;
+    z-index: 1;
+    left: 0px;
+    border-left: #999 1px solid;
+    width: 342px;
+    border-bottom: #999 1px solid;
+   /* position: absolute;*/
+  
+    height: 25px;
+    background-image: url('/images/TabBak.png');
+}
+.right .title
+{
+    /*left: 355px !important;*/
+    float:left;
+    
+    border-right: #999 1px solid;
+   /* border-top: #999 1px solid;*/
+    z-index: 1;
+    right: 3px !important;
+     border-left: #999 1px solid;
+    border-bottom: #999 1px solid;
+    /*position: absolute;*/
+    width:100%;
+    height: 25px;
+    background-image: url('/images/TabBak.png');
+}
+.right .title2
+{
+   
+    border-right: #999 1px solid;
+ 
+    z-index: 1;
+    right: 3px !important;
+    border-left: #999 1px solid;
+    border-bottom: #999 1px solid;
+    
+    height: 25px;
+    background-image: url('/images/TabBak.png');
+}
+.right .title3
+{
+    left: 2px !important;
+    border-right: #999 1px solid;
+    border-top: #999 1px solid;
+    z-index: 1;
+    right: 3px !important;
+    border-left: #999 1px solid;
+    border-bottom: #999 1px solid;
+
+   top: 1px;
+    height: 25px;
+    background-image: url('/images/TabBak.png');
+}
+
+.logo1
+{
+    display:none;
+}
+.right
+{
+    height:100%;
+    float:left;
+    }
+.mapObj
+{
+    border-right: #999 0px solid;
+    border-top: #999 1px;
+    right: 0px !important;
+    background: white;
+    border-left: #999 1px solid;
+    border-bottom: red 0px solid;
+   
+    width:100%; height:100%;
+    float:left;
+}
+.mapObj2
+{
+    border-right: #999 0px solid;
+    padding-right: 1px;
+    border-top: #999 1px;
+    padding-left: 1px;
+  
+    background: red;
+    padding-bottom: 1px;
+    margin: 0px;
+    border-left: #999 1px solid;
+     border-right: #999 1px solid;
+   
+    padding-top: 1px;
+    border-bottom: #999 1px solid;
+
+    
+}
+.mapObj3
+{
+    border-right: #999 0px solid;
+    padding-right: 1px;
+    border-top: #999 1px;
+    padding-left: 1px;
+    right: 0px !important;
+    background: red;
+    padding-bottom: 1px;
+    margin: 0px;
+    border-left: #999 1px solid;
+    bottom: 1px;
+    padding-top: 1px;
+    border-bottom: #999 1px solid;
+    position: absolute !important;
+    top: 30px !important;
+    height: 400px;
+    
+}
+.resulte
+{
+  /*  padding: 1px;*/
+    clear: both;
+   /* border-right: #999 1px solid;
+    border-top: #999 1px;*/
+ 
+    float: left;
+    
+    overflow: hidden;
+   /* border-left: #999 1px solid;*/
+    width: 100%;
+  /*  bottom: 1px;*/
+  /*  border-bottom: #999 1px solid;*/
+    height: auto;
+}
+.resulte_out
+{
+    float: left;
+     overflow-y: auto;
+      width: 100%;
+   height:calc(100% - 25px);
+}

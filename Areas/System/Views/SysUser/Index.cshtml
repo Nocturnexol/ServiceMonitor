@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "用户管理";
+    IEnumerable<SelectListItem> DepartList = ViewData["DepartList"] as IEnumerable<SelectListItem>;
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "用户管理";
+    ViewBag.FirstItem = "系统管理";
+
+    ViewBag.AddUrl = "/System/SysUser/Create";
+    ViewBag.EditUrl = "/System/SysUser/Edit/";
+    ViewBag.DeleteUrl = "/System/SysUser/DataDel";
+    ViewBag.ExportUrl = "/System/SysUser/DeriveData";
+}
+<script type="text/javascript">
+    function toAuthRole(id, user) {
+        var ind = poplayer(user + '角色设置', '/System/UserRole?LoginName=' + id,'800','300px');
+    }
+
+    $(function () {
+    
+        var title = '用户列表';
+        var url = '/System/SysUser/GetDataList';
+        var postData = { keyword: $("#searchTxt").val() };
+        var col = [
+            { name: '主键', index: '_id', key: true, hidden: true },
+            { name: '登录名', index: 'LoginName' },
+            { name: '用户名', index: 'UserName' },
+            { name: '备注', index: 'Remark' }
+        ];
+        var oper=null;
+        @if (BtnList.Contains("编辑") || BtnList.Contains("角色") || BtnList.Contains("删除"))
+        {
+        <text>
+         oper = { name: '操作', index: '_id', title: false, sortable: false, width: 30, align: "center", formatter: function (id, a, b) {
+                    return "</text>if (BtnList.Contains("编辑"))
+                                   {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id +"\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
+                    +"</text>if (BtnList.Contains("删除"))
+                             {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>"
+                    ;          
+                }
+                };
+        </text>
+        }
+        if(oper!=null)
+        col.push(oper);
+        var config={
+            title: title,
+            url: url,
+            postData: postData,
+            col: col,
+        
+        };
+        JQ.InitGrid(config);
+    });
+</script>
+@section Search {
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        登录名/用户名：</label>
+    <div class="col-sm-12">
+        <input id="LoginName" type="text" class="input form-control" placeholder="登录名/用户名" name="LoginName" />
+    </div>
+}

@@ -1,0 +1,66 @@
+﻿@model BS.Microservice.Web.Model.tblUser_Sys
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div style="border: 1px solid #CF9E9E; margin: 0px auto; width: 829px">
+        <div style="background-color: #E33A3C; width: 100%; height: 10px">
+        </div>
+        <div class="div_title">
+            <label style="margin-left: 10px">
+                用户信息-详细</label></div>
+        <div>
+            <table class="editTable">
+                <tr>
+                    <td class="lbName">
+                        登录名：
+                    </td>
+                    <td>
+                        @Model.LoginName
+                    </td>
+                    <td class="lbName">
+                        用户名：
+                    </td>
+                    <td>
+                        @Model.UserName
+                    </td>
+                </tr>
+                <tr>
+                    <td class="lbName">
+                        英文名：
+                    </td>
+                    <td>
+                        @Model.EnglishName
+                    </td>
+                    <td class="lbName">
+                        用户标签：
+                    </td>
+                    <td>
+                        @Model.UserMark
+                    </td>
+                </tr>
+                <tr>
+                    <td class="lbName">
+                        部门：
+                    </td>
+                    <td>
+                        @Model.dept_New
+                    </td>
+                    <td class="lbName">
+                        备注：
+                    </td>
+                    <td>
+                        @Model.Remark
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="right">
+                        <input type="button" value="取消" id="btnClosePop" class="btn" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}

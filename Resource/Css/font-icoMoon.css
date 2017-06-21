@@ -1,0 +1,139 @@
+﻿@font-face {
+	font-family: 'icomoon';
+	src: url('/Resource/fonts/icomoon.eot');
+	src: url('/Resource/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('/Resource/fonts/icomoon.svg#icomoon') format('svg'),
+		url('/Resource/fonts/icomoon.woff') format('woff'),
+		url('/Resource/fonts/icomoon.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zzm2:before {
+  content: "\e919";
+}
+.icon-mediamon:before {
+  content: "\e91a";
+}
+.icon-mediasear:before {
+  content: "\e91b";
+}
+.icon-financialm:before {
+  content: "\e91c";
+}
+.icon-makem:before {
+  content: "\e91d";
+}
+.icon-zzm:before {
+  content: "\e91e";
+}
+.icon-contractm:before {
+  content: "\e91f";
+}
+.icon-salegc:before {
+  content: "\e920";
+}
+.icon-mediam:before {
+  content: "\e921";
+}
+.icon-basedate:before {
+  content: "\e922";
+}
+.icon-cf:before {
+  content: "\e900";
+}
+.icon-errjk:before {
+  content: "\e901";
+}
+.icon-filem:before {
+  content: "\e902";
+}
+.icon-gjxl:before {
+  content: "\e903";
+}
+.icon-hc:before {
+  content: "\e904";
+}
+.icon-home:before {
+  content: "\e905";
+}
+.icon-js:before {
+  content: "\e906";
+}
+.icon-location:before {
+  content: "\e907";
+}
+.icon-map_1:before {
+  content: "\e908";
+}
+.icon-mtwh:before {
+  content: "\e909";
+}
+.icon-opermonitor:before {
+  content: "\e90a";
+}
+.icon-powerm:before {
+  content: "\e90b";
+}
+.icon-qh:before {
+  content: "\e90c";
+}
+.icon-safejg:before {
+  content: "\e90d";
+}
+.icon-setting:before {
+  content: "\e90e";
+}
+.icon-setting1:before {
+  content: "\e90f";
+}
+.icon-stats-bars:before {
+  content: "\e910";
+}
+.icon-supplybz .path1:before {
+  content: "\e911";
+  color: rgb(39, 38, 53);
+}
+.icon-supplybz .path2:before {
+  content: "\e912";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-supplybz .path3:before {
+  content: "\e913";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-supplybz .path4:before {
+  content: "\e914";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.icon-sysf:before {
+  content: "\e915";
+}
+.icon-tcc:before {
+  content: "\e916";
+}
+.icon-yd:before {
+  content: "\e917";
+}
+.icon-yyfx:before {
+  content: "\e918";
+}
+

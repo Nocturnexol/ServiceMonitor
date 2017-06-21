@@ -1,0 +1,47 @@
+﻿@{
+    Dictionary<string, List<string>> Dic = ViewData["Dic"] as Dictionary<string, List<string>>;
+    string title = ViewBag.BlockTitle as string;
+    IEnumerable<SelectListItem> ReplacementLists = ViewData["ReplacementLists"] as IEnumerable<SelectListItem>;
+    List<string> BtnList = ViewBag.BtnList == null ? Dic == null ? new List<string> { "添加", "编辑", "删除", "导出" } : (Dic.ContainsKey(title) ? Dic[title] : new List<string>()) : (Dic.ContainsKey(title) ? Dic[title] : new List<string>());
+}
+<div class="ibox float-e-margins" style="border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;">
+    <div class="ibox-title">
+        <h5>
+            @ViewBag.BlockTitle</h5>
+        <div class="ibox-tools">
+            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a><a class="close-link"><i
+                class="fa fa-times"></i></a>
+        </div>
+    </div>
+    <div class="ibox-content" style="display: block; padding: 0px 15px 15px 15px;">
+        <div class="form-group" style="margin-top: 10px; margin-bottom: 0px;">
+            @if (BtnList.Contains("添加"))
+            {
+                <button  type="button" class="btn btn-default " onclick="add('@ViewBag.addUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
+                    <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+                </button>
+            }
+            @if (BtnList.Contains("编辑"))
+            {
+                <button type="button" class="btn btn-default " onclick="edit('@ViewBag.editUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
+                    <i class="fa fa-edit"></i>&nbsp;编辑
+                </button>
+            }
+            @if (BtnList.Contains("删除"))
+            {
+                <button type="button" class="btn btn-default " onclick="delList('@ViewBag.deleteUrl','jqGridList_@ViewBag.Index')">
+                    <i class="fa fa-dedent"></i>&nbsp;删除
+                </button>
+            }
+            @RenderSection("Button", false)
+        </div>
+        <div class="jqGrid_wrapper">
+            <table id="jqGridList_@ViewBag.Index">
+            </table>
+            <div id="jqGridPager_@ViewBag.Index">
+            </div>
+        </div>
+    </div>
+</div>
+@RenderBody()

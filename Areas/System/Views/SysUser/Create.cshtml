@@ -1,0 +1,46 @@
+﻿@model BS.Microservice.Web.Model.UserEntity
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+    List<SelectListItem> deptList = ViewData["deptList"] as List<SelectListItem>;
+    List<SelectListItem> RoleList = ViewData["RoleList"] as List<SelectListItem>;
+}
+<script type="text/javascript">
+    function OnDataCheck() {
+        var LoginName = $("#LoginName").attr("value");
+        var UserName = $("#UserName").attr("value");
+        var dept_New = $("#dept_New").attr("value");
+        if (LoginName == undefined || LoginName == null || LoginName.Trim() == "") {
+            parent.layer.msg("请填写登录名!");
+            return false;
+        }
+        if (UserName == undefined || UserName == null || UserName.Trim() == "") {
+            parent.layer.msg("请填写用户名!");
+            return false;
+        }
+        if (dept_New == undefined || dept_New == null || dept_New.Trim() == "") {
+            parent.layer.msg("请填写部门!");
+            return false;
+        }
+    }
+</script>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        登录名<span style="color: #FF9966"> *</span></label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.LoginName, new { @placeholder = "登录名", @class = "form-control", @required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        用户名<span style="color: #FF9966"> *</span></label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.UserName, new { @placeholder = "用户名", @class = "form-control", @required = "" })
+    </div>
+</div>
+
+
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        备注&nbsp;</label>
+    <div class="col-sm-10">
+        @Html.TextBoxFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control" })
+    </div>
+</div>

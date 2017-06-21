@@ -1,0 +1,350 @@
+﻿@{
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    BtnList=BtnList??new List<string>();
+    bool Is450 = ViewBag.Is450 == null ? false : ViewBag.Is450;
+    string Height = Is450 ? "450px" : "300px";
+    bool bExport = false;
+    bool isHaveMaxHeight = ViewBag.isHaveMaxHeight ?? true;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title
+    </title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/bundles/js/html5")
+    <![endif]-->
+    @RenderSection("header", required: false)
+    @Scripts.Render("~/Resource/js/jquery.min.js")
+    @Styles.Render("~/bundles/css/layout")
+    @Scripts.Render("~/Resource/js/plugins/layer/layer.min.js")
+    @Scripts.Render("~/bundles/js/layout")
+    @Scripts.Render("~/Resource/js/Calendar/My97DatePicker/WdatePicker.js")
+    <script type="text/javascript">
+        $(function () {
+            $(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green" });
+            $("#btnReset").click(function () {
+                var form = $("#searchArray")[0];
+                if (form != undefined) {
+                    form.reset();
+                    $(".chosen-select").next().find("li").removeClass('result-selected').removeClass('highlighted').first().addClass("result-selected");
+                    $(".chosen-select").next().find("span").text($(".chosen-select").next().find("li").first().text());
+                    $(".chosen-select").trigger('chosen:updated');
+                    $(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green" });
+                }
+            });
+        });
+        var Init = false;
+        function openSearch() {
+            $('#searchmodfbox_jqGridList').appendTo($('body'));
+            $('#searchmodfbox_jqGridList').show();
+            $('body').css('overflow-y', 'hidden');
+            $('.ui-widget-overlay').appendTo($('body'));
+            $('.ui-widget-overlay').show();
+
+        }
+        function add() {
+            poplayer('@ViewBag.SecondItem-添加', '@ViewBag.AddUrl?RedirectUrl=' + '@ViewBag.DetailUrl', '800', "@Height");
+        }
+
+
+
+        function Print(id) {
+            if (id != undefined) {
+                var OperationNumber = $("#jqGridList").jqGrid("getRowData", id).OperationNumber;
+                var a = "<a id='ReportFormId' href='/ReportNew/ReportForm.aspx?ReportName=@ViewBag.ReportName&OperationNumber=" + OperationNumber + "' target='_blank' style='display:none'></a>";
+                $(a).appendTo($('body'));
+                $("#ReportFormId")[0].click();
+                $("#ReportFormId").remove();
+                // parent.window.open('/ReportNew/ReportForm.aspx?ReportName=@ViewBag.ReportName&OperationNumber=' + OperationNumber);
+            } else {
+                var index = $("#jqGridList").jqGrid('getGridParam', 'selarrrow');
+                if (index.length < 1) {
+                    layer.alert("请选择要打印的数据！", { icon: 0 })
+
+                } else if (index.length > 1) {
+                    layer.alert("只能选择一条数据进行打印", { icon: 0 })
+                } else {
+                    var rowid = $("#jqGridList").jqGrid("getGridParam", "selrow");
+                    id = rowid;
+                    var OperationNumber = $("#jqGridList").jqGrid("getRowData", id).OperationNumber;
+
+                    //parent.window.open('/ReportNew/ReportForm.aspx?ReportName=@ViewBag.ReportName&OperationNumber=' + OperationNumber);
+                    var a = "<a id='ReportFormId' href='/ReportNew/ReportForm.aspx?ReportName=@ViewBag.ReportName&OperationNumber=" + OperationNumber + "' target='_blank' style='display:none'></a>";
+                    $(a).appendTo($('body'));
+                    $("#ReportFormId")[0].click();
+                    $("#ReportFormId").remove();
+                }
+            }
+        }
+
+        function edit(id) {
+            if (id != undefined) {
+                poplayer('@ViewBag.SecondItem-编辑', '@ViewBag.EditUrl' + id, '800', "@Height");
+            } else {
+                var index = $("#jqGridList").jqGrid('getGridParam', 'selarrrow');
+                if (index.length < 1) {
+                    layer.alert("请选择要编辑的数据！", { icon: 0 })
+
+                } else if (index.length > 1) {
+                    layer.alert("只能选择一条数据进行编辑", { icon: 0 })
+                } else {
+                    var rowid = $("#jqGridList").jqGrid("getGridParam", "selrow");
+                    id = rowid;
+                    var oobj = $("#jqGridList").jqGrid("getRowData", id);
+
+                    if (oobj.IsCanEdit != undefined && oobj.IsCanEdit.toLowerCase() == "false") {
+                        layer.alert("无权编辑该数据", { icon: 0 })
+                    } else {
+
+                        if (oobj.IsApproved != undefined && oobj.IsApproved.toLowerCase() == "true") {
+                            layer.alert("当前数据已被审批,不能被编辑", { icon: 0 })
+
+                        } else {
+                            poplayer('@ViewBag.SecondItem-编辑', '@ViewBag.EditUrl' + id, '800', "@Height");
+                        }
+                    }
+                }
+            }
+        }
+
+        function delList() {
+            XPage.DelData("@ViewBag.DeleteUrl");
+        }
+        function delSingleRow(id) {
+            var t = { url: "@ViewBag.DeleteUrl", Data: id };
+            XPage.DelSingleData(t);
+        }
+
+        $(function () {
+            bExport = false;
+            if (!Init) {
+                var config = {
+                    ".chosen-select": { width: "100%" },
+                    ".chosen-select-deselect": {
+                        allow_single_deselect: !0
+                    },
+                    ".chosen-select-no-single": {
+                        disable_search_threshold: 10
+                    },
+                    ".chosen-select-no-results": {
+                        no_results_text: "Oops, nothing found!"
+                    },
+                    ".chosen-select-width": {
+                        width: "95%"
+                    }
+                };
+                for (var selector in config) $(selector).chosen(config[selector]);
+                Init = true;
+            }
+            $("#btnSearch").click(function () {
+                var searchData = $("#searchArray").serializeArray();
+                var postData = {};
+                for (var i = 0; i < searchData.length; i++) {
+                    if (postData[searchData[i].name] != undefined && postData[searchData[i].name] != "" && postData[searchData[i].name] != null) {
+                        postData[searchData[i].name] = postData[searchData[i].name] + ";" + searchData[i].value;
+                    } else {
+                        postData[searchData[i].name] = searchData[i].value;
+                    }
+                }
+
+                XPage.Search(postData);
+                $('.ui-widget-overlay').hide();
+                $('body').css('overflow-y', 'auto');
+                $('#searchmodfbox_jqGridList').hide();
+                if ($('#ReturnBtn') != undefined) {
+                    $('#ReturnBtn').show();
+                }
+
+            });
+        });
+        function onSelectExport() {
+            if (bExport) {
+                return GetCheckBoxExportList('@ViewBag.ExportUrl1');
+            }
+            else {
+                return GetCheckBoxExportList('@ViewBag.ExportUrl');
+            }
+        }
+        function onSelectReturn() {
+            Return();
+            $('#ReturnBtn').hide();
+            bExport = !bExport;
+        }
+        function onEnterSubmit() {
+
+            $("#btnSearch").click();
+            return false;
+        }
+    </script>
+</head>
+<body>
+    <div class="animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <input type="hidden" id="" />
+                        @if (BtnList.Contains("搜索"))
+                        {
+                            <button type="button" class="btn btn-success " onclick="openSearch()">
+                                <i class="fa fa-search"></i>&nbsp;<span class="bold">搜索</span>
+                            </button>
+                        }
+                        @if (BtnList.Contains("添加"))
+                        {
+                            <button id="btnAdd" type="button" class="btn btn-default " onclick="add()">
+                                <i class="glyphicon glyphicon-plus"></i>&nbsp;<span class="bold">添加</span>
+                            </button>
+                        }
+                        @if (BtnList.Contains("编辑"))
+                        {
+                            <button id="btnEdit" type="button" class="btn btn-default " onclick="edit()">
+                                <i class="fa fa-edit"></i>&nbsp;<span class="bold">编辑</span>
+                            </button>
+                        }
+                        @if (BtnList.Contains("删除"))
+                        {
+                            <button id="btnDel" type="button" class="btn btn-default" onclick="delList()">
+                                <i class="fa fa-dedent"></i>&nbsp;<span class="bold">删除</span>
+                            </button>
+                        }
+                        @if (BtnList.Contains("返回"))
+                        {
+                            <button id="ReturnBtn" type="button" class="btn btn-default" onclick="onSelectReturn()"
+                                style="display: none">
+                                <i class='Hui-iconfont'>&#xe66b;</i>&nbsp;<span class="bold">返回</span>
+                            </button>
+                        }
+                        @if (BtnList.Contains("另外打开"))
+                        {
+                            <a href="#" type="button" class="btn btn-default" title="另外打开" target="_blank" style="float: right">
+                                <i class="glyphicon glyphicon-new-window"></i></a>
+                        }
+                    </div>
+                    <div class="jqGrid_wrapper">
+                        <table id="jqGridList" class="table-condensed table-striped">
+                        </table>
+                        <div id="jqGridPager">
+                        </div>
+                    </div>
+                    @RenderBody()
+                    <div class="ui-widget-overlay" style="height: 100%; width: 100%; position: fixed;
+                        left: 0px; top: 0px; z-index: 949; opacity: 0.4; display: none;">
+                    </div>
+                    <div class="ui-jqdialog modal-content jqmID2" id="searchmodfbox_jqGridList" dir="ltr"
+                        tabindex="-1" style="width: 550px; z-index: 950;">
+                        <div class="ui-jqdialog-titlebar modal-header" id="searchhdfbox_jqGridList">
+                            <span class="ui-jqdialog-title" style="float: left;">搜索...</span><a class="ui-jqdialog-titlebar-close"
+                                style="right: 0.3em;"><span class="glyphicon glyphicon-remove-circle"></span></a></div>
+                        <div class="ui-jqdialog-content modal-body" id="searchcntfbox_jqGridList" 
+                        @if (isHaveMaxHeight)
+                        {
+                            <text>style="max-height:450px;overflow-y:auto;"</text>
+                        }
+                        >
+                            <div id="fbox_jqGridList" class="searchFilter" style="padding: 5px;">
+                            </div>
+                            <form id="searchArray" name="searchArray" onsubmit="return onEnterSubmit();">
+                             @RenderSection("Search", false)
+                            </form>
+                        </div>
+                        <div style="position: relative; bottom: 0px;">
+                            <div class="form-group" style="float: right; margin-top: 10px;">
+                                <div class="col-sm-12">
+                                    <button id="btnReset" type="button" class="btn btn-danger" style="margin-right: 10px;">
+                                        <i class="fa fa-refresh"></i><span class="bold">&nbsp;重置</span>
+                                    </button>
+                                    <button id="btnSearch" type="button" class="btn btn-success">
+                                        <i class="fa fa-search"></i><span class="bold">&nbsp;搜索</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $('#searchmodfbox_jqGridList').css({ 'left': ($(window).width() - 550) / 2, 'top': ($(window).height() - parseInt($('#searchmodfbox_jqGridList').css('height'))) / 2 });
+        var i = $("#searchhdfbox_jqGridList")
+        var f = $('#searchmodfbox_jqGridList')
+        var d, e, b = 9e3, k = document.documentElement, g = f.width(), h = f.height(),
+	c = !1;
+        var cl = f.find('.ui-jqdialog-titlebar-close');
+        i.mousedown(function (a) {
+            c = !0;
+            d = a.pageX - parseInt(f.css("left"));
+            e = a.pageY - parseInt(f.css("top"));
+            f.css('cursor', 'move');
+        });
+        $(document).mouseup(function () {
+            c = !1.
+            f.css('cursor', 'auto');
+        });
+        cl.click(function () { f.hide(); $('.ui-widget-overlay').hide(); $('body').css('overflow-y', 'auto'); });
+        $(document).mousemove(function (a) {
+            if (c) {
+                var b = a.pageX - d;
+                0 >= b && (b = 0),
+			b = Math.min(k.clientWidth - g, b) - 5;
+                var i = a.pageY - e;
+                0 >= i && (i = 0),
+			i = Math.min(k.clientHeight - h, i) - 5,
+			f.css({
+			    top: i,
+			    left: b
+			})
+            }
+        })
+
+        function tablayout(obj, roadline) {
+            if ($(obj).attr('_href')) {
+                var bStop = false;
+                var bStopIndex = 0;
+                var _href = $(obj).attr('_href');
+                var _titleName = roadline + $(obj).attr("data-title");
+                var topWindow = $(window.parent.document);
+                var show_navLi = topWindow.find(".J_menuTab");
+                if (show_navLi.length > 0) {
+                    show_navLi.each(function () {
+                        if ($(this).attr("data-id") == _href) {
+                            bStop = true;
+                            bStopIndex = show_navLi.index($(this));
+                            return false;
+                        }
+                    });
+                    if (!bStop) {
+                        creatIframe(_href, _titleName);
+                    } else {
+                        show_navLi.removeClass("active").eq(bStopIndex).addClass("active");
+                        var iframe_box = topWindow.find('#content-main');
+                        iframe_box.children().hide().eq(bStopIndex).show();
+                    }
+                } else {
+                    window.open(_href, _titleName);
+                }
+            }
+        }
+        function creatIframe(href, titleName) {
+            var topWindow = $(window.parent.document);
+            var show_nav = topWindow.find('.J_menuTab');
+            show_nav.removeClass("active");
+            var iframe_box = topWindow.find('#content-main');
+            show_nav.parent().append('<a class="J_menuTab active" href="javascript:;" data-id="' + href + '">' + titleName + '<i class="fa fa-times-circle"></i></a>');
+            var taballwidth = 0,
+		    $tabNav = topWindow.find(".page-tabs-content"),
+		    $tabNavWp = topWindow.find('.page-tabs'),
+		    $tabNavitem = topWindow.find(".page-tabs-content a");
+            var iframeBox = iframe_box.find('.J_iframe');
+            iframeBox.hide();
+            iframe_box.append('<iframe width="100%" height="100%" frameborder="0" src=' + href + ' class="J_iframe" data-id=' + href + '></iframe>');
+        }
+    </script>
+</body>
+</html>

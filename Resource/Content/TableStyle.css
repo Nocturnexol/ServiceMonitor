@@ -1,0 +1,103 @@
+﻿body
+{
+    font-size: 12px;
+    background-color: #F8FBFA;
+}
+.table
+{
+    border-collapse: collapse;
+    background-color: #E7F8EB;
+    width: 970px;
+    border: 1px solid #BEBEBB;
+}
+.table tr
+{
+    /*  height:60px*/
+    background-color: White;
+}
+
+.table td
+{
+    /*border: 1px solid #BEBEBB;*/
+}
+
+td.TdName
+{
+    height: 25px;
+    text-align: right;
+    padding: 2px 0px 2px 3px;
+    width: 7%;
+    color: #6B6B6B;
+}
+td.TdText
+{
+    text-align: left;
+    padding: 2px 3px 2px 5px;
+    width: 80%;
+}
+td.TdTextzhou
+{
+    text-align: left;
+    padding: 2px 3px 2px 5px;
+    width: 30%;
+}
+td.TdTextFour
+{
+    text-align: left;
+    padding: 2px 3px 2px 5px;
+    width: 30%;
+}
+td.ProcessTableTdName
+{
+    height: 25px;
+    text-align: right;
+    padding: 2px 0px 2px 3px;
+    width: 10%;
+    color: #6B6B6B;
+}
+td.ProcessTableTdTextFour
+{
+    text-align: left;
+    padding: 2px 3px 2px 5px;
+}
+.InPut
+{
+    border: 1px solid #BEBEBB;
+}
+.InPutRemark
+{
+    border: 1px solid #BEBEBB;
+    height: 40px;
+    width: 250px;
+}
+.InPutDDL
+{
+    border: 1px solid #BEBEBB;
+    height: 20px; /*width: 90px;*/
+}
+.Btn
+{
+    margin: 3px 10px 3px 10px;
+}
+.lbRed
+{
+    color: Red;
+}
+.hidButton
+{
+    display: none;
+}
+
+/* 列头排序时样式*/
+.up
+{
+    background: #FFFFCC right 5px;
+}
+.down
+{
+    background: #FFFFCC right 5px;
+}
+.hov
+{
+    background: #F0EFE5;
+}

@@ -1,0 +1,82 @@
+@charset "utf-8";
+/* CSS Document */
+
+body{
+	margin:0px;
+	padding:0px;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	min-height: 100%;
+	background:url(/Resource/images/Skin/pdwbg.png) no-repeat center center fixed;
+	background-size: cover;
+	-webkit-animation: fadein 1s;
+	animation: fadein 1s;
+	font-family:"微软雅黑 Light";
+	}
+.logo{
+/*	background:url(/Resource/images/Skin/logo01_1.png) no-repeat;
+	width:518px;
+	height:207px;
+*/	margin-top:50px;
+	}
+.dlform{
+	position:absolute;
+	}
+.dlframe{
+	background:rgba(255,255,255,0.5);
+	width:510px;
+	height:380px;
+	margin:0px auto;
+	}
+.topbg{
+	border-top:4px solid #2960b6;
+	}
+.ttitle{
+	margin:30px  40px 0 40px;
+	font-size:36px;
+	color:#2960b6;
+	}
+.userfram{
+	margin:40px;	
+	}
+.dlf{
+	width:420px;
+	height:48px;
+	margin-bottom:30px;
+	}
+.dlx{
+	width:430px;
+	height:48px;
+	margin-bottom:30px;
+	font-size:28px;
+	font-family:"微软雅黑 Light";
+	}
+	@media(max-width: 1366px){
+	.userfram{
+	margin:30px;	
+	}
+
+	.dlframe{
+		width:364px;
+		height:271px;
+		}
+	.ttitle{
+		margin:30px  20px 0 30px;
+		font-size:25px;
+		}
+	.dlf{
+		width:280px;
+		height:32px;
+		margin-bottom:20px;
+		
+		}
+	.dlx{
+		width:280px;
+		height:32px;
+		margin-bottom:25px;
+		font-size:16px;
+		font-family:"微软雅黑 Light";
+		line-height:32px;
+		}		
+	}

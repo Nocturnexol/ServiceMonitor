@@ -1,0 +1,1060 @@
+﻿@charset "utf-8";
+
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, textarea, th, td, figure {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background-color: #fff;
+}
+
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+section, article, aside, header, footer, nav, dialog, figure {
+    display: block;
+}
+
+.clearfix:after {
+    content: "\20";
+    display: block;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+    clear: both;
+}
+
+body, button, select, textarea, td {
+    color: #333;
+    font: 12px/1.5 tahoma,arial,\5b8b\4f53;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+
+address, cite, dfn, em, var {
+    font-style: normal;
+}
+
+code, kbd, pre, samp {
+    font-family: courier new,courier,monospace;
+}
+
+small {
+    font-size: 12px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: #06C;
+}
+
+    a:hover {
+        text-decoration: underline;
+        color: #06C;
+    }
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+legend {
+    color: #000;
+}
+
+fieldset, img {
+    border: 0 none;
+}
+
+button, select, textarea {
+    font-size: 100%;
+}
+
+table {
+    border-collapse: collapse;
+    baorder-spacing: 0;
+}
+
+input:focus {
+    outline: none;
+}
+
+
+/* hd-main */
+.hd-main {
+    height: 60px;
+    background: #fff;
+    z-index: 15;
+    border-bottom: #b3b3b3 1px solid;
+    box-shadow: 0 0 5px #333;
+}
+
+.f-icon {
+    background-image: url('../images/UI/frame-icon.png');
+    background-repeat: no-repeat;
+}
+
+.hd-main {
+    padding: 0 5px;
+    height: 49px;
+    min-width: 800px;
+    background: #252525;
+    border-bottom: 0;
+}
+
+    .hd-main .has-pulldown {
+        cursor: pointer;
+        position: relative;
+        *z-index: 10000;
+    }
+
+    .hd-main .pulldown {
+        position: absolute;
+        cursor: default;
+        display: none;
+        top: 30px;
+        left: 0;
+    }
+
+        .hd-main .pulldown .arrow {
+            *margin-bottom: -1px;
+            _margin-bottom: 0;
+            height: 0;
+            width: 0;
+            font-size: 0;
+            line-height: 0;
+            border-width: 7px;
+            border-style: solid;
+            border-color: transparent transparent #F6F6F9 transparent;
+            _filter: chroma(color=tomato);
+            _border-color: tomato tomato #F6F6F9 tomato;
+            position: relative;
+            display: block;
+            left: 20px;
+            z-index: 2;
+        }
+
+        .hd-main .pulldown .content {
+            background: #F6F6F9;
+            color: #333;
+            text-align: left;
+            border-radius: 3px;
+            border: rgb(175,175,175) 1px solid;
+            border-width: 0 1px 1px 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,.2);
+            position: relative;
+            z-index: 1;
+        }
+
+    .hd-main .pulldown-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    .hd-main .logo {
+        background-image: url('../images/UI/logo.png');
+        background-repeat: no-repeat;
+        display: block;
+        height: 36px;
+        width: 175px;
+        float: left;
+        margin-left: 10px;
+        background-position: 0 0;
+        margin-top: 5px;
+        display: inline;
+    }
+
+    .hd-main .navs {
+        padding: 0 0 3px 25px;
+        height: 45px;
+        float: left;
+    }
+
+        .hd-main .navs a, .hd-main .info a, .hd-main .navs a:visited, .hd-main .info a:visited, .hd-main .navs a:active, .hd-main .info a:active {
+            color: #d8d8d8;
+        }
+
+            .hd-main .navs a:hover, .hd-main .navs a:active {
+                text-decoration: none;
+                background-color: #0f0f0f;
+            }
+
+        .hd-main .navs .def-nav, .hd-main .navs .pulldown-nav, .hd-main .navs .separate {
+            display: block;
+            float: left;
+            height: 48px;
+            font: 18px/30px "Microsoft YaHei","Microsoft JhengHei";
+            color: #d8d8d8;
+            text-align: center;
+            width: 90px;
+            line-height: 48px;
+        }
+
+            .hd-main .navs .def-nav .app-url {
+                left: 185px;
+                width: 641px;
+                top: 48px;
+            }
+
+            .hd-main .navs .def-nav .pulldown-canvas-url {
+                width: 575px;
+                height: 109px;
+            }
+
+            .hd-main .navs .def-nav .app-url .arrow {
+                left: 140px;
+            }
+
+        .hd-main .navs .app-url .content {
+            padding: 17px 0 0 22px;
+            height: 91px;
+        }
+
+            .hd-main .navs .app-url .content a, .hd-main .navs .app-url .content a:hover {
+                color: #333;
+            }
+
+        .hd-main .navs .app-url .li {
+            cursor: pointer;
+            padding-top: 8px;
+            width: 66px;
+            height: 66px;
+            border-radius: 3px;
+            display: block;
+            float: left;
+            text-align: center;
+        }
+
+            .hd-main .navs .app-url .li:hover {
+                background-color: #e0e1e5;
+            }
+
+            .hd-main .navs .app-url .li .icon {
+                margin: 0 auto;
+                width: 35px;
+                height: 38px;
+                display: block;
+                background: url('../images/UI/dropdown_menu.png') no-repeat;
+            }
+
+            .hd-main .navs .app-url .li:hover .icon {
+                background-image: url('../images/UI/dropdown_menu_hover.png');
+            }
+
+        .hd-main .navs .app-url .tongxunlu .icon {
+            background-position: -35px 0;
+        }
+
+        .hd-main .navs .app-url .xiangce .icon {
+            background-position: -70px 0;
+        }
+
+        .hd-main .navs .app-url .note .icon {
+            background-position: -105px 0;
+        }
+
+        .hd-main .navs .app-url .duanxin .icon {
+            background-position: -140px 0;
+        }
+
+        .hd-main .navs .app-url .zhaohui .icon {
+            background-position: -175px 0;
+        }
+
+        .hd-main .navs .app-url .youxi .icon {
+            background-position: -210px 0;
+        }
+
+        .hd-main .navs .app-url .jiankang .icon {
+            background-position: -245px 0;
+        }
+
+        .hd-main .navs .app-url .wenzhang .icon {
+            background-position: -280px 0;
+        }
+
+        .hd-main .navs .app-url .li .text {
+            height: 30px;
+            display: block;
+            font: 14px/30px "Microsoft YaHei","Microsoft JhengHei";
+        }
+
+        .hd-main .navs .separate {
+            margin: 0;
+            height: 48px;
+            width: 2px;
+            background: #2A2B2D;
+        }
+
+        .hd-main .navs .pulldown-nav {
+            position: relative;
+        }
+
+            .hd-main .navs .pulldown-nav em {
+                position: absolute;
+                display: block;
+                left: 69px;
+                top: 18px;
+                height: 12px;
+                width: 12px;
+                font-size: 0;
+                background-position: -89px -45px;
+            }
+
+            .hd-main .navs .pulldown-nav:hover .f-icon, .hd-main .navs .pulldown-nav:active .f-icon {
+                position: absolute;
+                display: block;
+                right: 11px;
+                top: 18px;
+                height: 12px;
+                width: 12px;
+                font-size: 0;
+                background-position: -89px -55px;
+            }
+
+        .hd-main .navs .current, .hd-main .navs .current .pulldown-nav {
+            font-weight: bold;
+            color: #FFF;
+            display: inline-block;
+            width: 90px;
+            height: 49px;
+            background-color: #0f0f0f;
+            text-align: center;
+            line-height: 48px;
+        }
+
+            .hd-main .navs .current:hover {
+                color: #ECECEC;
+            }
+
+            .hd-main .navs .current .hover {
+                background-color: #f6f6f6;
+                color: #333;
+            }
+
+    .hd-main .info, .hd-main .info ul {
+        height: 36px;
+        float: right;
+        text-align: right;
+        margin-top: 3px;
+        white-space: nowrap;
+    }
+
+        .hd-main .info a {
+            color: #d8d8d8;
+        }
+
+            .hd-main .info a:hover {
+                color: #FFF;
+                text-decoration: underline;
+            }
+
+        .hd-main .info .info-i {
+            padding: 0 10px;
+            margin: 10px 0;
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            height: 16px;
+            border-right: #393939 1px solid;
+            color: #d8d8d8;
+            font: 12px/16px "SimSun";
+        }
+
+.hd-main {
+    padding: 0 5px;
+    height: 49px;
+    min-width: 800px;
+    background: #252525;
+    border-bottom: 0;
+}
+
+    .hd-main .info .has-pulldown {
+        padding-right: 28px;
+    }
+
+        .hd-main .info .has-pulldown .pull-arrow {
+            position: absolute;
+            display: block;
+            right: 10px;
+            top: 1px;
+            height: 12px;
+            width: 12px;
+            font-size: 0;
+            background-position: -89px -45px;
+        }
+
+    .hd-main .info .no-separate {
+        border: none;
+    }
+
+    .hd-main .info .user-name {
+        position: relative;
+        padding-left: 24px;
+    }
+
+        .hd-main .info .user-name .name {
+            display: inline-block;
+            display: inline\0;
+            white-space: nowrap;
+            max-width: 75px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+        }
+
+        .hd-main .info .user-name .identity {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 16px;
+            width: 16px;
+            background-position: -89px -88px;
+        }
+
+        .hd-main .info .user-name .is-vip {
+            background-position: -89px -68px;
+        }
+
+    .hd-main .info .user-info, .hd-main .info .more-info {
+        top: 9px;
+        left: auto;
+        right: -24px;
+        width: 116px;
+    }
+
+    .hd-main .info .notice-nu {
+        display: inline-block;
+        padding-left: 4px;
+        background-position: -86px -109px;
+        height: 14px;
+        -webkit-text-size-adjust: none;
+        font-size: 10px;
+        font-style: normal;
+    }
+
+        .hd-main .info .notice-nu .f-icon {
+            display: inline-block;
+            padding-right: 4px;
+            background-position: right -109px;
+            color: #FFF;
+        }
+
+    .hd-main .info .user-info .arrow {
+        left: 70px;
+        *left: -32px;
+    }
+
+    .hd-main .info .user-info .content, .hd-main .info .more-info .content {
+        padding: 10px 0;
+        height: 180px;
+    }
+
+    .hd-main .info .more {
+        padding: 0;
+        display: inline;
+        line-height: inherit;
+        background: none;
+    }
+
+    .hd-main .info .more-info .content {
+        height: 280px;
+    }
+
+        .hd-main .info .user-info .content a, .hd-main .info .more-info .content a {
+            display: block;
+            padding-left: 33px;
+            height: 30px;
+            line-height: 30px;
+            color: #888;
+        }
+
+            .hd-main .info .user-info .content a:hover, .hd-main .info .more-info .content a:hover {
+                color: #333;
+                text-decoration: none;
+                background: #e0e1e5;
+            }
+
+    .hd-main .info .user-info .li, .hd-main .info .more-info .li {
+        display: block;
+        padding: 2px 0;
+        height: 30px;
+    }
+
+    .hd-main .info .user-info .separate-li, .hd-main .info .more-info .separate-li {
+        display: block;
+        margin: 3px 11px;
+        border-top: #EBEBEC 1px solid;
+        border-bottom: #FFF 1px solid;
+    }
+
+    .hd-main .info .more-info {
+        right: 0;
+    }
+
+        .hd-main .info .more-info .arrow {
+            left: 94px;
+            *left: -8px;
+        }
+
+
+/*---------防京东----*/
+
+
+@charset "utf-8";
+
+/* Remove margin padding */
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, textarea, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+/* Default Font */
+body, button, select, textarea {
+    font: 12px/1.5 \5b8b\4f53,arial,sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+
+address, cite, dfn, em, var {
+    font-style: normal;
+}
+
+code, kbd, pre, samp {
+    font-family: courier new,courier,monospace;
+}
+
+small {
+    font-size: 12px;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+legend {
+    color: #000;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+button, input, select, textarea {
+    font-size: 100%;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.col-main {
+    float: left;
+    width: 100%;
+    min-height: 1px;
+}
+
+.col-sub, .col-extra {
+    float: left;
+}
+
+    .layout:after, .main-wrap:after, .col-sub:after, .col-extra:after {
+        content: '\20';
+        display: block;
+        height: 0;
+        clear: both;
+    }
+
+.layout, .main-wrap, .col-sub, .col-extra {
+    zoom: 1;
+}
+
+/* Common Features */
+.hidden {
+    display: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+/* Remove Float */
+.clear {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+}
+
+.clearfix:after {
+    content: '\20';
+    display: block;
+    height: 0;
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+.block {
+    display: block;
+}
+/* For non ie browsers also display the vertical scroll bar by default, to prevent the flicker caused by the scroll bar */
+/* Default link styles */
+a:link, a:visited {
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+}
+
+
+
+.menu {
+    position: relative;
+    width: 1210px;
+    margin: 0px auto;
+    height: 40px;
+    background-color: #33bd61;
+}
+
+    .menu div {
+        position: absolute;
+        top: 0px;
+        height: 40px;
+        font-family: "Microsoft Yahei";
+    }
+
+    .menu .all-sort {
+        left: 0px;
+        width: 130px;
+        text-align: left;
+        font-size: 14px;
+        padding-left: 20px;
+    }
+
+        .menu .all-sort a {
+            color: #FFF;
+            display: block;
+            width: 100%;
+            height: 100%;
+            line-height: 40px;
+            cursor: pointer;
+        }
+
+    .menu .ad {
+        right: 0px;
+        width: 141px;
+    }
+
+    .menu .nav {
+        left: 130px;
+    }
+
+        .menu .nav ul li {
+            float: left;
+            width: 85px;
+            line-height: 40px;
+        }
+
+            .menu .nav ul li a {
+                display: block;
+                width: 100%;
+                color: #FFF;
+                text-align: center;
+                font: 700 15px/40px "Microsoft Yahei";
+            }
+
+                .menu .nav ul li a:hover, .menu .nav ul li a.current {
+                    background: #1b8942;
+                    text-decoration: none;
+                }
+
+.wrap {
+    width: 1210px;
+    margin: 0px auto;
+    z-index: 10;
+    position: relative;
+}
+
+.all-sort-list {
+    position: absolute;
+    width: 123px;
+    border: 2px solid #1b8942;
+    border-top: none;
+    padding: 3px 3px 3px 0px;
+    background: #FAFAFA;
+    z-index: 10;
+}
+
+    .all-sort-list .item {
+        height: 30px;
+        border-top: 1px solid #FFFFFF;
+    }
+
+        .all-sort-list .item.bo {
+            border-top: none;
+        }
+
+.bo_s {
+    position: absolute;
+    right: 3px;
+    top: 0px;
+}
+
+.all-sort-list .item h3 {
+    height: 28px;
+    line-height: 28px;
+    border: 1px 0px 1px 0px;
+    font-size: 14px;
+    font-weight: normal;
+    width: 124px;
+    overflow: hidden;
+    position: relative;
+}
+
+.all-sort-list .hover h3 {
+    z-index: 13;
+    background: #FFF;
+    border-color: #DDD;
+    border-width: 1px 0px 1px 0px;
+    border-style: solid;
+    margin-left: 4px;
+    /*box-shadow:1px 0px  1px 0px #DDD ;*/
+}
+
+.all-sort-list .item span {
+    padding: 0px 5px;
+    /*color: #A40000;*/
+    font-family: "\5B8B\4F53";
+}
+
+.all-sort-list .item a {
+    color: #000;
+    text-decoration: none;
+}
+
+    .all-sort-list .item a:hover {
+        font-weight: bold;
+        color: #E4393C;
+    }
+
+
+.all-sort-list .item-list {
+    display: none;
+    position: absolute;
+    width: 505px;
+    min-height: 200px;
+    _height: 200px;
+    background: #FFF;
+    left: 126px;
+    box-shadow: 0px 0px 10px #DDDDDD;
+    border: 1px solid #DDD;
+    top: 3px;
+    z-index: 10;
+}
+
+    .all-sort-list .item-list .close {
+        position: absolute;
+        width: 26px;
+        height: 26px;
+        color: #FFFFFF;
+        cursor: pointer;
+        top: -1px;
+        right: -26px;
+        font-size: 20px;
+        line-height: 20px;
+        text-align: center;
+        font-family: "Microsoft Yahei";
+        background: rgba(0, 0, 0, 0.6);
+        background-color: transparent\9;
+        filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1, startColorstr='#60000000', endColorstr='#60000000');
+    }
+
+.item-list .subitem {
+    float: left;
+    width: 497px;
+    padding: 0px 4px 0px 8px;
+}
+
+    .item-list .subitem dl {
+        border-top: 1px solid #EEE;
+        padding: 6px 0px;
+        overflow: hidden;
+        zoom: 1;
+    }
+
+    .item-list .subitem .fore1 {
+        border-top: none;
+    }
+
+    .item-list .subitem dt {
+        float: left;
+        width: 54px;
+        line-height: 22px;
+        text-align: right;
+        padding: 3px 6px 0px 0px;
+        font-weight: 700;
+        color: #E4393C;
+    }
+
+        .item-list .subitem dt a {
+            color: #E4393C;
+            text-decoration: underline;
+        }
+
+    .item-list .subitem dd {
+        float: left;
+        width: 435px;
+        padding: 4px 0px 0px;
+        overflow: hidden;
+    }
+
+        .item-list .subitem dd em {
+            float: left;
+            height: 14px;
+            line-height: 14px;
+            padding: 0px 8px;
+            margin-top: 5px;
+            border-left: 1px solid #CCC;
+        }
+
+            .item-list .subitem dd em a, .item-list .cat-right dd a {
+                color: #666;
+                text-decoration: none;
+            }
+
+                .item-list .subitem dd em a:hover, .item-list .cat-right dd a:hover {
+                    font-weight: normal;
+                    text-decoration: underline;
+                }
+/*.item-list .cat-right { float:right; width:210px; }
+.item-list .cat-right dl { width:194px; padding:6px 8px; }
+.item-list .cat-right dd { padding-top:6px; line-height:22px; overflow:hidden; padding:3px 0px 0px; }
+.item-list .cat-right dt { padding:3px 6px 0px 0px; font-weight:700; color:#E4393C;  }
+.item-list .cat-right dd a:hover { color:#666; }*/
+
+/*-------------------------------------------------------收起展开-------------------------------------------*/
+.ig {
+    position: absolute;
+    top: 8px;
+    left: 935px;
+    width: 16px;
+    height: 16px;
+    background: url('../..//Resource/images/jjh.png') -15px 0px;
+}
+
+.ig_up {
+    background-position-x: -15px;
+}
+
+.ig_down {
+    background-position-x: 0px;
+}
+/*iframe {
+            width:844px
+        }*/
+
+/* 筛选导航菜单CSS*/
+
+fieldset, iframe {
+    border: medium none;
+}
+
+
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+article, aside, footer, header, hgroup, nav, section, figure, figcaption {
+    display: block;
+}
+
+.clear {
+    clear: both;
+    height: 0;
+    overflow: hidden;
+    display: block;
+}
+
+.clearfixd:after {
+    clear: both;
+    height: 0;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    content: ".";
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.hidden {
+    display: none;
+}
+
+.display {
+    display: block !important;
+}
+
+.none {
+    display: none;
+}
+
+.radius {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+body {
+    font: 12px/30px 微软雅黑 Regular,微软雅黑, "微软雅黑";
+}
+
+a {
+    color: #005aa0;
+    text-decoration: none;
+    font-family: verdana;
+    white-space: nowrap;
+}
+
+.selectList {
+    width: 1050px;
+    border: 1px solid #e6e6e6;
+    padding: 10px;
+    margin: 4px auto;
+}
+
+    .selectList a:hover, .selectList a.selected {
+        /*background: #3399cc;
+                color: #FFF;*/
+        color: #e4393c;
+        text-decoration: none;
+    }
+
+    .selectList dl {
+        border-bottom: 1px dotted #ccc;
+        width: 100%;
+    }
+
+    .selectList dt {
+        width: 80px;
+        text-align: right;
+        float: left;
+        font-weight: bold;
+        padding-right: 10px;
+    }
+
+    .selectList dd {
+        float: left;
+        width: 874px;
+        height: 30px;
+    }
+
+    .selectList span {
+        display: inline-block;
+        margin-right: 30px;
+    }
+
+
+
+    .selectList dl.hasBeenSelected {
+        border: 1px solid #b2d1ff;
+    }
+
+.selectedShow {
+    border: 1px solid #E6E6E6;
+    padding: 1px 17px 1px 5px;
+    margin: 4px 10px 0 0;
+    height: 20px;
+    line-height: 20px;
+    float: left;
+    position: relative;
+    color: #e4393c;
+    font-weight: bold;
+}
+
+    .selectedShow p {
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .selectedShow b {
+        font-size: 12px;
+        color: black;
+        font-weight: normal;
+    }
+
+    .selectedShow em {
+        width: 11px;
+        height: 13px;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        display: block;
+        cursor: pointer;
+        color: #ff6a00;
+        font-family: 微软雅黑;
+    }
+
+.eliminateCriteria {
+    cursor: pointer;
+    float: left;
+    font-weight: 600;
+    line-height: 21px;
+    margin-top: 4px;
+    width: 80px;
+}
+
+.overf {
+    overflow: hidden;
+}
+
+.morec {
+    cursor: pointer;
+}

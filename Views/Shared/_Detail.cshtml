@@ -1,0 +1,166 @@
+﻿@{
+    
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title </title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="viewport" content="width=device-width" />
+    <!--[if lt IE 9]>
+      @Scripts.Render("~/bundles/js/html5")
+    <![endif]-->
+    @RenderSection("header", required: false)
+    @Scripts.Render("~/Resource/js/jquery.min.js")
+    @Styles.Render("~/bundles/css/layout")
+    @Scripts.Render("~/Resource/js/plugins/layer/layer.min.js")
+    @Scripts.Render("~/bundles/js/layout")
+    @Scripts.Render("~/Resource/js/Calendar/My97DatePicker/WdatePicker.js")
+   
+</head>
+<body>
+    <div class="animated fadeInRight">
+        <div class="row">
+            <div class="ibox ">
+                <div class="ibox-content">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        function add(url, title, gqid) {
+            poplayer(title + '-添加', url, '800', "450px");
+            if (gqid != undefined) {
+                localStorage.setItem($("#WindowId").val(), gqid);
+            }
+        }
+
+        function edit(url, title, gqid, id) {
+            if (id != undefined) {
+                poplayer(title + '-编辑', url + id, '800', "450px");
+                if (gqid != undefined) {
+                    localStorage.setItem($("#WindowId").val(), gqid);
+                }
+            } else {
+                var index = $("#" + gqid).jqGrid('getGridParam', 'selarrrow');
+                if (index.length < 1) {
+                    layer.alert("没有选择需要编辑的行", { icon: 0 })
+
+                } else if (index.length > 1) {
+                    layer.alert("只能选择一条数据进行编辑", { icon: 0 })
+                } else {
+                    var rowid = $("#" + gqid).jqGrid("getGridParam", "selrow");
+                    id = rowid;
+                    poplayer(title + '-编辑', url + id, '800', "450px");
+                    if (gqid != undefined) {
+                        localStorage.setItem($("#WindowId").val(), gqid);
+                    }
+                }
+            }
+        }
+        function delList(url, gqid) {
+            XPage.DelData(url, gqid);
+
+        }
+        function delSingleRow(url, gqid, id) {
+            var t = { url: url, Data: id };
+            XPage.DelSingleData(t, gqid);
+
+        }
+
+        if (typeof (localStorage) == 'undefined') {
+            var box = document.body || document.getElementsByTagName("head")[0] || document.documentElement;
+            userdataobj = document.createElement('input');
+            userdataobj.type = "hidden";
+            userdataobj.addBehavior("#default#userData");
+            box.appendChild(userdataobj);
+            //设定对象 
+            var localStorage = {
+                setItem: function (nam, val) {
+                    userdataobj.load(nam);
+                    userdataobj.setAttribute(nam, val);
+                    var d = new Date();
+                    d.setDate(d.getDate() + 700);
+                    userdataobj.expires = d.toUTCString();
+                    userdataobj.save(nam);
+                    userdataobj.load("userdata_record");
+                    var dt = userdataobj.getAttribute("userdata_record");
+                    if (dt == null) dt = '';
+                    dt = dt + nam + ",";
+                    userdataobj.setAttribute("userdata_record", dt);
+                    userdataobj.save("userdata_record");
+                },
+                //模拟 setItem
+                getItem: function (nam) {
+                    userdataobj.load(nam);
+                    return userdataobj.getAttribute(nam);
+                },
+                //模拟 getItem
+                removeItem: function (nam) {
+                    userdataobj.load(nam);
+                    clear_userdata(nam);
+                    userdataobj.load("userdata_record");
+                    var dt = userdataobj.getAttribute("userdata_record");
+                    var reg = new RegExp(nam + ",", "g");
+                    dt = dt.replace(reg, '');
+                    var d = new Date();
+                    d.setDate(d.getDate() + 700);
+                    userdataobj.expires = d.toUTCString();
+                    userdataobj.setAttribute("userdata_record", dt);
+                    userdataobj.save("userdata_record");
+                },
+                //模拟 removeItem
+                clear: function () {
+                    userdataobj.load("userdata_record");
+                    var dt = userdataobj.getAttribute("userdata_record").split(",");
+                    for (var i in dt) {
+                        if (dt[i] != '') clear_userdata(dt[i])
+                    }
+                    clear_userdata("userdata_record")
+                }
+                //模拟 clear();
+            }
+            function clear_userdata(keyname) //将名字为keyname的变量消除
+            {
+                var keyname;
+                var d = new Date();
+                d.setDate(d.getDate() - 1);
+                userdataobj.load(keyname);
+                userdataobj.expires = d.toUTCString();
+                userdataobj.save(keyname);
+            }
+        }
+    </script>
+    @Html.Hidden("WindowId", "s" + DateTime.Now.ToString("yyyyMMddHHmmss"))
+    <script type="text/javascript">
+        $(function () {
+            $(window).bind('beforeunload', function () {
+                localStorage.removeItem($("#WindowId").val());
+            });
+            $(".collapse-link").click(function () {
+                var o = $(this).closest("div.ibox"),
+	e = $(this).find("i"),
+	i = o.find("div.ibox-content");
+                i.slideToggle(200),
+	e.toggleClass("fa-chevron-up").toggleClass("fa-chevron-down"),
+	o.toggleClass("").toggleClass("border-bottom"),
+	setTimeout(function () {
+	    o.resize(),
+		o.find("[id^=map-]").resize()
+	},
+	50)
+            }); $(".close-link").click(function () {
+                var o = $(this).closest("div.ibox");
+                o.remove()
+            });
+        })
+    </script>
+</body>
+</html>

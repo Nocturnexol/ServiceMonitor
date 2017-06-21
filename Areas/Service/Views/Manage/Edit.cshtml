@@ -1,0 +1,108 @@
+﻿@model BS.Common.Model.Mongo.ServiceModels.ServiceEntity
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Operate.cshtml";
+    List<string> InList = ViewBag.InList as List<string>;
+    List<string> OutList = ViewBag.OutList as List<string>;
+    InList = InList == null || InList.Count == 0 ? new List<string>() { "" } : InList;
+    OutList = OutList == null || OutList.Count == 0 ? new List<string>() { "" } : OutList;
+}
+@Html.HiddenFor(mdoelItem => mdoelItem._id)
+<style type="text/css">
+    .empty
+    {
+        height: 30px;
+    }
+    .input-group
+    {
+        margin-bottom: 5px;
+    }
+    .form-groupm
+    {
+        margin-bottom: 0px;
+    }
+</style>
+<script type="text/javascript">
+    var inAddrdiv = null;
+    var outAddrdiv = null;
+
+    $(function () {
+        inAddrdiv = "<div class=\"input-group inAddrdiv\">" + $.trim($('.inAddrdiv').html()) + "</div>";
+        outAddrdiv = "<div class=\"input-group outAddrdiv\">" + $.trim($('.outAddrdiv').html()) + "</div>";
+    });
+
+    function AddInAddr_Click(id) {
+        $(inAddrdiv).appendTo($('#inAddrdiv'));
+
+    }
+    function DelInAddr_Click(id) {
+        if ($('.inAddrdiv').length > 1) {
+            $(id).parentsUntil(".inAddrdiv").parent().remove();
+        } else {
+            layer.alert("至少保留一个内网地址", { icon: 0 });
+        }
+    }
+    function AddOutAddr_Click(id) {
+        $(outAddrdiv).appendTo($('#outAddrdiv'));
+
+    }
+    function DelOutAddr_Click(id) {
+        if ($('.outAddrdiv').length > 1) {
+            $(id).parentsUntil(".outAddrdiv").parent().remove();
+        } else {
+            layer.alert("至少保留一个外网地址", { icon: 0 });
+        }
+    }
+    function OnKeyDown(event) {
+        console.log(event.code + "-------------" + event.key);
+    }
+</script>
+<div class="form-group form-groupm" style="padding-left: 20px;" id="inAddrdiv">
+    <label class="control-label" for="inputAddons">
+        内网地址</label>
+    @foreach (var item in InList)
+    {
+        <div class="input-group inAddrdiv">
+            <div class="form-control-wrap">
+                <input type="text" class="form-control empty" name="inAddr" value="@item"/>
+            </div>
+            <span class="input-group-btn">
+                <button class="btn btn-outline btn-default" type="button" onclick="AddInAddr_Click(this)">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+                <button class="btn btn-outline btn-default" type="button" onclick="DelInAddr_Click(this)">
+                    <i class="glyphicon glyphicon-minus"></i>
+                </button>
+            </span>
+        </div>
+    }
+</div>
+<div class="form-group form-groupm" style="padding-left: 20px;" id="outAddrdiv">
+    <label class="control-label">
+        外网地址</label>
+    @foreach (var item in OutList)
+    {
+        <div class="input-group outAddrdiv">
+            <div class="form-control-wrap">
+                <input type="text" class="form-control empty" name="outAddr" value="@item"/>
+            </div>
+            <span class="input-group-btn">
+                <button class="btn btn-outline btn-default" type="button" onclick="AddOutAddr_Click(this)">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+                <button class="btn btn-outline btn-default" type="button" onclick="DelOutAddr_Click(this)">
+                    <i class="glyphicon glyphicon-minus"></i>
+                </button>
+            </span>
+        </div>
+    }
+</div>
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        备注</label>
+    <div class="input-group " style="width: 100%;">
+        <div class="form-control-wrap">
+            @Html.TextBoxFor(modelItem => modelItem.Remark, new { @class = "form-control empty" })
+        </div>
+    </div>
+</div>

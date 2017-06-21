@@ -1,0 +1,260 @@
+﻿body
+{
+    text-align: center;
+}
+
+.main
+{
+    margin: 0px auto;
+    text-align: center;
+}
+
+.tab
+{
+    margin: 0 auto;
+    width: 500px;
+    height: 450px;
+    margin-top: 100px;
+    margin-left: 200px;
+}
+
+.lbl
+{
+    font-size: 12px;
+    background: #f0f0f0;
+}
+.content
+{
+    margin: 0px auto;
+    width: 700px;
+    margin-top: 0px;
+}
+.imgs
+{
+    width: 680px;
+    margin: 0 auto;
+    margin-left: 100px;
+}
+.imgs ul
+{
+    width: 650px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+.imgs ul li
+{
+    width: 650px;
+    list-style-type: none;
+    text-align: center;
+    font-size: 12px;
+    font-style: normal;
+    float: left;
+}
+.content ul
+{
+    width: 110px;
+    height: 120px;
+    list-style-type: none;
+    float: left;
+    margin-top: 30px;
+    border: solid 0px #f0f0f0;
+}
+.content ul li
+{
+    width: 110px;
+    height: 120px;
+}
+
+
+
+.img-wrapper img
+{
+    background-color: #fff;
+    border: solid 1px #a9a9a9;
+    padding: 5px;
+}
+.img-wrapper a:hover
+{
+    border: solid 1px #EEAF43;
+}
+.page
+{
+    margin: 0px auto;
+    width: 700px;
+    height: 20px;
+    border: solid 0px #f0f0f0;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 12px;
+    clear: left;
+}
+.linkbtn
+{
+    color: black;
+    border: solid 0px #FADE99;
+    text-decoration: none;
+}
+.linkbtn:hover
+{
+    background-color: #D86515;
+}
+
+/*
+.menu ul
+{
+	width: 178px;
+	height: 600px;
+	margin: 0px auto;
+	border: solid 0px red;
+	float: left;
+}
+.menu ul li
+{
+	width: 176px;
+	height: 30px;
+	border: solid 0px green;
+	list-style-type: none;
+	margin: 0px auto;
+	margin-left: 0px;
+	float: left;
+	background: url(../img/top2.gif) no-repeat top center;
+}*/
+.nextMenu
+{
+    width: 200px;
+    margin-left: 10px;
+    margin-bottom: 50px;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin-right: auto;
+    margin-bottom: 0px;
+    border: solid 0px red;
+}
+.datalist
+{
+    text-align: center;
+    margin: 0px auto;
+    width: 180px;
+    margin-top: 15px;
+}
+
+.nextMenu a
+{
+    margin: 0px auto;
+    width: 196px;
+    border: solid 0px red;
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-style: normal;
+    float: left;
+    color: Black;
+    display: inline-block;
+}
+.nextMenu a:hover
+{
+    background-color: #FEB906;
+}
+
+.tblist
+{
+    width: 200px;
+    margin-left: 10px;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin-right: auto;
+    margin-bottom: 0px;
+    border: solid 0px green;
+}
+.tblist a
+{
+    text-decoration: none;
+    font-size: 12px;
+    font-style: normal;
+    color: Black;
+}
+/*
+.tblist p
+{
+	margin:0px auto;
+	display: inline-block;
+	background: url(../image/tubiao.gif) no-repeat left center;
+	margin-bottom: 0px;
+}*/
+.tblist ul
+{
+    margin: 0 auto;
+    width: 170px;
+    padding-top: 6px;
+    margin-top: 4px;
+}
+
+.tblist ul li:hover
+{
+    background-color: #D4612E;
+}
+.link ul
+{
+    width: 500px;
+    height: 32px;
+    margin: 0px auto;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+.link ul li
+{
+    width: 100px;
+    height: 32px;
+    list-style-type: none;
+    text-align: center;
+    line-height: 32px;
+    float: left;
+}
+.link a
+{
+    width: 100px;
+    height: 32px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    color: black;
+}
+.link a:hover
+{
+    background-color: #FF7928;
+}
+
+
+form.cxform
+{
+    font-size: 1.0em;
+    color: #333;
+}
+form.cmxform label.error, label.error
+{
+    /* remove the next line when you have trouble in IE6 with labels in list */
+    color: red;
+    font-style: normal;
+    font-size: 12px;
+}
+div.error
+{
+    display: none;
+    float: none;
+}
+input.checkbox
+{
+    border: none;
+}
+input:focus
+{
+    border: 1px dotted black;
+}
+input.error
+{
+    border: 1px dotted red;
+}
+form.cmxform .gray *
+{
+    color: gray;
+}

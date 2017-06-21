@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "应用程序联系人";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.SecondItem = "联系人";
+    ViewBag.Is450 = true;
+    ViewBag.BtnList = new List<string>() { "搜索", "添加", "编辑", "删除" };
+    ViewBag.AddUrl = "/Service/Monitor/Create";
+    ViewBag.EditUrl = "/Service/Monitor/Edit/";
+    ViewBag.DeleteUrl = "/Service/Monitor/Delete";
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            title: "应用程序联系人列表",
+            postData: { "Manager": $("#Manager").val() },
+            multiselect: true,
+            col: [
+                    { index: '_id', name: '姓名', sortable: false,key:true },
+                    { index: 'Tel', name: '手机号', sortable: false },
+                    { index: 'Email', name: '邮箱', sortable: false },
+                    { index: 'WeiXin_UID', name: '企业微信号UID', sortable: false },
+                    { index: 'DingTalk_UID', name: '企业钉钉号UID', sortable: false },
+                    { index: 'AlarmType', name: '报警通知方式', sortable: false },
+                    { index: 'Remark', name: '备注', sortable: false },
+                    { index: '_id', name: '操作', sortable: false,
+                        formatter: function (id, a, b) {
+                            var html = "";
+                            html += "&nbsp;&nbsp;<a title='编辑' href='javascript:void(0);' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>";
+                            html += "&nbsp;&nbsp;<a title='删除' href='javascript:void(0);' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                            return html;
+                        }
+                    }
+                    ],
+                    url: "/Service/Monitor/GetPageDataListForContacts"
+        };
+        //首次加载时绑定数据
+        JQ.InitGrid(config);
+    });
+</script>
+@section Search {
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        姓名：</label>
+    <div class="col-sm-12">
+        <input id="Manager" type="text" class="input form-control" placeholder="姓名" name="Manager" />
+    </div>
+}

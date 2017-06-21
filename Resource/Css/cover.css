@@ -1,0 +1,200 @@
+﻿/*
+ * Globals
+ */
+
+/* Links */
+a,
+a:focus,
+a:hover {
+  color: #fff;
+}
+
+/* Custom default button */
+.btn-default,
+.btn-default:hover,
+.btn-default:focus {
+  color: #fff;
+  text-shadow: none; /* Prevent inheritence from `body` */
+  background-color: #fff;
+}
+
+
+
+.footPane{
+	position:fixed;
+	bottom:30px;
+	right:30px;
+	text-align:right;
+	}
+.banben{
+	color: #fff; /* IE8 proofing */
+	color: rgba(255,255,255,.7);
+	font-size:12px;
+	}
+
+
+/*
+ * Base structure
+ */
+
+html,
+body {
+  height: 100%;
+}
+body {
+	margin:0px;
+	padding:0px;
+   /* color: #fff;*/
+/*	background:url(../../images/nbbgn.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  text-shadow: 0 1px 3px rgba(0,0,0,.5); */
+}
+.topPane{ width:332px; height:152px; margin:0px auto;background: url(/Resource/images/logo.png) no-repeat;}
+.cc01 {
+	position:absolute;
+	top:20px;
+	left:0;
+	width:100%;
+	height:-webkit-calc(100%-40px);
+	z-index:99;
+}
+.bg1{position:absolute;top:0; left:0; width:100%; height:100%; z-index:1;}
+.iconuser{ background:url(/Resource/images/signu.png) no-repeat; width:64px; height:64px; margin:0 auto; margin-bottom:35px;}
+.dlform{
+	margin:0px auto;
+	width:338px;//width:256px;
+	}
+	
+.dlform form{margin-top:180px;}
+.dlbg{
+	background:#fff;
+	width:1130px;
+	margin:0px auto;
+	height:40px;
+}
+.dlframe{
+	text-align:left;
+	}
+.usericon{
+//	background:url(../../images/iconuserl.png) no-repeat;
+	width:31px;
+	height:31px;
+	float:left;
+    margin:1px 0px 0px 1px;
+	}
+.upassicon{
+//	background:url(../../images/iconpassl.png) no-repeat;
+	width:31px;
+	height:31px;
+	float:left;
+	margin:1px 0px 0px 1px;
+	}
+
+.form-control{
+	width:280px;//195PX
+	height:36px;
+	border-radius:none;
+	border:none;
+	}
+.uh input{ margin-top:8px; margin-left:15px; background:rgba(255, 255,255, 0.1)}
+.mm input{margin-top:8px; margin-left:15px; background:rgba(255, 255,255, 0.1)}
+.clear{ clear:both;}
+.dlbt{ margin:0px; padding:0px; background:url(/Resource/images/sign.png) no-repeat; width:254px; height:54px; }
+.dlbt1{ border:0px;  margin:0px; padding:0px; background:url(/Resource/images/sign1.png) no-repeat; width:338px; height:54px; }
+.namei{background: url(/Resource/images/user.png) no-repeat; width:254px; height:54px; }
+
+.namei1{background: url(/Resource/images/user1.png) no-repeat; width:338px; height:54px; }
+.namei01{background:url(/Resource/images/password1.png) no-repeat; width:338px; height:54px; }
+.yzm{ background:url(/Resource/images/yzm.png) no-repeat; width:230px; height:54px; float:left;}
+.yzmbt{ float:left; width:93px; margin-left:10px; background:url(/Resource/images/yzmbtn.png) no-repeat; height:54px; cursor:pointer;}
+.yzminp{ border:none; margin-top:8px; margin-left:10px; width:210px;  background:none; display:inline-block;vertical-align}
+@media (max-width:1768px){
+	.topPane{ width:218px; height:100px; margin:0px auto;background: url(/Resource/images/logo_1366.png) no-repeat;}
+	.dlform form{margin-top:120px;}
+	.cc01 {position:absolute;top:36px; left:0; width:100%;height:calc(100%-28px);height:-webkit-calc(100%-28px);height:-moz-calc(100%-28px); z-index:99; }
+	.iconuser{ background:url(/Resource/images/signu_1768.png) no-repeat; width:60px; height:60px; margin:0 auto; margin-bottom:40px;}
+
+
+	}
+@media (max-width:1440px){
+	}
+@media (max-width: 1366px) {
+body {
+  height: 100%;
+/*  background:url(../../images/nbbgn_1366.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;  */
+}
+.cc01 {
+	position:absolute;
+	top:20px;
+	left:0;
+	width:100%;
+	height:calc(100%-28px);
+	height:-webkit-calc(100%-28px);
+	height:-moz-calc(100%-28px);
+	z-index:99;
+	}
+.topPane{ width:218px; height:100px; margin:0px auto;background: url(/Resource/images/logo_1366.png) no-repeat;}
+.iconuser{ background:url(/Resource/images/signu_1366.png) no-repeat; width:48px; height:48px; margin:0 auto; margin-bottom:28px;}
+
+.dlform{
+	margin:0px auto;
+	width:232px;
+	}
+.dlform form{margin-top:130px;}
+.form-inline .form-control { display:block; }
+.usericon{
+	width:22px;
+	height:22px;
+	float:left;
+	margin:1px 3px 0px 1px;
+	}
+.upassicon{
+	width:22px;
+	height:22px;
+	float:left;
+	margin:1px 3px 0px 1px;
+	}
+.namei1{background: url(/Resource/images/user1_1366.png) no-repeat; width:232px; height:37px; }
+.namei01{background:url(/Resource/images/password1_1366.png) no-repeat; width:232px; height:37px; margin:0px; padding-top:0.1px;}
+.uh input{ margin-left:10px; margin-top:5px; background:rgba(255, 255,255, 0.1)}
+
+.mm input{margin-left:35px; background:rgba(255, 255,255, 0.1)}
+
+.form-control{
+	margin:0px; 
+	padding:0px;
+	width:190px;
+	height:23px;
+	font-size: 12x;
+	border-radius:0px;
+	border:none;
+
+	}
+.form-inline .form-control{ font-size:12px;}
+.dlbt1{ margin:0px; padding:0px; background:url(/Resource/images/sign1_1366.png) no-repeat; width:232px; height:37px;border:none;outline:none; }
+.yzm{ background:url(/Resource/images/yzm_1366.png) no-repeat; width:158px; height:37px; float:left;}
+.yzmbt{ float:left; width:64px; margin-left:9px; background:url(/Resource/images/yzmbtn_1366.png) no-repeat; height:37px;cursor:pointer;}
+.yzminp{ border:none; margin-top:8px; margin-left:10px; width:140px; background:none;}
+
+	}
+@media (max-width: 1280px) {
+	
+	}
+@media (max-width: 992px) {
+	}
+@media (min-width: 768px) {
+}
+
+ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill
+        {
+            background-color: rgb(255, 255, 255);
+            background-image: none;
+            color: rgb(0, 0, 0);
+        }

@@ -1,0 +1,133 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录界面</title>
+    <script type="text/javascript">
+        if (window != window.top) {
+            parent.window.location.reload()
+        }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    @Scripts.Render("~/Resource/js/jquery.min.js")
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/bundles/js/html5")
+    <![endif]-->
+    @Scripts.Render("~/Resource/js/jquery.md5.js")
+    @Scripts.Render("~/Resource/js/rsa.js")
+    @Scripts.Render("~/Resource/js/plugins/layer/layer.min.js")
+    @Styles.Render("~/Resource/Css/bootstrap.css")
+    @Styles.Render("~/Resource/Css/cover.css")
+    @Scripts.Render("~/Resource/js/bootstrap.js")
+    @Scripts.Render("~/Resource/js/jquery.form.js")
+    <script type="text/javascript">
+        if (window != window.top) {
+            parent.window.location.reload()
+        }
+        $(function () {
+            $("form:first").submit(function () {
+                var pwd = $('#PassWord').val();
+                //同步获取加密令牌
+                $.ajax({
+                    url: "/Home/getSecurityToken",
+                    type: "GET",
+                    async: false,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data != null && data != undefined) {
+                            setMaxDigits(129);
+                            var exponent = data.exponent;
+                            var modulus = data.modulus;
+                            var key = new RSAKeyPair(exponent, '', modulus);
+                            var password = $.md5(pwd.replace(/^\s+|\s+$/g, '')); //对原始密码进行MD5加密
+                            password = encryptedString(key, encodeURIComponent(password)).replace(/\s/g, ' - '); //对加密后的密码进行RSA加密
+                            $('#PassWord').val(password);
+                        }
+                    }
+
+                });
+                $(this).ajaxSubmit({
+                    dataType: 'json', // 返回值类型
+                    error: function (e) {
+                        layer.alert(e);
+                    },
+
+                    success: function (data) { // ajax回调方法
+                        if (data.IsSuccess) {
+                            location.href = "http://" + location.host;
+                            //因是异步登录,转到默认首页
+                        }
+                        else {
+                            layer.msg("登录失败!" + data.Message);
+                            $('#PassWord').val("");
+                            //登录失败，密码置空
+                        }
+                    }
+                });
+                return false;
+            });
+
+            $(window).resize(function () {
+                var height = $(window).height();
+                if (height <= 498) {
+                    var m = 182 + height - 498;
+                    if (m > 0)
+                        $('.form-inline').css("margin-top", m);
+                } else {
+                    $('.form-inline').css("margin-top", 182);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="bg1">
+        <img src="/Resource/images/hzbg.jpg" alt="" width="100%" height="100%" /></div>
+    <div class="cc01">
+      @*  <div class="topPane">
+        </div>*@
+        <div class="dlform">
+            <form action="/Home/Login" class="form-inline" method="post" style="width: 100%">
+            <div class="iconuser">
+            </div>
+            <div class="form-group">
+                <div class="namei1" style="float: left;">
+                    <div class="usericon" for="LoginName" style="float: left;">
+                    </div>
+                    <div class="uh" style="float: left">
+                        <input type="text" class="form-control username" id="LoginName" name="LoginName"
+                            placeholder="请输入用户名" required="required"></div>
+                </div>
+                <div class="clear:both">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="namei01" style="float: left;">
+                    <div class="upassicon" for="PassWord" style="float: left;">
+                    </div>
+                    <div class="mm">
+                        <input type="password" class="form-control  userpassword" id="PassWord" name="PassWord"
+                            required="required" placeholder="请输入密码"></div>
+                </div>
+                <div class="clear:both">
+                </div>
+            </div>
+            <button type="submit" class=" dlbt1">
+            </button>
+            </form>
+        </div>
+    </div>
+    <div class="navbar-fixed-bottom" style="text-align: right; bottom: 30px; right: 30px;
+        color: #fff;z-index:-1;">
+        <div class="banben">
+            <span>平台提供:上海博协软件有限公司</span>&nbsp;&nbsp;<span>版本号:V2016</span>
+        </div>
+    </div>
+</body>
+</html>

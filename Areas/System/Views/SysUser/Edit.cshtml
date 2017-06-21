@@ -1,0 +1,27 @@
+﻿@model BS.Microservice.Web.Model.UserEntity
+@{
+  
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        登录名<span style="color: #FF9966"> *</span></label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem._id, new { @style = "display:none;" })
+        @Html.HiddenFor(modelItem => modelItem.UserPwd)
+        @Html.HiddenFor(modelItem => modelItem.PassWord)
+        @Html.TextBoxFor(modelItem => modelItem.LoginName, new { @placeholder = "登录名", @class = "form-control", @required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        用户名<span style="color: #FF9966"> *</span></label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.UserName, new { @placeholder = "用户名", @class = "form-control", @required = "" })
+    </div>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        备注：</label>
+    <div class="col-sm-10">
+        @Html.TextBoxFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control" })
+    </div>
+</div>
