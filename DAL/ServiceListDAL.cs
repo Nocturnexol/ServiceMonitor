@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -84,7 +85,13 @@ namespace BS.Microservice.Web.DAL
             IMongoQuery query = Query.EQ("LoginName", userName);
             return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, COL, query);
         }
-        public List<ServiceEntity> GetModelList(Dictionary<string, string> where, string orderBy, string desc, int page, int pageSize,string id,string keyword)
+
+        public IList<SelectListItem> GetHostList()
+        {
+            return DBContext.Mongo.Distinct(DBContext.DbName, COL, "Host").Select(t => new SelectListItem {Text = t.ToString(), Value = t.ToString()}).ToList();
+        }
+
+        public List<ServiceEntity> GetModelList(Dictionary<string, string> where, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
         {
             try
             {
@@ -115,6 +122,17 @@ namespace BS.Microservice.Web.DAL
                             new BsonRegularExpression(new Regex(keyword, RegexOptions.IgnoreCase))),
                         Query<ServiceEntity>.Matches(t => t.Remark,
                             new BsonRegularExpression(new Regex(keyword, RegexOptions.IgnoreCase)))));
+                }
+                if (!string.IsNullOrWhiteSpace(isApproved))
+                {
+                    int approved;
+                    if(int.TryParse(isApproved,out approved))
+                        if (approved > 0)
+                            queryList.Add(Query<ServiceEntity>.EQ(t => t.IsApproved, approved == 1));
+                }
+                if (!string.IsNullOrWhiteSpace(host))
+                {
+                    queryList.Add(Query<ServiceEntity>.EQ(t => t.Host, host));
                 }
                 IMongoSortBy sortBy = SortBy.Ascending(orderBy);
                 if (desc.Equals("desc", StringComparison.InvariantCultureIgnoreCase))

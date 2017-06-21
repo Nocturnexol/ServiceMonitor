@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using BS.Microservice.Web.DAL;
 using BS.Microservice.Web.Model;
 using BS.Common.Model.Mongo.ServiceModels;
@@ -53,9 +54,14 @@ namespace BS.Microservice.Web.BLL
         {
             return dal.GetModel(userName);
         }
-        public List<ServiceEntity> GetModelList(Dictionary<string, string> dic, string orderBy, string desc, int page, int pageSize,string id,string keyword)
+
+        public IList<SelectListItem> GetHostList()
         {
-            return dal.GetModelList(dic, orderBy, desc, page, pageSize,id,keyword);
+            return dal.GetHostList();
+        }
+        public List<ServiceEntity> GetModelList(Dictionary<string, string> dic, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
+        {
+            return dal.GetModelList(dic, orderBy, desc, page, pageSize, id, keyword, isApproved, host);
         }
 
         public int GetCount(Dictionary<string, string> dic)

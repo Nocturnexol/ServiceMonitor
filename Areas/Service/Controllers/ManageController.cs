@@ -29,7 +29,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.BtnList = new List<string>() { "添加", "编辑", "审批", "详细","搜索" };
+            ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索" };
+            ViewBag.hostList = BusinessContext.ServiceList.GetHostList();
             return View();
         }
 
@@ -176,15 +177,15 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetDataList(string LoginName = null, int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",string id="",string keyword="")
+        public ActionResult GetDataList(string LoginName = null, int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",string id="",string keyword="",string isApproved="",string host="")
         {
-            int CurrentPageIndex = (page != 0 ? (int)page : 1);
+            int currentPageIndex = page != 0 ? page : 1;
             sidx = string.IsNullOrWhiteSpace(sidx) ? "_id" : sidx;
             List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList(null, sidx, sord, page, rows, id,
-                keyword);
+                keyword, isApproved, host);
             int totalCount = BusinessContext.ServiceList.GetCount(null);
             JqGridData rm = new JqGridData();
-            rm.page = CurrentPageIndex;
+            rm.page = currentPageIndex;
             rm.rows = list;
             rm.total = totalCount % rows == 0 ? totalCount / rows : totalCount / rows + 1;
             rm.records = totalCount;

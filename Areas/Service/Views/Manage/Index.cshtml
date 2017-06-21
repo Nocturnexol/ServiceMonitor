@@ -9,6 +9,7 @@
     ViewBag.FirstItem = "服务管理";
 }
 <link href="~/Resource/Css/tree.min.css" rel="stylesheet" />
+<link href="~/Resource/js/plugins/iCheck/skins/square/blue.css" rel="stylesheet" />
 <style>
     .jqGrid_wrapper {
         width: 82%;
@@ -25,7 +26,17 @@
         display: block;
         height: 484px;
         outline: none;
-    }</style>
+    }
+    .checkbox-inline, .radio-inline {
+        padding-left: 0;
+    }
+    .iradio_square-blue {
+        margin-right: 5px;  
+    }
+    #host+div {
+        width: 100% !important;
+    }
+</style>
 <div id="leftTree" class="treejg col-md-2" tabindex="5002">
     <div>
         <span>服务</span>
@@ -62,6 +73,21 @@ $(function () {
             { name: '服务名称', index: 'ServiceName' },
             { name: '二级服务名称', index: 'SecondaryName' },
             { name: '部署机器', index: 'Host' },
+            {
+                name: '内网IP', index: 'RegContent', formatter: function (id, a, b) {
+                    if (b != null && b.RegContent != null) {
+                        var reg = $.parseJSON(b.RegContent);
+                        return reg.InAddr;
+                    }
+                    return "";
+                } },
+            { name: '外网IP', index: 'RegContent', formatter: function(id, a, b) {
+                if (b != null && b.RegContent != null) {
+                    var reg = $.parseJSON(b.RegContent);
+                    return reg.OutAddr;
+                }
+                return "";
+            } },
             { name: '服务ID', width: 40,index: 'PrimaryId' },  
             { name: '二级服务ID',width: 40, index: 'SecondaryId' },
             { name: '最近启动时间', index: 'StartupDate',formatter:'datetime' },
@@ -100,6 +126,7 @@ $(function () {
         };
         JQ.InitGrid(config);
 
+    //jsTree
     $.getJSON("/Service/Manage/GetTree",
         function (result) {
             $('#jsTree').jstree({
@@ -123,6 +150,16 @@ $(function () {
                 });
         });
 
+    //iCheck
+    $('input[name="isApproved"]').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+    });
+    $('input[name="isApproved"][value="0"]').iCheck('check');
+
+    $('#host').attr('data-placeholder','请选择').chosen();
+
 });
 	function OpenorCloseAlert(id){
 	  layer.confirm("确认要启用或关闭报警么？",{icon:3,title:"提示"},function(){
@@ -140,10 +177,30 @@ $(function () {
 	
 </script>
 @section Search {
+<label class="col-sm-9 control-label" style="margin-top: 5px;">
+    部署机器：
+</label>
+<div class="col-sm-12">
+    @Html.DropDownList("host", ViewBag.hostList as List<SelectListItem>, "", new { placeholder = "部署机器", @class = "form-control" })
+</div>
     <label class="col-sm-9 control-label" style="margin-top: 5px;">
-        搜索：
+        关键字：
     </label>
     <div class="col-sm-12">
-        <input id="keyword" name="keyword" type="text" class="input form-control" placeholder="搜索" />
+        <input id="keyword" name="keyword" type="text" class="form-control" placeholder="关键字" />
     </div>
+<label class="col-sm-9 control-label" style="margin-top: 5px;">
+   是否审核：
+</label>
+<div class="col-sm-12">
+    <label class="radio-inline">
+        <input name="isApproved" type="radio" value="0"/>全部
+    </label>
+    <label class="radio-inline">
+        <input name="isApproved" type="radio" value="1" />已审核
+    </label>
+    <label class="radio-inline">
+        <input name="isApproved" type="radio" value="2" />未审核
+    </label>
+</div>
 }

@@ -35,6 +35,8 @@
                     $(".chosen-select").next().find("span").text($(".chosen-select").next().find("li").first().text());
                     $(".chosen-select").trigger('chosen:updated');
                     $(".i-checks").iCheck({ checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green" });
+                    $(".chosen-container").find("span").text('请选择');
+                    $('input[name="isApproved"][value="0"]').iCheck('check');
                 }
             });
         });
