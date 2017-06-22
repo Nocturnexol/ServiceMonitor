@@ -34,7 +34,7 @@ namespace BS.Microservice.Web.Common
                 Module_Name = "服务管理",
                 Right_Id = 2,
                 Right_Name = "服务管理",
-                Rigth_Url = "/Service/Manage/Index"
+                Rigth_Url = "/Service/Manage/Index?type=1"
             });
             list.Add(new FunctionalAuthority()
             {

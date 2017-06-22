@@ -64,9 +64,9 @@ namespace BS.Microservice.Web.BLL
             return dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host);
         }
 
-        public int GetCount(Dictionary<string, string> dic)
+        public int GetCount(ServiceTypeEnum? type = null)
         {
-            return dal.GetCount(dic);
+            return dal.GetCount(type);
         }
     }
 }

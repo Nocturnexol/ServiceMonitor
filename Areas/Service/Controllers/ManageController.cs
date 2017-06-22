@@ -27,10 +27,11 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
        
 
 
-        public ActionResult Index()
+        public ActionResult Index(int? type)
         {
             ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索" };
-            ViewBag.hostList = BusinessContext.ServiceList.GetHostList(ServiceTypeEnum.Micro);
+            ViewBag.hostList = BusinessContext.ServiceList.GetHostList((ServiceTypeEnum?) type);
+            ViewBag.Type = type;
             return View();
         }
 
@@ -40,7 +41,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(ServiceEntity collection,string isContinue="1")
+        public ActionResult Create(ServiceEntity collection,int? type,string isContinue="1")
         {
             ReturnMessage rm = new ReturnMessage(false);
             try
@@ -76,6 +77,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 }
                 else
                 {
+                    if (type.HasValue)
+                        collection.ServiceType = (ServiceTypeEnum) type.Value;
                     rm.IsSuccess = BusinessContext.ServiceList.Add(collection);
                     rm.IsContinue = isContinue == "1";
                 }
@@ -87,9 +90,9 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             return Json(rm);
         }
 
-        public JsonResult GetTree()
+        public JsonResult GetTree(int? type)
         {
-            var list = BusinessContext.ServiceList.GetTreeModels(ServiceTypeEnum.Micro);
+            var list = BusinessContext.ServiceList.GetTreeModels((ServiceTypeEnum?) type);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -182,15 +185,15 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetDataList(int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",
+        public ActionResult GetDataList(int? type,int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",
             string id = "", string keyword = "", string isApproved = "", string host = "")
         {
             int currentPageIndex = page != 0 ? page : 1;
             sidx = string.IsNullOrWhiteSpace(sidx) ? "_id" : sidx;
-            List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList(ServiceTypeEnum.Micro, sidx, sord, page,
+            List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList((ServiceTypeEnum?)type, sidx, sord, page,
                 rows, id,
                 keyword, isApproved, host);
-            int totalCount = BusinessContext.ServiceList.GetCount(null);
+            int totalCount = BusinessContext.ServiceList.GetCount((ServiceTypeEnum?)type);
             JqGridData rm = new JqGridData();
             rm.page = currentPageIndex;
             rm.rows = list;

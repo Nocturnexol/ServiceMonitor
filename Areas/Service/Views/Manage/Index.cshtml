@@ -2,7 +2,9 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<string> BtnList = ViewBag.BtnList as List<string>;
-    ViewBag.AddUrl = "/Service/Manage/Create";
+    int? type = ViewBag.Type;
+    var suffix = type.HasValue ? "?type=" + type : "";
+    ViewBag.AddUrl = "/Service/Manage/Create" + suffix;
     ViewBag.EditUrl = "/Service/Manage/Edit/";
     ViewBag.SecondItem = "服务管理";
     ViewBag.Is450 = true;
@@ -66,7 +68,7 @@ function regService(id){
 
 $(function () {
         var title = '服务列表';
-        var url = '/Service/Manage/GetDataList';
+        var url = '/Service/Manage/GetDataList'+'@suffix';
         var postData = { keyword: $("#keyword").val() };
         var col = [
             { name: '主键', index: '_id', key: true, hidden: true },
@@ -128,7 +130,7 @@ $(function () {
         JQ.InitGrid(config);
 
     //jsTree
-    $.getJSON("/Service/Manage/GetTree",
+    $.getJSON("/Service/Manage/GetTree"+'@suffix',
         function (result) {
             result[0].state = { opened: true };
             $('#jsTree').jstree({

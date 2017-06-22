@@ -184,9 +184,9 @@ namespace BS.Microservice.Web.DAL
             return new List<ServiceEntity>();
         }
 
-        public int GetCount(Dictionary<string, string> dic)
+        public int GetCount(ServiceTypeEnum? type)
         {
-            IMongoQuery query = null;
+            var query = type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null;
             return (int)DBContext.Mongo.Count(DBContext.DbName, COL, query);
         }
     }

@@ -50,7 +50,16 @@
 
         }
         function add() {
-            poplayer('@ViewBag.SecondItem-添加', '@ViewBag.AddUrl?RedirectUrl=' + '@ViewBag.DetailUrl', '800', "@Height");
+            @{
+                string addUrl = ViewBag.AddUrl;
+                string detailUrl = ViewBag.DetailUrl;
+                if (!string.IsNullOrWhiteSpace(detailUrl))
+                {
+                    addUrl += addUrl.IndexOf("?", StringComparison.Ordinal) > -1 ? "&" : "?";
+                    addUrl += "RedirectUrl=" + detailUrl;
+                }
+            }
+            poplayer('@ViewBag.SecondItem-添加', '@addUrl', '800', "@Height");
         }
 
 
