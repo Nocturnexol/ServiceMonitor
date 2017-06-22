@@ -57,14 +57,16 @@ namespace BS.Microservice.Web.DAL
                     .Select(t => new TreeModel {id ="1_"+ t.Key, parent = "0", text = t.Key});
             var sec = tree.GroupBy(t => t.SecondaryName);
             var sTree = (from s in sec
-                let first = tree.Where(x => x.SecondaryName == s.Key)
+                let first = tree.Where(x => x.SecondaryName == s.Key).GroupBy(x => new {x.SecondaryName, x.ServiceName})
                 from f in first
                 select new TreeModel
                 {
-                    id = "2_" + s.Key + "_" + f.ServiceName,
-                    parent = "1_" + f.ServiceName,
+                    id = "2_" + s.Key + "_" + f.Key.ServiceName,
+                    parent = "1_" + f.Key.ServiceName,
                     text = s.Key
                 }).ToList();
+
+
             //var sTree =
             //    tree.GroupBy(t => t.SecondaryName)
             //        .Select(

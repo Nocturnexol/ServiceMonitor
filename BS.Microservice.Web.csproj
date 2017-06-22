@@ -682,6 +682,7 @@
     <Content Include="Areas\Service\Views\Monitor\Edit.cshtml" />
     <Content Include="Areas\Service\Views\Manage\CreateContact.cshtml" />
     <Content Include="Areas\Service\Views\Manage\EditContact.cshtml" />
+    <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <None Include="Resource\fonts\fontawesome-webfont.eot" />
     <None Include="Resource\fonts\fontawesome-webfont.svg" />
     <None Include="Resource\fonts\fontawesome-webfont.ttf" />
