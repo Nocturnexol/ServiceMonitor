@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -7,6 +8,7 @@ using BS.Common;
 using BS.Microservice.Web.Model;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using BS.Microservice.Web.Common;
 using System.Web.Security;
 
@@ -214,6 +216,94 @@ namespace BS.Microservice.Web.Controllers
             dic.Add("modulus", modulus);
             Session["modulus"] = modulus;
             return Json(dic, JsonRequestBehavior.AllowGet);
+        }
+
+        public FileStreamResult DownFile(string filePath, string fileName)
+        {
+            filePath = Request["filePath"];
+            if (string.IsNullOrWhiteSpace(fileName))
+                fileName = "Excel.xlsx";
+            //删除10分钟之前的数据
+            string dir = filePath.Substring(0, filePath.LastIndexOf("\\"));
+
+            FileStream file = new System.IO.FileStream(filePath, System.IO.FileMode.Open);
+
+            DelOverdueFile(dir, 10);
+            return File(file, "application/octet-stream", (file.Name.Substring(filePath.LastIndexOf("\\") + 1)));
+        }
+        /// <summary>
+        /// 删除当前目录下n天之前(按文件最后写入时间)的历史数据文件
+        /// </summary>
+        /// <param name="dir">目录</param>
+        /// <param name="searchPattert">搜索模式(如：*.log),为空则获取全部文件</param>
+        /// <param name="OverDay">过期分钟</param>
+        public static void DelOverdueFile(string dir, int OverDay)
+        {
+            try
+            {
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(dir);
+                System.IO.DirectoryInfo[] dirs = di.GetDirectories();
+                System.IO.FileInfo[] files = di.GetFiles("*.*", System.IO.SearchOption.AllDirectories);
+                DateTime now = DateTime.Now;
+                System.Collections.Generic.List<System.IO.DirectoryInfo> newList = new System.Collections.Generic.List<System.IO.DirectoryInfo>();
+
+                if (dirs.Length > 0)
+                {
+                    foreach (var item in dirs)
+                    {
+                        if ((now - item.LastWriteTime).TotalMinutes > OverDay)
+                        {
+                            newList.Add(item);
+                        }
+                    }
+                }
+                if (files.Length > 0)
+                {
+                    foreach (var f in files)
+                    {
+                        if ((now - f.LastWriteTime).TotalMinutes > OverDay && Regex.IsMatch(f.Name, @"\d"))
+                        {
+                            f.Delete();
+                        }
+                    }
+                }
+                foreach (var f in newList)
+                {
+                    DelDirectory(f);
+                }
+            }
+            catch
+            { }
+        }
+
+        /// <summary>
+        /// 递归删除目录下所有子目录和文件到目标路径
+        /// </summary>
+        /// <param name="sPath">源目录</param>
+        /// <param name="dPath">目的目录</param>
+        public static void DelDirectory(System.IO.DirectoryInfo dirInfo)
+        {
+            // 目录为空则返回
+            if (dirInfo == null)
+            {
+                return;
+            }
+            try
+            {
+                System.IO.DirectoryInfo[] directories = dirInfo.GetDirectories();
+                if (directories.Length > 0)
+                {
+                    foreach (System.IO.DirectoryInfo temDirectoryInfo in directories)
+                    {
+                        DelDirectory(temDirectoryInfo);
+                    }
+                }
+                dirInfo.Delete();
+            }
+            catch
+            {
+
+            }
         }
     }
 }

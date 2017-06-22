@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,6 +17,8 @@ using BS.Microservice.Web.Service;
 using System.Text.RegularExpressions;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
+using NPOI.HPSF;
+using NPOI.HSSF.UserModel;
 
 namespace BS.Microservice.Web.Areas.Service.Controllers
 {
@@ -24,12 +27,12 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         //
         // GET: /Service/Manage/
 
-       
+        private static HSSFWorkbook _hssfworkbook;
 
 
         public ActionResult Index(int? type)
         {
-            ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索" };
+            ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索","导出" };
             ViewBag.hostList = BusinessContext.ServiceList.GetHostList((ServiceTypeEnum?) type);
             ViewBag.Type = type;
             return View();
@@ -188,12 +191,19 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         public ActionResult GetDataList(int? type,int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",
             string id = "", string keyword = "", string isApproved = "", string host = "")
         {
-            int currentPageIndex = page != 0 ? page : 1;
             sidx = string.IsNullOrWhiteSpace(sidx) ? "_id" : sidx;
+            Session["orderBy"] =sidx;
+            Session["desc"] = sord;
+            Session["id"] = id;
+            Session["keyword"] = keyword;
+            Session["isApproved"] = isApproved;
+            Session["host"] = host;
+            Session["type"] = type;
+            int currentPageIndex = page != 0 ? page : 1;
+            int totalCount;
             List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList((ServiceTypeEnum?)type, sidx, sord, page,
                 rows, id,
-                keyword, isApproved, host);
-            int totalCount = BusinessContext.ServiceList.GetCount((ServiceTypeEnum?)type);
+                keyword, isApproved, host, out totalCount);
             JqGridData rm = new JqGridData();
             rm.page = currentPageIndex;
             rm.rows = list;
@@ -462,5 +472,154 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
             return Json(RM, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Export(string filename)
+        {
+            filename = filename.Split('?')[0];
+            var rm = new ReturnMessage(false);
+            try
+            {
+                string orderBy = Session["orderBy"] as string ?? "_id";
+                string desc = Session["desc"] as string ?? "asc";
+                string id = Session["id"] as string;
+                string keyword = Session["keyword"] as string;
+                string isApproved = Session["isApproved"] as string;
+                string host = Session["host"] as string;
+                var type = Session["type"] as int?;
+                int count;
+                var list = BusinessContext.ServiceList.GetModelList((ServiceTypeEnum?)type, orderBy, desc, 1, int.MaxValue,id, keyword, isApproved, host,
+                    out count);
+
+                if (list == null || !list.Any())
+                {
+                    rm.Message = "没有数据！";
+                    return Json(rm, JsonRequestBehavior.AllowGet);
+                }
+                string title = filename;
+                InitializeWorkbook(title);
+                NPOI.SS.UserModel.ISheet sheet1 = _hssfworkbook.GetSheetAt(0);
+                //sheet1.GetRow(1).GetCell(5).SetCellValue(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));
+                //下移
+                int rows = 2;
+                int num = 1;
+                foreach (var item in list)
+                {
+                    sheet1.CreateRow(rows);
+                    sheet1.GetRow(rows).CreateCell(0);
+                    sheet1.GetRow(rows).GetCell(0).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(0).SetCellValue(num);
+                    num++;
+
+                    ServiceCfg cfg = new ServiceCfg();
+                    if (!string.IsNullOrWhiteSpace(item.RegContent))
+                        cfg = JsonConvert.DeserializeObject<ServiceCfg>(item.RegContent);
+                    var inList = cfg.InAddr ?? new List<string>();
+                    var outList = cfg.OutAddr ?? new List<string>();
+
+                    var inFlag = inList.FirstOrDefault(t => t.Contains(item.Host)) != null;
+                    var inAddr = inFlag
+                        ? inList.FirstOrDefault(t => t.Contains(item.Host))
+                            .Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries)
+                        : new string[0];
+
+                    sheet1.GetRow(rows).CreateCell(1);
+                    sheet1.GetRow(rows).GetCell(1).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows)
+                        .GetCell(1)
+                        .SetCellValue(inFlag ? item.Host : inList.Any() ? inList[0] : "");
+
+                    sheet1.GetRow(rows).CreateCell(2);
+                    sheet1.GetRow(rows).GetCell(2).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(2).SetCellValue(inFlag ? inAddr.Length > 1 ? inAddr[1] : "" : "");
+
+                    var outAddr = new List<string>();
+                    var outPort = new List<string>();
+                    if (outList.Any())
+                    {
+                        var @out = outList.Select(t =>
+                        {
+                            var arr = t.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
+                            return new {Addr = arr[0], Port = arr.Length > 1 ? arr[1] : ""};
+                        }).ToList();
+                        outAddr=@out.Select(t=>t.Addr).ToList();
+                        outPort = @out.Select(t => t.Port).ToList();
+                    }
+
+                    sheet1.GetRow(rows).CreateCell(3);
+                    sheet1.GetRow(rows).GetCell(3).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(3).SetCellValue(string.Join(",", outAddr));
+
+
+                    sheet1.GetRow(rows).CreateCell(4);
+                    sheet1.GetRow(rows).GetCell(4).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(4).SetCellValue(string.Join(",", outPort));
+
+
+                    sheet1.GetRow(rows).CreateCell(5);
+                    sheet1.GetRow(rows).GetCell(5).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(5).SetCellValue(item.ServiceName);
+
+                    sheet1.GetRow(rows).CreateCell(6);
+                    sheet1.GetRow(rows).GetCell(6).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(6).SetCellValue(item.SecondaryName);
+
+                    sheet1.GetRow(rows).CreateCell(7);
+                    sheet1.GetRow(rows).GetCell(7).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(7).SetCellValue(item.Version);
+
+                    sheet1.GetRow(rows).CreateCell(8);
+                    sheet1.GetRow(rows).GetCell(8).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(8).SetCellValue(item.Remark);
+
+                    rows++;
+                }
+
+                sheet1.ForceFormulaRecalculation = true;
+                var pathLoad = WriteToFile(filename);
+                //弹出下载框
+                rm.IsSuccess = true;
+                rm.Text = HttpUtility.UrlEncode(pathLoad);
+            }
+            catch (Exception ex)
+            {
+                rm.IsSuccess = false;
+                rm.Message = ex.Message;
+            }
+            return Json(rm, JsonRequestBehavior.AllowGet);
+        }
+
+        private static void InitializeWorkbook(string excelName)
+        {
+            //E:\visual studio 2010\Projects\文本解析\AjaxExportExcel\AjaxExportExcel
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            //basePath = Environment.CurrentDirectory;
+            FileStream file = new FileStream(basePath + "Excel\\" + excelName + ".xls", FileMode.Open, FileAccess.Read);
+            _hssfworkbook = new HSSFWorkbook(file);
+            DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
+            dsi.Company = "NPOI Team";
+            _hssfworkbook.DocumentSummaryInformation = dsi;
+            SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
+            si.Subject = "NPOI SDK Example";
+            _hssfworkbook.SummaryInformation = si;
+        }
+        private string WriteToFile(string filename)
+        {
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            //创建临时文件夹 判断是否存在，不存在文件夹就创建出来
+            string tmpPath = basePath + "TempData";
+            if (!Directory.Exists(tmpPath))
+            {
+                Directory.CreateDirectory(tmpPath);
+            }
+
+            string path = string.Format("TempData\\{0}", filename);
+            string dPath = path + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            string tPath = basePath + dPath;
+            FileStream file = new FileStream(tPath, FileMode.Create);
+            _hssfworkbook.Write(file);
+            file.Close();
+            return tPath;
+        }
+
     }
 }

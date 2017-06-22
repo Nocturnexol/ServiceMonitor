@@ -59,9 +59,9 @@ namespace BS.Microservice.Web.BLL
         {
             return dal.GetHostList(type);
         }
-        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
+        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host,out int count)
         {
-            return dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host);
+            return dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host,out count);
         }
 
         public int GetCount(ServiceTypeEnum? type = null)

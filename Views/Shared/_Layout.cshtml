@@ -236,6 +236,12 @@
                             <a href="#" type="button" class="btn btn-default" title="另外打开" target="_blank" style="float: right">
                                 <i class="glyphicon glyphicon-new-window"></i></a>
                         }
+                        @if (BtnList.Contains("导出"))
+{
+    <button id="btnExport" type="button" class="btn btn-default" onclick="onSelectExport()">
+        <i class="fa fa-download"></i>&nbsp;<span class="bold">导出</span>
+    </button>
+}
                     </div>
                     <div class="jqGrid_wrapper">
                         <table id="jqGridList" class="table-condensed table-striped">

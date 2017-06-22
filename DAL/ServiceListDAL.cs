@@ -120,11 +120,16 @@ namespace BS.Microservice.Web.DAL
             return DBContext.Mongo.Distinct(DBContext.DbName, COL, "Host", query).Select(t => new SelectListItem { Text = t.ToString(), Value = t.ToString() }).ToList();
         }
 
-        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
+        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host,out int count)
         {
+            count = 0;
             try
             {
                 var queryList = new List<IMongoQuery>();
+                if (type.HasValue)
+                {
+                    queryList.Add(Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value));
+                }
                 if (!string.IsNullOrWhiteSpace(id))
                 {
                     var arr = id.Split(new[] {'_'}, StringSplitOptions.RemoveEmptyEntries);
@@ -172,9 +177,10 @@ namespace BS.Microservice.Web.DAL
                     sortBy = SortBy.Descending(orderBy);
                 }
                 var query = queryList.Any() ? Query.And(queryList) : null;
+                count=(int)DBContext.Mongo.Count(DBContext.DbName, COL, query);
                 var res = DBContext.Mongo.GetPageList<ServiceEntity>(DBContext.DbName, COL, query, page, pageSize,
                     sortBy, null);
-                return type.HasValue ? res.Where(t => t.ServiceType == type.Value).ToList() : res;
+                return res;
 
             }
             catch (Exception ex)
