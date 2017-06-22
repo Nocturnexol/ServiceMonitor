@@ -30,7 +30,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         public ActionResult Index()
         {
             ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索" };
-            ViewBag.hostList = BusinessContext.ServiceList.GetHostList();
+            ViewBag.hostList = BusinessContext.ServiceList.GetHostList(ServiceTypeEnum.Micro);
             return View();
         }
 
@@ -89,7 +89,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
         public JsonResult GetTree()
         {
-            var list = BusinessContext.ServiceList.GetTreeModels();
+            var list = BusinessContext.ServiceList.GetTreeModels(ServiceTypeEnum.Micro);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -142,6 +142,11 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 cfg.OutAddr = outList;
                 cfg.Remarks = collection.Remark;
                 ServiceEntity model = BusinessContext.ServiceList.GetModel(Convert.ToInt32(Request["_id"]));
+                model.ServiceName = collection.ServiceName;
+                model.SecondaryName = collection.SecondaryName;
+                model.Host = collection.Host;
+                model.Version = collection.Version;
+                model.Remark = collection.Remark;
                 model.RegContent = JsonConvert.SerializeObject(cfg);
 
                 RM.IsSuccess = BusinessContext.ServiceList.Update(model);
@@ -177,11 +182,13 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetDataList(string LoginName = null, int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",string id="",string keyword="",string isApproved="",string host="")
+        public ActionResult GetDataList(int page = 1, int rows = 20, string sidx = "_id", string sord = "asc",
+            string id = "", string keyword = "", string isApproved = "", string host = "")
         {
             int currentPageIndex = page != 0 ? page : 1;
             sidx = string.IsNullOrWhiteSpace(sidx) ? "_id" : sidx;
-            List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList(null, sidx, sord, page, rows, id,
+            List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList(ServiceTypeEnum.Micro, sidx, sord, page,
+                rows, id,
                 keyword, isApproved, host);
             int totalCount = BusinessContext.ServiceList.GetCount(null);
             JqGridData rm = new JqGridData();

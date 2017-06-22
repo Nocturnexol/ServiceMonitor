@@ -36,9 +36,9 @@ namespace BS.Microservice.Web.BLL
         {
             return dal.Add(model);
         }
-        public List<TreeModel> GetTreeModels()
+        public List<TreeModel> GetTreeModels(ServiceTypeEnum? type=null)
         {
-            return dal.GetTreeModels();
+            return dal.GetTreeModels(type);
         }
 
         public bool Delete(int _id)
@@ -55,13 +55,13 @@ namespace BS.Microservice.Web.BLL
             return dal.GetModel(userName);
         }
 
-        public IList<SelectListItem> GetHostList()
+        public IList<SelectListItem> GetHostList(ServiceTypeEnum? type=null)
         {
-            return dal.GetHostList();
+            return dal.GetHostList(type);
         }
-        public List<ServiceEntity> GetModelList(Dictionary<string, string> dic, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
+        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
         {
-            return dal.GetModelList(dic, orderBy, desc, page, pageSize, id, keyword, isApproved, host);
+            return dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host);
         }
 
         public int GetCount(Dictionary<string, string> dic)

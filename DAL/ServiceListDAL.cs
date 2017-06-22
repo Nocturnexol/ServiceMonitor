@@ -41,16 +41,16 @@ namespace BS.Microservice.Web.DAL
             return DBContext.Mongo.Count(DBContext.DbName, COL, query) > 0;
         }
 
-        public List<TreeModel> GetTreeModels()
+        public List<TreeModel> GetTreeModels(ServiceTypeEnum? type)
         {
             var res = new List<TreeModel>
             {
                 new TreeModel {id = "0", parent = "#", text = "全部"}
             };
+            var col = DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
+                .GetCollection(COL);
             var tree =
-                DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
-                    .GetCollection(COL)
-                    .FindAllAs<ServiceEntity>()
+                col.FindAs<ServiceEntity>(type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null)
                     .Select(t => new {t._id, t.ServiceName, t.SecondaryName});
             var pTree =
                 tree.GroupBy(t => t.ServiceName)
@@ -112,12 +112,13 @@ namespace BS.Microservice.Web.DAL
             return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, COL, query);
         }
 
-        public IList<SelectListItem> GetHostList()
+        public IList<SelectListItem> GetHostList(ServiceTypeEnum? type)
         {
-            return DBContext.Mongo.Distinct(DBContext.DbName, COL, "Host").Select(t => new SelectListItem {Text = t.ToString(), Value = t.ToString()}).ToList();
+            var query = type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null;
+            return DBContext.Mongo.Distinct(DBContext.DbName, COL, "Host", query).Select(t => new SelectListItem { Text = t.ToString(), Value = t.ToString() }).ToList();
         }
 
-        public List<ServiceEntity> GetModelList(Dictionary<string, string> where, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
+        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host)
         {
             try
             {
@@ -169,7 +170,9 @@ namespace BS.Microservice.Web.DAL
                     sortBy = SortBy.Descending(orderBy);
                 }
                 var query = queryList.Any() ? Query.And(queryList) : null;
-                return DBContext.Mongo.GetPageList<ServiceEntity>(DBContext.DbName, COL, query, page, pageSize, sortBy, null);
+                var res = DBContext.Mongo.GetPageList<ServiceEntity>(DBContext.DbName, COL, query, page, pageSize,
+                    sortBy, null);
+                return type.HasValue ? res.Where(t => t.ServiceType == type.Value).ToList() : res;
 
             }
             catch (Exception ex)
