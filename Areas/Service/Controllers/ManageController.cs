@@ -113,9 +113,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             {
                 try
                 {
-                    ServiceCfg cfg = JsonConvert.DeserializeObject<ServiceCfg>(model.RegContent);
-                    ViewBag.InList = cfg.InAddr;
-                    ViewBag.OutList = cfg.OutAddr;
+                    InitAddr(model);
                 }
                 catch (Exception ex)
                 {
@@ -125,6 +123,14 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
             return View(model);
         }
+
+        private void InitAddr(ServiceEntity model)
+        {
+            ServiceCfg cfg = JsonConvert.DeserializeObject<ServiceCfg>(model.RegContent);
+            ViewBag.InList = cfg.InAddr;
+            ViewBag.OutList = cfg.OutAddr;
+        }
+
         [HttpPost]
         public ActionResult Edit(ServiceEntity collection)
         {
@@ -180,6 +186,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             }
             ViewData["serverId"] = model._id;
             ViewData["PrimaryId"] = model.PrimaryId;
+            if (!string.IsNullOrWhiteSpace(model.RegContent))
+                InitAddr(model);
             return View(model);
         }
 

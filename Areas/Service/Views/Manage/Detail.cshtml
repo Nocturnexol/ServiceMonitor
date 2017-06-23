@@ -50,13 +50,39 @@
                             @Model.Host
                         </td>
                         <td class="lbName_1">
-                            版本：
+                            内网地址：
                         </td>
                         <td class="lbName_right">
-                            @Model.Version
+                            @string.Join(",",ViewBag.InList??new List<string>())
                         </td>
                     </tr>
                     <tr>
+                        <td class="lbName_1">
+                            外网地址：
+                        </td>
+                        <td>
+                            @string.Join(",", ViewBag.OutList ?? new List<string>())
+                        </td>
+                        <td class="lbName_1">
+                            版本：
+                        </td>
+                        <td>
+                            @Model.Version
+                        </td>
+                        <td class="lbName_1">
+                            是否审核：
+                        </td>
+                        <td class="lbName_right">
+                            @(Model.IsApproved?"是":"否")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lbName_1">
+                            是否启用报警：
+                        </td>
+                        <td>
+                            @(Model.IsAlert ? "已启用" : "未启用")
+                        </td>
                         <td class="lbName_1">
                             最近启动时间：
                         </td>

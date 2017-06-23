@@ -39,6 +39,11 @@
     #host+div {
         width: 100% !important;
     }
+    #advancedSearch {
+        vertical-align: middle;
+        margin-top: 0;
+        margin-left: 5px;
+    }
 </style>
 <div id="leftTree" class="treejg col-md-2" tabindex="5002">
     <div>
@@ -68,6 +73,10 @@ function regService(id){
 
 
 $(function () {
+
+    $('div.jqGrid_wrapper').prev('div')
+        .append('<label for="advancedSearch"><input id="advancedSearch" name="advancedSearch" type="checkbox" checked="checked">分组条件</label>');
+
         var title = '服务列表';
         var url = '/Service/Manage/GetDataList'+'@suffix';
         var postData = { keyword: $("#keyword").val() };
@@ -154,6 +163,20 @@ $(function () {
                         XPage.Search({ id: data.selected[0] });
                 });
         });
+
+    //jsTree toggle
+    $('#advancedSearch').change(function () {
+
+        $('#leftTree').toggle();
+        if (!$('#leftTree').is(':visible')) {
+            $('.jqGrid_wrapper').css({ "width": "100%", "float": "right" });
+        } else {
+            $('.jqGrid_wrapper').css({ "width": "82%", "float": "right" });
+        }
+        JQ.InitGrid(config);
+    });
+
+
 
     //iCheck
     $('input[name="isApproved"]').iCheck({
