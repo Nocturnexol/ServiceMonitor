@@ -77,14 +77,14 @@ $(function () {
             { name: '二级服务名称', index: 'SecondaryName' },
             { name: '部署机器', index: 'Host' },
             {
-                name: '内网IP', index: 'RegContent', formatter: function (id, a, b) {
+                name: '内网地址', index: 'RegContent', formatter: function (id, a, b) {
                     if (b != null && b.RegContent != null) {
                         var reg = $.parseJSON(b.RegContent);
                         return reg.InAddr;
                     }
                     return "";
                 } },
-            { name: '外网IP', index: 'RegContent', formatter: function(id, a, b) {
+            { name: '外网地址', index: 'RegContent', formatter: function(id, a, b) {
                 if (b != null && b.RegContent != null) {
                     var reg = $.parseJSON(b.RegContent);
                     return reg.OutAddr;

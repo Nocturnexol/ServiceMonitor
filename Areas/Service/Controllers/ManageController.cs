@@ -215,20 +215,21 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
         public ActionResult RegService(int id)
         {
-            ReturnMessage RM = new ReturnMessage(false);
+            ReturnMessage rm = new ReturnMessage(false);
             try
             {
                 ServiceEntity model = BusinessContext.ServiceList.GetModel(id);
                 string serverName = string.Format("{0}/{1}", model.ServiceName, model.SecondaryName);
-                RM.IsSuccess = ServerDiscoveryHelper.ServiceRegister(serverName, model.Version, model.RegContent);
-
+                model.IsApproved = true;
+                rm.IsSuccess = ServerDiscoveryHelper.ServiceRegister(serverName, model.Version, model.RegContent) &&
+                               BusinessContext.ServiceList.Update(model);
             }
             catch (Exception ex)
             {
-                RM.Message = "数据异常,请刷新重试";
+                rm.Message = "数据异常,请刷新重试";
                 LogManager.Error(ex);
             }
-            return Json(RM, JsonRequestBehavior.AllowGet);
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -510,6 +511,14 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                     sheet1.GetRow(rows).GetCell(0).SetCellValue(num);
                     num++;
 
+                    sheet1.GetRow(rows).CreateCell(1);
+                    sheet1.GetRow(rows).GetCell(1).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(1).SetCellValue(item.PrimaryId);
+
+                    sheet1.GetRow(rows).CreateCell(2);
+                    sheet1.GetRow(rows).GetCell(2).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(2).SetCellValue(item.SecondaryId);
+
                     ServiceCfg cfg = new ServiceCfg();
                     if (!string.IsNullOrWhiteSpace(item.RegContent))
                         cfg = JsonConvert.DeserializeObject<ServiceCfg>(item.RegContent);
@@ -522,15 +531,15 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                             .Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries)
                         : new string[0];
 
-                    sheet1.GetRow(rows).CreateCell(1);
-                    sheet1.GetRow(rows).GetCell(1).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).CreateCell(3);
+                    sheet1.GetRow(rows).GetCell(3).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
                     sheet1.GetRow(rows)
-                        .GetCell(1)
-                        .SetCellValue(inFlag ? item.Host : inList.Any() ? inList[0] : "");
+                        .GetCell(3)
+                        .SetCellValue(item.Host);
 
-                    sheet1.GetRow(rows).CreateCell(2);
-                    sheet1.GetRow(rows).GetCell(2).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(2).SetCellValue(inFlag ? inAddr.Length > 1 ? inAddr[1] : "" : "");
+                    sheet1.GetRow(rows).CreateCell(4);
+                    sheet1.GetRow(rows).GetCell(4).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(4).SetCellValue(inFlag ? inAddr.Length > 1 ? inAddr[1] : "" : "");
 
                     var outAddr = new List<string>();
                     var outPort = new List<string>();
@@ -545,31 +554,31 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                         outPort = @out.Select(t => t.Port).ToList();
                     }
 
-                    sheet1.GetRow(rows).CreateCell(3);
-                    sheet1.GetRow(rows).GetCell(3).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(3).SetCellValue(string.Join(",", outAddr));
-
-
-                    sheet1.GetRow(rows).CreateCell(4);
-                    sheet1.GetRow(rows).GetCell(4).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(4).SetCellValue(string.Join(",", outPort));
-
-
                     sheet1.GetRow(rows).CreateCell(5);
                     sheet1.GetRow(rows).GetCell(5).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(5).SetCellValue(item.ServiceName);
+                    sheet1.GetRow(rows).GetCell(5).SetCellValue(string.Join(",", outAddr));
+
 
                     sheet1.GetRow(rows).CreateCell(6);
                     sheet1.GetRow(rows).GetCell(6).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(6).SetCellValue(item.SecondaryName);
+                    sheet1.GetRow(rows).GetCell(6).SetCellValue(string.Join(",", outPort));
+
 
                     sheet1.GetRow(rows).CreateCell(7);
                     sheet1.GetRow(rows).GetCell(7).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(7).SetCellValue(item.Version);
+                    sheet1.GetRow(rows).GetCell(7).SetCellValue(item.ServiceName);
 
                     sheet1.GetRow(rows).CreateCell(8);
                     sheet1.GetRow(rows).GetCell(8).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
-                    sheet1.GetRow(rows).GetCell(8).SetCellValue(item.Remark);
+                    sheet1.GetRow(rows).GetCell(8).SetCellValue(item.SecondaryName);
+
+                    sheet1.GetRow(rows).CreateCell(9);
+                    sheet1.GetRow(rows).GetCell(9).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(9).SetCellValue(item.Version);
+
+                    sheet1.GetRow(rows).CreateCell(10);
+                    sheet1.GetRow(rows).GetCell(10).CellStyle = sheet1.GetRow(1).GetCell(5).CellStyle;
+                    sheet1.GetRow(rows).GetCell(10).SetCellValue(item.Remark);
 
                     rows++;
                 }
