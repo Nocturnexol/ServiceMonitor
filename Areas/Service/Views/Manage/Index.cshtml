@@ -86,14 +86,15 @@ $(function () {
             { name: '二级服务名称', index: 'SecondaryName' },
             { name: '部署机器', index: 'Host' },
             {
-                name: '内网地址', index: 'RegContent', formatter: function (id, a, b) {
+                name: '内网地址', width: 80, index: 'RegContent', formatter: function (id, a, b) {
                     if (b != null && b.RegContent != null) {
                         var reg = $.parseJSON(b.RegContent);
                         return reg.InAddr;
                     }
                     return "";
                 } },
-            { name: '外网地址', index: 'RegContent', formatter: function(id, a, b) {
+            {
+                name: '外网地址', width: 80, index: 'RegContent', formatter: function (id, a, b) {
                 if (b != null && b.RegContent != null) {
                     var reg = $.parseJSON(b.RegContent);
                     return reg.OutAddr;
@@ -103,10 +104,10 @@ $(function () {
             { name: '服务ID', width: 40,index: 'PrimaryId' },  
             { name: '二级服务ID',width: 40, index: 'SecondaryId' },
             { name: '最近启动时间', index: 'StartupDate', formatter: 'datetime' },
-             { name: '是否审核', index: 'IsApproved', formatter: function (id) { return id?"是":"否"} },
+             { name: '是否审核', width: 40, index: 'IsApproved', formatter: function (id) { return id ? "是" : "否" } },
             { name: '是否启用报警', index: 'IsAlert',formatter:function(id, a, b){return "<span onclick='OpenorCloseAlert("+b._id+")' style='cursor: pointer;'>"+(id?"已启用":"未启用")+"</span>";}},
-            { name: '版本', index: 'Version' },
-            { name: '备注', index: 'Remark' }
+            { name: '版本', width: 40, index: 'Version' },
+            { name: '备注', width: 80, index: 'Remark' }
         ];
         var oper=null;
         @if (BtnList.Contains("编辑") || BtnList.Contains("审批") || BtnList.Contains("删除"))

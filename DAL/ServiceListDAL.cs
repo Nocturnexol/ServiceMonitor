@@ -17,28 +17,28 @@ namespace BS.Microservice.Web.DAL
 {
     public class ServiceListDAL
     {
-        const string COL = "ServiceList";
-        int MaxId = 1;
-        public ServiceListDAL()
-        {
-            MaxId = Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, COL));
-        }
+        private const string Col = "ServiceList";
+
+        //public ServiceListDAL()
+        //{
+        //    Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, COL));
+        //}
         public bool Exists(string userName)
         {
             IMongoQuery query = Query.EQ("UserName", userName);
-            return DBContext.Mongo.Count(DBContext.DbName, COL, query) > 0;
+            return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
 
         }
         public bool Exists(string userName,int _id)
         {
             IMongoQuery query = Query.And(Query.EQ("UserName", userName), Query.NE("_id", _id));
-            return DBContext.Mongo.Count(DBContext.DbName, COL, query) > 0;
+            return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
         }
 
         public bool Exists(string serName, string secName)
         {
             IMongoQuery query = Query.And(Query.EQ("ServiceName", serName), Query.EQ("SecondaryName", secName));
-            return DBContext.Mongo.Count(DBContext.DbName, COL, query) > 0;
+            return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
         }
 
         public List<TreeModel> GetTreeModels(ServiceTypeEnum? type)
@@ -48,7 +48,7 @@ namespace BS.Microservice.Web.DAL
                 new TreeModel {id = "0", parent = "#", text = "全部"}
             };
             var col = DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
-                .GetCollection(COL);
+                .GetCollection(Col);
             var tree =
                 col.FindAs<ServiceEntity>(type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null)
                     .Select(t => new {t._id, t.ServiceName, t.SecondaryName});
@@ -88,39 +88,40 @@ namespace BS.Microservice.Web.DAL
 
         public bool Add(ServiceEntity model)
         {
-            model._id = Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, COL)) + 1;
-            return DBContext.Mongo.Insert(DBContext.DbName,COL,model);
+            model._id = Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, Col)) + 1;
+            return DBContext.Mongo.Insert(DBContext.DbName,Col,model);
         }
 
         public bool Update(ServiceEntity model)
         {
-            return DBContext.Mongo.Upsert(DBContext.DbName, COL, model);
+            return DBContext.Mongo.Upsert(DBContext.DbName, Col, model);
         }
        
         public bool Delete(int _id)
         {
             IMongoQuery query = Query.EQ("_id", _id);
-            return DBContext.Mongo.Remove(DBContext.DbName, COL, query);
+            return DBContext.Mongo.Remove(DBContext.DbName, Col, query);
         }
 
         public ServiceEntity GetModel(int _id)
         {
             IMongoQuery query = Query.EQ("_id", _id);
-            return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, COL, query);
+            return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);
         }
         public ServiceEntity GetModel(string userName)
         {
             IMongoQuery query = Query.EQ("LoginName", userName);
-            return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, COL, query);
+            return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);
         }
 
         public IList<SelectListItem> GetHostList(ServiceTypeEnum? type)
         {
             var query = type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null;
-            return DBContext.Mongo.Distinct(DBContext.DbName, COL, "Host", query).Select(t => new SelectListItem { Text = t.ToString(), Value = t.ToString() }).ToList();
+            return DBContext.Mongo.Distinct(DBContext.DbName, Col, "Host", query).Select(t => new SelectListItem { Text = t.ToString(), Value = t.ToString() }).ToList();
         }
 
-        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host,out int count)
+        public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page,
+            int pageSize, string id, string keyword, string isApproved, string host, out int count)
         {
             count = 0;
             try
@@ -163,7 +164,7 @@ namespace BS.Microservice.Web.DAL
                 if (!string.IsNullOrWhiteSpace(isApproved))
                 {
                     int approved;
-                    if(int.TryParse(isApproved,out approved))
+                    if (int.TryParse(isApproved, out approved))
                         if (approved > 0)
                             queryList.Add(Query<ServiceEntity>.EQ(t => t.IsApproved, approved == 1));
                 }
@@ -177,8 +178,8 @@ namespace BS.Microservice.Web.DAL
                     sortBy = SortBy.Descending(orderBy);
                 }
                 var query = queryList.Any() ? Query.And(queryList) : null;
-                count=(int)DBContext.Mongo.Count(DBContext.DbName, COL, query);
-                var res = DBContext.Mongo.GetPageList<ServiceEntity>(DBContext.DbName, COL, query, page, pageSize,
+                count = (int) DBContext.Mongo.Count(DBContext.DbName, Col, query);
+                var res = DBContext.Mongo.GetPageList<ServiceEntity>(DBContext.DbName, Col, query, page, pageSize,
                     sortBy, null);
                 return res;
 
@@ -193,7 +194,7 @@ namespace BS.Microservice.Web.DAL
         public int GetCount(ServiceTypeEnum? type)
         {
             var query = type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null;
-            return (int)DBContext.Mongo.Count(DBContext.DbName, COL, query);
+            return (int)DBContext.Mongo.Count(DBContext.DbName, Col, query);
         }
     }
 }
