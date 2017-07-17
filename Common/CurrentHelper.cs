@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
-using BS.Common;
-using BS.Microservice.Web.Model;
 using System.Web.Security;
 using BS.Client.Common.Model;
-using System.IO;
-using System.Reflection;
+using BS.Common;
 using BS.Microservice.DTO;
-using System.Collections.Concurrent;
+using BS.Microservice.Web.Model;
+using MongoDB.Driver.Builders;
 
 namespace BS.Microservice.Web.Common
 {
@@ -43,7 +44,7 @@ namespace BS.Microservice.Web.Common
         /// 
         /// </summary>
         private static Token _token;
-        private static bool IsGetToken = false;
+        private static bool IsGetToken;
         /// <summary>
         /// 令牌
         /// </summary>
@@ -53,7 +54,7 @@ namespace BS.Microservice.Web.Common
             {
                 if (_token == null)
                 {
-                    _token = BS.Client.Common.CommonHelper.GetToken(UserName, UserPwd);
+                    _token = Client.Common.CommonHelper.GetToken(UserName, UserPwd);
                 }
                 else
                 {
@@ -65,7 +66,7 @@ namespace BS.Microservice.Web.Common
                             if ((Convert.ToDateTime(_token.ExpireTime) - DateTime.Now).TotalMinutes < 15)
                             {
                                 LogManager.Info(string.Format("Token【{0}】 即将过期执行刷新Token", _token.ExpireTime));
-                                Token token = BS.Client.Common.CommonHelper.RefreshToken(UserName, UserPwd, _token.RefreshToken);
+                                Token token = Client.Common.CommonHelper.RefreshToken(UserName, UserPwd, _token.RefreshToken);
                                 if (token != null)
                                 {
                                     _token = token;
@@ -73,8 +74,8 @@ namespace BS.Microservice.Web.Common
                                 }
                                 else
                                 {
-                                    LogManager.Info(string.Format("Token 刷新失败,重新获取Token"));
-                                    _token = BS.Client.Common.CommonHelper.GetToken(UserName, UserPwd);
+                                    LogManager.Info("Token 刷新失败,重新获取Token");
+                                    _token = Client.Common.CommonHelper.GetToken(UserName, UserPwd);
                                     if (_token != null)
                                     {
                                         LogManager.Info(string.Format("Token 【{0}】重新获取成功", _token.ExpireTime));
@@ -110,11 +111,8 @@ namespace BS.Microservice.Web.Common
             {
                 return SerCfg[serName];
             }
-            else
-            {
-                ServiceCfg entity = BS.Client.Common.CommonHelper.GetServiceEntity(UserName, CurrentHelper.Token.AccessToken, serName.ToString().Replace(".", "/"), version.ToString());
-                return entity;
-            }
+            ServiceCfg entity = Client.Common.CommonHelper.GetServiceEntity(UserName, Token.AccessToken, serName.Replace(".", "/"), version);
+            return entity;
         }
 
 
@@ -123,14 +121,14 @@ namespace BS.Microservice.Web.Common
         {
             UserName = "tanhu";
             UserPwd = "123456";
-            BS.Client.Common.CommonHelper.OauthAPI = "http://61.129.57.83:21999";
+            Client.Common.CommonHelper.OauthAPI = "http://61.129.57.83:21999";
 
             string path = AppDomain.CurrentDomain.BaseDirectory;
             FileInfo[] files = new DirectoryInfo(path).GetFiles("*.dto.dll", SearchOption.AllDirectories);
 
             foreach (var file in files)
             {
-                Assembly assembly = System.Reflection.Assembly.LoadFrom(file.FullName);
+                Assembly assembly = Assembly.LoadFrom(file.FullName);
                 List<Type> typeList = assembly.GetTypes().ToList();
                 Type type = typeList.Where(p => p.Name.Equals("dtoConstants", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 if (type != null)
@@ -145,9 +143,9 @@ namespace BS.Microservice.Web.Common
                             if (VERSION != null)
                             {
                                 object version = VERSION.GetValue(null);
-                                if (CurrentHelper.Token != null)
+                                if (Token != null)
                                 {
-                                    ServiceCfg entity = BS.Client.Common.CommonHelper.GetServiceEntity(UserName, CurrentHelper.Token.AccessToken, serName.ToString().Replace(".", "/"), version.ToString());
+                                    ServiceCfg entity = Client.Common.CommonHelper.GetServiceEntity(UserName, Token.AccessToken, serName.ToString().Replace(".", "/"), version.ToString());
 
                                     SerCfg.AddOrUpdate(serName.ToString(), entity, (k, v) => entity);
                                 }
@@ -171,14 +169,14 @@ namespace BS.Microservice.Web.Common
                 //用于记录当前用户帐号信息
                 UserModel m_CurrentUser = null;
 
-                if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Session["User"] != null)
+                if (HttpContext.Current != null && HttpContext.Current.Session["User"] != null)
                 {
-                    m_CurrentUser = (UserModel)System.Web.HttpContext.Current.Session["User"];
+                    m_CurrentUser = (UserModel)HttpContext.Current.Session["User"];
                 }
-                else if (System.Web.HttpContext.Current.Request.Cookies[CurrentHelper.LOGIN_INFO_COOKIE] != null)
+                else if (HttpContext.Current.Request.Cookies[LOGIN_INFO_COOKIE] != null)
                 {
-                    string loginName = System.Web.HttpContext.Current.Request.Cookies[CurrentHelper.LOGIN_INFO_COOKIE].Values[CurrentHelper.LOGIN_NAME_COOKIE];
-                    string pwd = System.Web.HttpContext.Current.Request.Cookies[CurrentHelper.LOGIN_INFO_COOKIE].Values[CurrentHelper.LOGIN_PWD_COOKIE];
+                    string loginName = HttpContext.Current.Request.Cookies[LOGIN_INFO_COOKIE].Values[LOGIN_NAME_COOKIE];
+                    string pwd = HttpContext.Current.Request.Cookies[LOGIN_INFO_COOKIE].Values[LOGIN_PWD_COOKIE];
 
                     if (!string.IsNullOrEmpty(loginName))
                     {
@@ -192,27 +190,44 @@ namespace BS.Microservice.Web.Common
 
                             m_CurrentUser = new UserModel();
                             m_CurrentUser.User = user;
-
-                            System.Web.HttpContext.Current.Session["User"] = m_CurrentUser;
+                            m_CurrentUser.Roles = new List<sys_role>();
+                            List<tblUser_Roles> roleList = BusinessContext.tblUser_Roles.GetList(Query<tblUser_Roles>.EQ(t => t.LoginName, loginName));
+                            List<int> roleIds = roleList.Select(p => p.Role_Id).ToList();
+                            if (roleIds != null && roleIds.Count > 0)
+                            {
+                                //strWhere = string.Format("rid in {0}", DBContext.AssemblyInCondition(roleIds));
+                                m_CurrentUser.Roles =
+                                    BusinessContext.sys_role.GetList(Query<sys_role>.In(t => t.Rid, roleIds));
+                            }
+                            HttpContext.Current.Session["User"] = m_CurrentUser;
                         }
                     }
                 }
-                else if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Request.IsAuthenticated && !string.IsNullOrEmpty(System.Web.HttpContext.Current.User.Identity.Name))
+                else if (HttpContext.Current != null && HttpContext.Current.Request.IsAuthenticated && !string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 {
                     m_CurrentUser = new UserModel();
 
-                    m_CurrentUser.User = BusinessContext.User.GetModel(System.Web.HttpContext.Current.User.Identity.Name);
-
-                    System.Web.HttpContext.Current.Session["User"] = m_CurrentUser;
+                    m_CurrentUser.User = BusinessContext.User.GetModel(HttpContext.Current.User.Identity.Name);
+                    m_CurrentUser.Roles = new List<sys_role>();
+                    List<tblUser_Roles> roleList =
+                        BusinessContext.tblUser_Roles.GetList(Query<tblUser_Roles>.EQ(t => t.LoginName,
+                            HttpContext.Current.User.Identity.Name));
+                    List<int> roleIds = roleList.Select(p => p.Role_Id).ToList();
+                    if (roleIds != null && roleIds.Count > 0)
+                    {
+                        //strWhere = string.Format("rid in {0}", DBContext.AssemblyInCondition(roleIds));
+                        m_CurrentUser.Roles = BusinessContext.sys_role.GetList(Query<sys_role>.In(t => t.Rid, roleIds));
+                    }
+                    HttpContext.Current.Session["User"] = m_CurrentUser;
                 }
 
                 return m_CurrentUser;
             }
             set
             {
-                if (System.Web.HttpContext.Current != null)
+                if (HttpContext.Current != null)
                 {
-                    System.Web.HttpContext.Current.Session["User"] = value;
+                    HttpContext.Current.Session["User"] = value;
                 }
             }
         }

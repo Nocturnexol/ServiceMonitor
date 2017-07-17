@@ -229,8 +229,16 @@
     <Compile Include="Areas\Service\Models\AppContactsInfo.cs" />
     <Compile Include="Areas\Service\Models\ServiceAlertContactsInfo.cs" />
     <Compile Include="Areas\Service\ServiceAreaRegistration.cs" />
+    <Compile Include="Areas\System\Controllers\ButtonNameController.cs" />
+    <Compile Include="Areas\System\Controllers\DepartController.cs" />
+    <Compile Include="Areas\System\Controllers\FunctionalController.cs" />
+    <Compile Include="Areas\System\Controllers\GroupButtonController.cs" />
+    <Compile Include="Areas\System\Controllers\RoleController.cs" />
     <Compile Include="Areas\System\Controllers\SysUserController.cs" />
+    <Compile Include="Areas\System\Controllers\Sys_role_rightController.cs" />
+    <Compile Include="Areas\System\Controllers\UserRoleController.cs" />
     <Compile Include="Areas\System\SystemAreaRegistration.cs" />
+    <Compile Include="BLL\MongoBll.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\ServiceListBLL.cs" />
     <Compile Include="Common\BusinessContext.cs" />
@@ -238,6 +246,7 @@
     <Compile Include="Common\CurrentHelper.cs" />
     <Compile Include="Common\DBContext.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DAL\MongoDal.cs" />
     <Compile Include="DAL\UserDAL.cs" />
     <Compile Include="DAL\ServiceListDAL.cs" />
     <Compile Include="Global.asax.cs">
@@ -248,8 +257,15 @@
     <Compile Include="Model\PageInfo.cs" />
     <Compile Include="Model\ReturnMessage.cs" />
     <Compile Include="Model\SubPageResult.cs" />
+    <Compile Include="Model\sys_role.cs" />
+    <Compile Include="Model\sys_role_right.cs" />
+    <Compile Include="Model\tblButtonName.cs" />
+    <Compile Include="Model\tblDepart.cs" />
+    <Compile Include="Model\tblGroupButton.cs" />
+    <Compile Include="Model\tblUser_Roles.cs" />
     <Compile Include="Model\UserEntity.cs" />
     <Compile Include="Model\UserModel.cs" />
+    <Compile Include="Model\View_GroupButtonInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\AppStateService.cs" />
     <Compile Include="Service\BaseFactory.cs" />
@@ -698,6 +714,21 @@
     <Content Include="Areas\Service\Views\Monitor\Edit.cshtml" />
     <Content Include="Areas\Service\Views\Manage\CreateContact.cshtml" />
     <Content Include="Areas\Service\Views\Manage\EditContact.cshtml" />
+    <Content Include="Areas\System\Views\Depart\Index.cshtml" />
+    <Content Include="Areas\System\Views\Depart\Create.cshtml" />
+    <Content Include="Areas\System\Views\Depart\Edit.cshtml" />
+    <Content Include="Areas\System\Views\Role\Index.cshtml" />
+    <Content Include="Areas\System\Views\Role\Create.cshtml" />
+    <Content Include="Areas\System\Views\Role\Edit.cshtml" />
+    <Content Include="Areas\System\Views\Sys_role_right\Index.cshtml" />
+    <Content Include="Areas\System\Views\ButtonName\Index.cshtml" />
+    <Content Include="Areas\System\Views\ButtonName\Create.cshtml" />
+    <Content Include="Areas\System\Views\ButtonName\Edit.cshtml" />
+    <Content Include="Areas\System\Views\Functional\Index.cshtml" />
+    <Content Include="Areas\System\Views\Functional\Create.cshtml" />
+    <Content Include="Areas\System\Views\Functional\Edit.cshtml" />
+    <Content Include="Areas\System\Views\GroupButton\Index.cshtml" />
+    <Content Include="Areas\System\Views\UserRole\Index.cshtml" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <None Include="Resource\fonts\fontawesome-webfont.eot" />
     <None Include="Resource\fonts\fontawesome-webfont.svg" />
@@ -722,6 +753,7 @@
     <Content Include="Views\Home\MainPage.cshtml" />
     <Content Include="Views\Shared\_Detail.cshtml" />
     <Content Include="Views\Shared\_Block.cshtml" />
+    <Content Include="Views\Shared\_Single.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

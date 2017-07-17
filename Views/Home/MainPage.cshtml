@@ -67,7 +67,7 @@
                     {
                         int Ncount = 0;
                         string sClass = "";
-                        var list_Detail = list.Where(k => k.Module_Id == node.n).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Rigth_Url, d = p.Group_Name, e = p.Group_Id }).Distinct().OrderBy(p => p.e).OrderBy(p => p.b).ToList();
+                        var list_Detail = list.Where(k => k.Module_Id == node.n).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Right_Url, d = p.Group_Name, e = p.Group_Id }).Distinct().OrderBy(p => p.e).OrderBy(p => p.b).ToList();
                         if (list_Detail.Count > 0)
                         {
                         <li><a href="#">
@@ -98,7 +98,7 @@
                                         HasNode.Add(node2.a);
                                     <li>
                                         @{
-                                        var list_Third = list.Where(k => k.Module_Id == node.n && k.Group_Name == node2.d && k.Module_Name != node2.d).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Rigth_Url }).Distinct().OrderBy(p => p.b).ToList();
+                                        var list_Third = list.Where(k => k.Module_Id == node.n && k.Group_Name == node2.d && k.Module_Name != node2.d).Select(p => new { a = p.Right_Name, b = p.Right_Id, c = p.Right_Url }).Distinct().OrderBy(p => p.b).ToList();
                                     
                                         }
                                         @if (list_Third.Count > 0)

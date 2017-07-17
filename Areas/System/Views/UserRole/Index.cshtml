@@ -1,0 +1,81 @@
+﻿@model IEnumerable<BS.Microservice.Web.Model.sys_role>
+@{
+    Layout = "~/Views/Shared/_Single.cshtml";
+    ViewBag.Title = "人员角色设置";
+    string LoginName = ViewBag.LoginName;
+    List<string> Roles_list = ViewBag.RoleList;
+}
+<div class="ibox-content form-horizontal" style="height: calc( 100% - 49px); padding: 0;
+    margin: 0; overflow-y: auto;overflow-x: hidden;">
+    <div class="col-sm-12" id="div_chks">
+        <ul style="width: 100%; margin-left: 20px; direction: ltr;">
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    var strValue = @LoginName + "|" + @item.Rid + "|";
+                    <li style="width: 150px; float: left;">
+                        @{
+                    if (Roles_list.Contains(strValue))
+                    {
+                        <input type="checkbox" id="checkboxBtn_@item.Rid" name="checkboxBtn" value="@strValue" checked="checked" class="i-checks" />
+                    }
+                    else
+                    {
+                        <input type="checkbox" id="checkboxBtn_@item.Rid" name="checkboxBtn" value="@strValue" class="i-checks" />
+                    }
+                        }
+                        <label for="checkboxBtn_@item.Rid" style="cursor: pointer;">@item.role_name</label>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<div style="position: fixed; bottom: 0px; height: 49px; border-top: 1px solid #DCDCDC;
+    padding: 10px; color: #333; width: 100%;float:right;text-align: right;">
+    <div>
+        <input type="checkbox" id="chkAll" class="i-checks" />
+        全选
+        <input type="button" value="保存" id="btnSave" class="btn btn-info" name="save" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        addCheckAllEvent("div_chks", "chkAll");
+    });
+    var indx = parent.layer.getFrameIndex(window.name);
+    $("#btnSave").click(function () {
+        layer.confirm("确定要保存该设置吗？", { icon: 3, title: '提示' }, function () {
+            var data = getCheckBox();
+            if (data != null) {
+                data = { "paramData": JSON.stringify(data), "LoginName": "@LoginName" };
+                $.post("/System/UserRole/SaveData", data, function (result) {
+                    if (result.IsSuccess) {
+                        layer.alert("保存成功！", { icon: 1 }, function (index) {
+                            parent.layer.close(indx);
+                            layer.close(index);
+                        });
+                    } else {
+                        layer.alert("保存失败," + result.Message);
+                    }
+                }, "json");
+            }
+        });
+    });
+    function getCheckBox() {
+        var RightInfo = new Array();
+        var data = [];
+        if ($(":checkbox[id != 'chkAll']:checked").size() <= 0) {
+            layer.msg("请选择要设置的角色！");
+            return null;
+        }
+        $(":checkbox[id != 'chkAll']").each(function() {
+            if ($(this).is(':checked')) {
+                RightInfo = this.value.split('|');
+                data.push({ "LoginName": RightInfo[0], "Role_Id": RightInfo[1], "Remark": RightInfo[2] });
+            }
+        });
+        return data;
+    }
+</script>

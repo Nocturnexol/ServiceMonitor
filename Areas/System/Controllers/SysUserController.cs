@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using BS.Microservice.Web.Model;
 using BS.Microservice.Web.Common;
 using BS.Common;
+using MongoDB.Driver.Builders;
+
 namespace BS.Microservice.Web.Areas.System.Controllers
 {
     [AllowAnonymous]
@@ -16,12 +17,23 @@ namespace BS.Microservice.Web.Areas.System.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.BtnList = new List<string>() { "添加", "编辑" };
+            ViewBag.BtnList = CommonHelper.GetBtnAuthorityForPage("用户管理"); var query = BusinessContext.tblDepart.GetList();
+            List<SelectListItem> DepartList = query.GroupBy(p => p.dept).Select(p => new SelectListItem { Text = p.Key, Value = p.Key }).ToList();
+            DepartList.Insert(0, new SelectListItem { Text = "-请选择-", Value = "", Selected = true });
+            ViewBag.DepartList = DepartList;
             return View();
         }
 
         public ActionResult Create()
         {
+            List<SelectListItem> deptList = BusinessContext.tblDepart.GetList().Select(p => new SelectListItem { Text = p.dept, Value = p.dept }).ToList();
+            deptList.Insert(0, new SelectListItem { Text = "-请选择-", Value = "", Selected = true });
+            ViewData["deptList"] = deptList;
+
+            List<SelectListItem> RoleList = BusinessContext.sys_role.GetList().Select(p => new SelectListItem { Text = p.role_name, Value = p.Rid.ToString() }).ToList();
+            RoleList.Insert(0, new SelectListItem { Text = "-请选择-", Value = "", Selected = true });
+
+            ViewData["RoleList"] = RoleList;
             return View();
         }
         [HttpPost]
@@ -33,10 +45,10 @@ namespace BS.Microservice.Web.Areas.System.Controllers
             {
                 if (collection.UserPwd == "" || string.IsNullOrEmpty(collection.UserPwd))
                 {
-                    ///默认密码MD5加密
+                    //默认密码MD5加密
                     collection.UserPwd = Md5.Encode("123456");
                 }
-                ///根据登录名称查询是否已经存在,
+                //根据登录名称查询是否已经存在,
                 var query = BusinessContext.User.GetModel(collection.LoginName);
                 if (query != null)
                 {
@@ -75,7 +87,22 @@ namespace BS.Microservice.Web.Areas.System.Controllers
             {
                 return HttpNotFound();
             }
-
+            if (user.DefaultRoleId == 0)
+            {
+                var q = Query.And(Query<tblUser_Roles>.EQ(t => t.LoginName, user.LoginName),
+                    Query<tblUser_Roles>.EQ(t => t.IsDefault, true));
+                var query = BusinessContext.tblUser_Roles.GetList(q).OrderBy(p => p.Rid).Select(p => p.Role_Id).ToList();
+                if (query != null && query.Count > 0)
+                {
+                    user.DefaultRoleId = query[0];
+                }
+            }
+            List<SelectListItem> deptList = BusinessContext.tblDepart.GetList().Select(p => new SelectListItem { Text = p.dept, Value = p.dept, Selected = user.dept_New == p.dept }).ToList();
+            deptList.Insert(0, new SelectListItem { Text = "-请选择-", Value = "" });
+            ViewData["deptList"] = deptList;
+            List<SelectListItem> RoleList = BusinessContext.sys_role.GetList().Select(p => new SelectListItem { Text = p.role_name, Value = p.Rid.ToString(), Selected = user.DefaultRoleId == p.Rid }).ToList();
+            RoleList.Insert(0, new SelectListItem { Text = "-请选择-", Value = "" });
+            ViewData["RoleList"] = RoleList;
 
             return View(user);
         }

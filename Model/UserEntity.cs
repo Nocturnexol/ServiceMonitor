@@ -8,8 +8,6 @@ namespace BS.Microservice.Web.Model
     [Serializable]
     public partial class UserEntity
     {
-        public UserEntity()
-        { }
         #region Model
         public int _id { set; get; }
         private string _loginname;
@@ -22,6 +20,15 @@ namespace BS.Microservice.Web.Model
         private string _password;
         private string _remark;
 
+        /// <summary>
+        /// 默认角色Id
+        /// </summary>
+        private int _DefaultRoleId;
+        public int DefaultRoleId
+        {
+            set { _DefaultRoleId = value; }
+            get { return _DefaultRoleId; }
+        }
         /// <summary>
         /// 
         /// </summary>

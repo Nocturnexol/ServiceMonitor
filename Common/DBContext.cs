@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Configuration;
 using BS.DB;
-using System.Configuration;
 
 namespace BS.Microservice.Web.Common
 {
@@ -11,10 +7,10 @@ namespace BS.Microservice.Web.Common
     {
         public static MongoDBVisitor Mongo;
         public static string DbName = "Microservice";
+        public static string Host = ConfigurationManager.AppSettings["mongo"];
         static DBContext()
         {
-            string host = ConfigurationManager.AppSettings["mongo"];
-            Mongo = DBFactory.CreateMongoDBAccess(host);
+            Mongo = DBFactory.CreateMongoDBAccess(Host);
         }
     }
 }

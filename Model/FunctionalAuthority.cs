@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BS.Microservice.Web.Model
 {
-    public class FunctionalAuthority
+    public class FunctionalAuthority:BaseModel
     {
         public FunctionalAuthority()
         { }
@@ -79,7 +79,7 @@ namespace BS.Microservice.Web.Model
         /// <summary>
         /// 
         /// </summary>
-        public string Rigth_Url
+        public string Right_Url
         {
             set { _rigth_url = value; }
             get { return _rigth_url; }
