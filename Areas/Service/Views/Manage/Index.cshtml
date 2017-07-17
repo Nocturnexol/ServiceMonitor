@@ -82,6 +82,7 @@ $(function () {
         var postData = { keyword: $("#keyword").val() };
         var col = [
             { name: '主键', index: '_id', key: true, hidden: true },
+            //{ index: 'IsApprovedFlag', hidden: true,formatter: function (id, a, b) {return b.IsApproved }},
             { name: '服务名称', index: 'ServiceName' },
             { name: '二级服务名称', index: 'SecondaryName' },
             { name: '部署机器', index: 'Host' },
@@ -104,31 +105,50 @@ $(function () {
             { name: '服务ID', width: 40,index: 'PrimaryId' },  
             { name: '二级服务ID',width: 40, index: 'SecondaryId' },
             { name: '最近启动时间', index: 'StartupDate', formatter: 'datetime' },
-             { name: '是否审核', width: 40, index: 'IsApproved', formatter: function (id) { return id ? "是" : "否" } },
-            { name: '是否启用报警', index: 'IsAlert',formatter:function(id, a, b){return "<span onclick='OpenorCloseAlert("+b._id+")' style='cursor: pointer;'>"+(id?"已启用":"未启用")+"</span>";}},
+             { name: '是否审核', width: 40, index: 'IsApproved', formatter: function (id) { return id ? '<span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:green"></span>' : '<span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red"></span>' } },
+            { name: '是否启用报警', index: 'IsAlert', formatter: function (id, a, b) { return "<span onclick='OpenorCloseAlert(" + b._id + ")' style='cursor: pointer;'>" + (id ? '<span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:green"></span>' : '<span class="glyphicon glyphicon-remove" aria-hidden="true" style="color:red"></span>') + "</span>"; } },
             { name: '版本', width: 40, index: 'Version' },
             { name: '备注', width: 80, index: 'Remark' }
         ];
         var oper=null;
-        @if (BtnList.Contains("编辑") || BtnList.Contains("审批") || BtnList.Contains("删除"))
-        {
-        <text>
-         oper = { name: '操作', index: '_id', title: false, sortable: false, width: 40, align: "center", formatter: function (id, a, b) {
-                    return "</text>if (BtnList.Contains("编辑"))
-                                   {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id +"\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
-                                   +"</text>if (BtnList.Contains("审批"))
-                                            {<text><a title='审批' href='javascript:;' onclick='regService(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='fa fa-file-powerpoint-o'></i></a></text>}<text>"
-                   + "</text>if (BtnList.Contains("详细"))
-                             {<text><a title='详细' data-title='服务详情' onclick='tablayout(this,\""+ b.ServiceName+"-"+ b.SecondaryName+"("+b.Version+ ")\")'  _href='/Service/Manage/Detail?id=" + b._id +"' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6bf;</i></a></text>}<text>"
-                                
-                   
-                    +"</text>if (BtnList.Contains("删除"))
-                             {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>"
-                    ;          
-                }
-                };
-        </text>
+        @*@if (BtnList.Contains("编辑") || BtnList.Contains("审批") || BtnList.Contains("删除"))
+        {*@
+    oper = {
+        name: '操作', index: 'Remark', title: false, sortable: false, width: 40, align: "center", formatter: function (id, a, b) {
+            var html = '';
+            html += "<a title='编辑' href='javascript:;' onclick='edit(\"" +
+                b._id +
+                "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>";
+            if (!b.IsApproved) {
+                html += "<a title='审批' href='javascript:;' onclick='regService(\"" +
+                    b._id +
+                    "\")' class='ml-5' style='text-decoration:none'><i class='fa fa-file-powerpoint-o'></i></a>";
+            }
+            html += "<a title='详细' data-title='服务详情' onclick='tablayout(this,\"" +
+                b.ServiceName +
+                "-" +
+                b.SecondaryName +
+                "(" +
+                b.Version +
+                ")\")'  _href='/Service/Manage/Detail?id=" +
+                b._id +
+                "' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6bf;</i></a>";
+
+            return html;
+            // return "if (BtnList.Contains("编辑"))
+            //                {<a title='编辑' href='javascript:;' onclick='edit(\"" + b._id +"\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>}"
+            //                + "if (BtnList.Contains("审批"))
+            //                         {<a title='审批' href='javascript:;' onclick='regService(\"" + b._id + "\")' class='ml-5' style='text-decoration:none'><i class='fa fa-file-powerpoint-o'></i></a>}"
+            //+ "if (BtnList.Contains("详细"))
+            //          {<a title='详细' data-title='服务详情' onclick='tablayout(this,\""+ b.ServiceName+"-"+ b.SecondaryName+"("+b.Version+ ")\")'  _href='/Service/Manage/Detail?id=" + b._id +"' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6bf;</i></a>}"
+
+
+            // +"if (BtnList.Contains("删除"))
+            //          {<a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>}"
+            // ;          
         }
+                };
+        //}
         if(oper!=null)
         col.push(oper);
         var config={
@@ -139,6 +159,16 @@ $(function () {
         
         };
         JQ.InitGrid(config);
+    ////隐藏审核按钮
+    //setTimeout(function() {
+    //        var o = $("#jqGridList").jqGrid("getRowData");
+    //        console.log(o);
+    //        $(o).each(function() {
+    //            if (this.IsApprovedFlag === "true")
+    //                $('tr[id="' + this._id + '"]').children('td:last-child').children('a:nth-child(2)').remove();
+    //        });
+    //    },
+    //    100);
 
     //jsTree
     $.getJSON("/Service/Manage/GetTree"+'@suffix',

@@ -51,7 +51,7 @@ namespace BS.Microservice.Web.DAL
                 .GetCollection(Col);
             var tree =
                 col.FindAs<ServiceEntity>(type.HasValue ? Query<ServiceEntity>.EQ(t => t.ServiceType, type.Value) : null)
-                    .Select(t => new {t._id, t.ServiceName, t.SecondaryName});
+                    .Select(t => new {t._id, t.ServiceName, t.SecondaryName}).ToList();
             var pTree =
                 tree.GroupBy(t => t.ServiceName)
                     .Select(t => new TreeModel {id ="1_"+ t.Key, parent = "0", text = t.Key});
