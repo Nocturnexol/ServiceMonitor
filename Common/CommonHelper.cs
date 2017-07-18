@@ -64,7 +64,7 @@ namespace BS.Microservice.Web.Common
             }
             catch (Exception ex)
             {
-                LogManager.Error("GetFunctionalAuthoirty", ex);
+                LogManager.Error("GetFunctionalAuthority", ex);
             }
             return list;
         }
