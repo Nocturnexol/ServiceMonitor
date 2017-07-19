@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using BS.Microservice.Web.Model;
@@ -25,19 +23,19 @@ namespace BS.Microservice.Web.DAL
         //}
         public bool Exists(string userName)
         {
-            IMongoQuery query = Query.EQ("UserName", userName);
+            var query = Query.EQ("UserName", userName);
             return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
 
         }
-        public bool Exists(string userName,int _id)
+        public bool Exists(string userName,int id)
         {
-            IMongoQuery query = Query.And(Query.EQ("UserName", userName), Query.NE("_id", _id));
+            var query = Query.And(Query.EQ("UserName", userName), Query.NE("_id", id));
             return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
         }
 
         public bool Exists(string serName, string secName)
         {
-            IMongoQuery query = Query.And(Query.EQ("ServiceName", serName), Query.EQ("SecondaryName", secName));
+            var query = Query.And(Query.EQ("ServiceName", serName), Query.EQ("SecondaryName", secName));
             return DBContext.Mongo.Count(DBContext.DbName, Col, query) > 0;
         }
 
@@ -54,8 +52,8 @@ namespace BS.Microservice.Web.DAL
                     .Select(t => new {t._id, t.ServiceName, t.SecondaryName}).ToList();
             var pTree =
                 tree.GroupBy(t => t.ServiceName)
-                    .Select(t => new TreeModel {id ="1_"+ t.Key, parent = "0", text = t.Key});
-            var sec = tree.GroupBy(t => t.SecondaryName);
+                    .Select(t => new TreeModel {id = "1_" + t.Key, parent = "0", text = t.Key}).ToList();
+            var sec = tree.GroupBy(t => t.SecondaryName).ToList();
             var sTree = (from s in sec
                 let first = tree.Where(x => x.SecondaryName == s.Key).GroupBy(x => new {x.SecondaryName, x.ServiceName})
                 from f in first
@@ -81,7 +79,14 @@ namespace BS.Microservice.Web.DAL
             //var pTree = p.Select((t, i) => new TreeModel {id = "1_" + t, parent = "1", text = t.ToString()});
             //var s = DBContext.Mongo.Distinct(DBContext.DbName, COL, "SecondaryName");
             //var sTree = s.Select((t, i) => new TreeModel { id = "2_" + t, parent = "2", text = t.ToString() });
-            res.AddRange(pTree);
+
+
+            var names = DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
+                .GetCollection("GroupName")
+                .FindAs<GroupName>(Query<GroupName>.In(t => t.ServiceName, pTree.Select(x => x.text)))
+                .ToList();
+            res.AddRange(names.Join(pTree, g => g.ServiceName, t => t.text,
+                (g, t) => new TreeModel {id = t.id, parent = t.parent, text = g.ServiceNameCN}));
             res.AddRange(sTree);
             return res;
         }
@@ -89,28 +94,57 @@ namespace BS.Microservice.Web.DAL
         public bool Add(ServiceEntity model)
         {
             model._id = Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, Col)) + 1;
+
+            var service =
+                DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
+                    .GetCollection("GroupName")
+                    .FindAs<GroupName>(Query<GroupName>.EQ(t => t.ServiceName, model.ServiceName))
+                    .ToList();
+            if (service.Any())
+            {
+                model.PrimaryId = service.First()._id;
+            }
+
+            var cursor = DBContext.Mongo.GetMongoDB(DBContext.DbName, true).GetCollection(Col).FindAllAs<ServiceEntity>();
+            cursor.SetSortOrder(SortBy.Descending("SecondaryId"));
+            var first = cursor.FirstOrDefault();
+
+            model.SecondaryId = first != null ? first.SecondaryId + 1 : 1;
+
             return DBContext.Mongo.Insert(DBContext.DbName,Col,model);
         }
 
         public bool Update(ServiceEntity model)
         {
+            var service =
+                DBContext.Mongo.GetMongoDB(DBContext.DbName, true)
+                    .GetCollection("GroupName")
+                    .FindAs<GroupName>(Query<GroupName>.EQ(t => t.ServiceName, model.ServiceName))
+                    .ToList();
+            if (service.Any())
+            {
+                model.PrimaryId = service.First()._id;
+            }
             return DBContext.Mongo.Upsert(DBContext.DbName, Col, model);
         }
        
-        public bool Delete(int _id)
+        public bool Delete(int id)
         {
-            IMongoQuery query = Query.EQ("_id", _id);
+            var query = Query.EQ("_id", id);
             return DBContext.Mongo.Remove(DBContext.DbName, Col, query);
         }
-
-        public ServiceEntity GetModel(int _id)
+        public ServiceEntity GetModel(IMongoQuery query)
         {
-            IMongoQuery query = Query.EQ("_id", _id);
+            return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);
+        }
+        public ServiceEntity GetModel(int id)
+        {
+            var query = Query.EQ("_id", id);
             return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);
         }
         public ServiceEntity GetModel(string userName)
         {
-            IMongoQuery query = Query.EQ("LoginName", userName);
+            var query = Query.EQ("LoginName", userName);
             return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);
         }
 

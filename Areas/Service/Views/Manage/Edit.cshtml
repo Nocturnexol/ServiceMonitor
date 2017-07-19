@@ -4,10 +4,11 @@
     Layout = "~/Views/Shared/_Operate.cshtml";
     List<string> InList = ViewBag.InList as List<string>;
     List<string> OutList = ViewBag.OutList as List<string>;
-    InList = InList == null || InList.Count == 0 ? new List<string>() { "" } : InList;
-    OutList = OutList == null || OutList.Count == 0 ? new List<string>() { "" } : OutList;
+    InList = InList == null || InList.Count == 0 ? new List<string> { "" } : InList;
+    OutList = OutList == null || OutList.Count == 0 ? new List<string> { "" } : OutList;
 }
 @Html.HiddenFor(mdoelItem => mdoelItem._id)
+@Html.HiddenFor(mdoelItem => mdoelItem.SecondaryId)
 <style type="text/css">
     .empty
     {
@@ -62,14 +63,15 @@
         服务名称<span style="color: #FF9966"> *</span>
     </label>
     <div class="input-group" style="width: 100%">
-        @Html.TextBoxFor(modelItem => modelItem.ServiceName, new { @placeholder = "服务名称", @class = "form-control", @required = "" })
+        @Html.DropDownListFor(m => m.ServiceName, ViewBag.ServiceList as List<SelectListItem>, "-请选择-", new { placeholder = "服务名称", @class = "form-control", required = "" })
+        @* @Html.TextBoxFor(modelItem => modelItem.ServiceName, new { placeholder = "服务名称", @class = "form-control", required = "" })*@
     </div>
 
     <label class="control-label">
         二级服务名称<span style="color: #FF9966"> *</span>
     </label>
     <div class="input-group" style="width: 100%">
-        @Html.TextBoxFor(modelItem => modelItem.SecondaryName, new { @placeholder = "二级服务名称", @class = "form-control", @required = "" })
+        @Html.TextBoxFor(modelItem => modelItem.SecondaryName, new { placeholder = "二级服务名称", @class = "form-control", required = "" })
     </div>
 </div>
 <div class="form-group form-groupm" style="padding-left: 20px;">
@@ -77,13 +79,13 @@
         部署机器<span style="color: #FF9966"> *</span>
     </label>
     <div class="input-group" style="width: 100%">
-        @Html.TextBoxFor(modelItem => modelItem.Host, new { @placeholder = "部署机器", @class = "form-control", @required = "" })
+        @Html.TextBoxFor(modelItem => modelItem.Host, new { placeholder = "部署机器", @class = "form-control", required = "" })
     </div>
     <label class="control-label">
         版本<span style="color: #FF9966"> *</span>
     </label>
     <div class="input-group" style="width: 100%">
-        @Html.TextBoxFor(modelItem => modelItem.Version, new { @placeholder = "版本", @class = "form-control", @required = "" })
+        @Html.TextBoxFor(modelItem => modelItem.Version, new { placeholder = "版本", @class = "form-control", required = "" })
     </div>
 </div>
 

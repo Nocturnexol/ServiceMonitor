@@ -1,72 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using BS.Microservice.Web.DAL;
 using BS.Microservice.Web.Model;
 using BS.Common.Model.Mongo.ServiceModels;
+using MongoDB.Driver;
 
 namespace BS.Microservice.Web.BLL
 {
     public class ServiceListBLL
     {
-        private readonly ServiceListDAL dal = new ServiceListDAL();
-        public ServiceListBLL()
-        {
-        }
+        private readonly ServiceListDAL _dal = new ServiceListDAL();
+
         public bool Exists(string userName)
         {
-            return dal.Exists(userName);
+            return _dal.Exists(userName);
         }
         public bool Exists(string userName, int _id)
         {
-            return dal.Exists(userName, _id);
+            return _dal.Exists(userName, _id);
         }
 
         public bool Exists(string serName, string secName)
         {
-            return dal.Exists(serName, secName);
+            return _dal.Exists(serName, secName);
         }
         public bool Update(ServiceEntity model)
         {
-            return dal.Update(model);
+            return _dal.Update(model);
         }
         public bool Add(ServiceEntity model)
         {
-            return dal.Add(model);
+            return _dal.Add(model);
         }
         public List<TreeModel> GetTreeModels(ServiceTypeEnum? type=null)
         {
-            return dal.GetTreeModels(type);
+            return _dal.GetTreeModels(type);
         }
 
-        public bool Delete(int _id)
+        public bool Delete(int id)
         {
-            return dal.Delete(_id);
+            return _dal.Delete(id);
         }
 
-        public ServiceEntity GetModel(int _id)
+        public ServiceEntity GetModel(IMongoQuery query)
         {
-            return dal.GetModel(_id);
+            return _dal.GetModel(query);
+        }
+        public ServiceEntity GetModel(int id)
+        {
+            return _dal.GetModel(id);
         }
         public ServiceEntity GetModel(string userName)
         {
-            return dal.GetModel(userName);
+            return _dal.GetModel(userName);
         }
 
         public IList<SelectListItem> GetHostList(ServiceTypeEnum? type=null)
         {
-            return dal.GetHostList(type);
+            return _dal.GetHostList(type);
         }
         public List<ServiceEntity> GetModelList(ServiceTypeEnum? type, string orderBy, string desc, int page, int pageSize,string id,string keyword,string isApproved,string host,out int count)
         {
-            return dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host,out count);
+            return _dal.GetModelList(type, orderBy, desc, page, pageSize, id, keyword, isApproved, host,out count);
         }
 
         public int GetCount(ServiceTypeEnum? type = null)
         {
-            return dal.GetCount(type);
+            return _dal.GetCount(type);
         }
     }
 }

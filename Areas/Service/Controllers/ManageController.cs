@@ -19,6 +19,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
+using CommonHelper = BS.Microservice.Web.Common.CommonHelper;
 
 namespace BS.Microservice.Web.Areas.Service.Controllers
 {
@@ -32,21 +33,30 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
         public ActionResult Index(int? type)
         {
-            ViewBag.BtnList = new List<string> { "添加", "编辑", "审批", "详细","搜索","导出" };
+            ViewBag.BtnList = CommonHelper.GetBtnAuthorityForPage("服务管理");
             ViewBag.hostList = BusinessContext.ServiceList.GetHostList((ServiceTypeEnum?) type);
             ViewBag.Type = type;
             return View();
         }
 
+        private List<SelectListItem> GetServiceList()
+        {
+            return BusinessContext.GroupName.GetList().Select(t => new SelectListItem
+            {
+                Text = t.ServiceNameCN,
+                Value = t.ServiceName
+            }).ToList();
+        }
         public ActionResult Create()
         {
+            ViewBag.ServiceList = GetServiceList();
             return View();
         }
 
         [HttpPost]
         public ActionResult Create(ServiceEntity collection,int? type,string isContinue="1")
         {
-            ReturnMessage rm = new ReturnMessage(false);
+            var rm = new ReturnMessage(false);
             try
             {
 
@@ -121,6 +131,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 }
             }
 
+            ViewBag.ServiceList = GetServiceList();
             return View(model);
         }
 
@@ -134,26 +145,26 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         [HttpPost]
         public ActionResult Edit(ServiceEntity collection)
         {
-            ReturnMessage RM = new ReturnMessage(false);
+            var rm = new ReturnMessage(false);
             try
             {
-                List<string> inList = new List<string>();
-                List<string> outList = new List<string>();
-                string inStr = Request["inAddr"];
+                var inList = new List<string>();
+                var outList = new List<string>();
+                var inStr = Request["inAddr"];
                 if (!string.IsNullOrWhiteSpace(inStr))
                 {
                     inList = inStr.Split(',').ToList();
                 }
-                string outStr = Request["outAddr"];
+                var outStr = Request["outAddr"];
                 if (!string.IsNullOrWhiteSpace(outStr))
                 {
                     outList = outStr.Split(',').ToList();
                 }
-                ServiceCfg cfg = new ServiceCfg();
+                var cfg = new ServiceCfg();
                 cfg.InAddr = inList;
                 cfg.OutAddr = outList;
                 cfg.Remarks = collection.Remark;
-                ServiceEntity model = BusinessContext.ServiceList.GetModel(Convert.ToInt32(Request["_id"]));
+                var model = BusinessContext.ServiceList.GetModel(Convert.ToInt32(Request["_id"]));
                 model.ServiceName = collection.ServiceName;
                 model.SecondaryName = collection.SecondaryName;
                 model.Host = collection.Host;
@@ -161,15 +172,15 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 model.Remark = collection.Remark;
                 model.RegContent = JsonConvert.SerializeObject(cfg);
 
-                RM.IsSuccess = BusinessContext.ServiceList.Update(model);
+                rm.IsSuccess = BusinessContext.ServiceList.Update(model);
             }
             catch (Exception ex)
             {
-                RM.Message = "数据异常,请刷新重试";
+                rm.Message = "数据异常,请刷新重试";
                 LogManager.Error(ex);
             }
 
-            return Json(RM, JsonRequestBehavior.AllowGet);
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

@@ -253,6 +253,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Model\FunctionalAuthority.cs" />
+    <Compile Include="Model\GroupName.cs" />
     <Compile Include="Model\JqGridData.cs" />
     <Compile Include="Model\PageInfo.cs" />
     <Compile Include="Model\ReturnMessage.cs" />

@@ -108,5 +108,11 @@ namespace BS.Microservice.Web.Common
             }
         }
         private static MongoBll<tblUser_Roles> _tblUser_Roles;
+
+        public static MongoBll<GroupName> GroupName
+        {
+            get { return _groupName ?? (_groupName = new MongoBll<GroupName>()); }
+        }
+        private static MongoBll<GroupName> _groupName;
     }
 }
