@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "角色管理";
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "角色管理";
+    ViewBag.FirstItem = "系统管理";
+
+    ViewBag.AddUrl = "/System/Role/Create";
+    ViewBag.EditUrl = "/System/Role/Edit/";
+    ViewBag.DeleteUrl = "/System/Role/DataDel";
+}
+<script type="text/javascript">
+
+    function toAuthPage(id, roleName, title) {
+        poplayer(title + '权限设置', '/System/Sys_role_right?roleId=' + id + "&roleName=" + roleName, "800", "450px");
+    }
+    function toAuthPageDetail(id, roleName, title) {
+        poplayer(title + '明细权限设置', '/System/Sys_role_detail?roleId=' + id + "&roleName=" + roleName, "800", "450px");
+    }
+    $(function () {
+        var config = {
+            title: '角色列表',
+            url: '/Role/GetRoleDataList',
+            postData: { keyword: $("#keyword").val() },
+            colNames: ['主键', '角色名', '备注'@if (BtnList.Contains("编辑") || BtnList.Contains("删除")||BtnList.Contains("授权") || BtnList.Contains("明细授权"))
+                        {<text>, '操作'</text>}],
+            colModel: [
+                        { name: 'Rid', index: 'Rid', width: 60, key: true, hidden: true },
+                        { name: 'role_name', index: 'role_name', width: 50, align: "center" },
+                        { name: 'role_desc', index: 'role_desc', width: 55, align: "center" }
+                        @if (BtnList.Contains("编辑") || BtnList.Contains("删除")||BtnList.Contains("授权") || BtnList.Contains("明细授权"))
+                        {<text>
+                        ,
+                        {
+                            name: 'Rid', index: 'Rid', title: false, sortable: false, width: 30, align: "center", formatter: function (id, a, b) {
+                                return "</text>if (BtnList.Contains("编辑"))
+                                       {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
+                            + "</text>if (BtnList.Contains("授权"))
+                                       {<text><a title='授权' href='javascript:;' onclick='toAuthPage(\"" + id + "\",\"" + b.role_name + "\",\"角色[" + b.role_name + "] \")' class='ml-5' style='text-decoration:none'><i class='fa fa-eye'></i></a></text>}<text>"
+                            + "</text>if (BtnList.Contains("明细授权"))
+                                       {<text><a title='明细授权' href='javascript:;' onclick='toAuthPageDetail(\"" + id + "\",\"" + b.role_name + "\",\"角色[" + b.role_name + "] \")' class='ml-5' style='text-decoration:none'><i class='fa fa-lock'></i></a></text>}<text>"
+                                      + "</text>if (BtnList.Contains("删除"))
+                                       {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>";
+                            }
+                        }</text>}
+            ]
+        };
+        JQ.InitTable(config);
+
+    });
+
+</script>
+@section Search {
+    <input id="keyword" type="text" class="input form-control" placeholder="角色名" name="keyword" />
+}

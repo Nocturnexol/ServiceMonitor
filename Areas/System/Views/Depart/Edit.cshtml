@@ -1,0 +1,20 @@
+﻿@model BS.Microservice.Web.Model.tblDepart
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+<div class="form-group  form-groupm">
+    @Html.HiddenFor(modelItem => modelItem.Rid)
+    <label class="col-sm-2 control-label">
+        部门名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.dept, new { @placeholder = "部门名称", @class = "form-control", @required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        备注&nbsp;
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.remark, new { @placeholder = "备注", @class = "form-control" })
+    </div>
+</div>

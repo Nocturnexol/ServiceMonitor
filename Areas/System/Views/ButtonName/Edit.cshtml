@@ -1,0 +1,19 @@
+﻿@model BS.Microservice.Web.Model.tblButtonName
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+@Html.HiddenFor(model => model.Rid)
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        按钮名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.ButtonName, new { placeholder = "按钮名称", @class = "form-control", required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        备注
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control" })
+    </div>
+</div>

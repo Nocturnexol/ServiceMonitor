@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "按钮管理";
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "按钮管理";
+    ViewBag.FirstItem = "系统管理";
+    ViewBag.AddUrl = "/System/ButtonName/Create";
+    ViewBag.EditUrl = "/System/ButtonName/Edit/";
+    ViewBag.DeleteUrl = "/System/ButtonName/DataDel";
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            title: '按钮名称列表',
+            url: '/ButtonName/GetButtonNameDataList',
+            postData: { keyword: $("#searchTxt").val() },
+
+            colNames: ['主键', '按钮名称', '备注'@if (BtnList.Contains("编辑") || BtnList.Contains("删除"))
+                                         {<text>, '操作'</text>}],
+            colModel: [
+                        { name: 'Rid', index: 'Rid', width: 60, key: true, hidden: true },
+
+                        { name: 'ButtonName', index: 'ButtonName', width: 55, align: "center" },
+                        { name: 'Remark', index: 'Remark', width: 55, align: "center" }
+                        @if (BtnList.Contains("编辑") || BtnList.Contains("删除"))
+                        {<text>
+                        ,
+                        {
+                            name: 'Rid', index: 'Rid', title: false, width: 30, sortable: false, align: "center", formatter: function (id) {
+                                return "</text>if (BtnList.Contains("编辑"))
+                                       {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
+                                       + " </text>if (BtnList.Contains("删除"))
+                                         {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>";
+                            }
+                        }
+               </text>
+                        }
+            ]
+        };
+        JQ.InitTable(config);
+    });
+</script>
+@section Search {
+    <input id="keyword" type="text" class="input form-control" placeholder="按钮名称" name="keyword" />
+}

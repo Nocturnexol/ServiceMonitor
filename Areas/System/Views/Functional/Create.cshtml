@@ -1,0 +1,40 @@
+﻿@model BS.Microservice.Web.Model.FunctionalAuthority
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        模块名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.Module_Name, new { placeholder = "模块名称", @class = "form-control", required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        分组名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.Group_Name, new { placeholder = "分组名称", @class = "form-control", required = "" })
+    </div>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        页面名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.Right_Name, new { placeholder = "页面名称", @class = "form-control", required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        页面路径<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.Right_Url, new { placeholder = "页面路径", @class = "form-control", required = "" })
+    </div>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        备注&nbsp;
+    </label>
+    <div class="col-sm-10">
+        @Html.TextBoxFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control" })
+    </div>
+</div>

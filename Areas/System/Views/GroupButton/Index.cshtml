@@ -1,0 +1,123 @@
+﻿@using BS.Microservice.Web.Model
+@model IEnumerable<tblButtonName>
+@{
+    Layout = "~/Views/Shared/_Single.cshtml";
+    ViewBag.Title = "按钮权限设置";
+    FunctionalAuthority Functional = ViewBag.Functional as FunctionalAuthority;
+    List<int?> HasButtonIdList = ViewBag.HasButtonIdList as List<int?>;
+    string functionalTitle = (Functional != null ? string.Format("{0}->{1}", Functional.Module_Name, Functional.Right_Name) : "");
+}
+@{
+
+    <div class="row" style="padding-top: 20px;">
+        <div class="col-sm-12" id="div_chks">
+            <ul style="width: 100%; margin-left: 20px; direction: ltr;">
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <li style="width: 120px; float: left;">
+                            @if (HasButtonIdList.Contains(item.Rid))
+                            {
+                                <input type="checkbox" id="checkboxBtn_@item.Rid" name="checkboxBtn" value="@item.Rid" checked="checked" class="i-checks" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="checkboxBtn_@item.Rid" name="checkboxBtn" value="@item.Rid" class="i-checks" />
+                            }
+                            <label for="checkboxBtn_@item.Rid" style="cursor: pointer;">@item.ButtonName</label>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div style="float: right; margin-right: 100px;margin-top:10px;">
+            <input type="checkbox" id="chkAll" class="i-checks" />
+            全选
+            <input type="button" value="保存" id="btnSave" class="btn btn-info" name="save" />
+        </div>
+    </div>
+
+
+}
+@*@{
+        <div class="demo">
+            <div class="div_map">
+                <label class="div_map_lbl1">
+                    系统管理
+                </label>
+                <img style="width: 5px; height: 9px" alt="" src="../..//Resource/images/u34.png" />
+                <label class="div_map_lbl2">
+                    按钮权限设置
+                </label>
+            </div>
+            <div class="div_search">
+                &nbsp;<input type="checkbox" id="chkAll" />
+                全选
+                <label class="lbl">@functionalTitle</label>
+                &nbsp;&nbsp;
+                    <input type="button" value="保存" id="btnSave" class="btn" name="save" />
+            </div>
+            <br />
+            <div id="div_chks">
+                <ul style="width: 800px; margin-left: 20px; direction: ltr;">
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                        <li style="width: 120px; float: left;">
+                            @if (HasButtonIdList.Contains(item.Rid))
+                            {
+                                <input type="checkbox" name="checkboxRole" value="@item.Rid" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="checkboxRole" value="@item.Rid" />
+                            }
+                            <span>@item.ButtonName</span> </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    }*@
+<script type="text/javascript">
+    $(function () {
+        addCheckAllEvent("div_chks", "chkAll");
+    });
+    var indx = parent.layer.getFrameIndex(window.name);
+    $("#btnSave").click(function () {
+        layer.confirm("确定保存设置吗？", { icon: 3, title: '提示' }, function () {
+            var data = getCheckBox();
+            if (data != null) {
+                data = { "paramData": JSON.stringify(data), "Id": "@Functional.Rid" };
+                $.post("/System/GroupButton/SaveData", data, function (result) {
+                    if (result.IsSuccess) {
+                        layer.alert("设置成功！", { icon: 1 }, function (index) {
+                            parent.layer.close(indx);
+                            layer.close(index);
+                        });
+                    } else {
+                        layer.alert("保存失败," + result.Message);
+                    }
+                }, "json");
+            }
+        });
+    });
+    function getCheckBox() {
+        var data = [];
+        $(":checkbox[id != 'chkAll']").each(function () {
+            if ($(this).is(':checked'))
+                data.push({ "Group_NameId": "@Functional.Rid", "ButtonNameId": this.value });
+        })
+        if (data.length == 0) {
+            layer.alert("请选择要设置的权限！");
+            return null;
+        }
+        return data;
+
+
+    }
+</script>

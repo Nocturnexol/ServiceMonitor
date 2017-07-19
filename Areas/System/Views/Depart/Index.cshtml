@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "部门管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "部门管理";
+    ViewBag.AddUrl = "/System/Depart/Create";
+    ViewBag.EditUrl = "/System/Depart/Edit/";
+    ViewBag.DeleteUrl = "/System/Depart/DataDel";
+}
+<script type="text/javascript">
+
+    $(function () {
+        var config = {
+            title: '部门列表',
+            url: '/Depart/GetGqDataList',
+            postData: { keyword: $("#searchTxt").val() },
+
+            col: [
+                        { name: '主键', index: 'Rid', width: 60, key: true, hidden: true },
+
+                        { name: '部门名称', index: 'dept', width: 55, align: "center" },
+                        { name: '备注', index: 'remark', width: 55, align: "center" }@if (BtnList.Contains("编辑") || BtnList.Contains("删除"))
+                                         {<text>,
+                        {
+                            name: '操作', index: 'Rid', title: false, width: 30, sortable: false, align: "center", formatter: function (id) {
+                                return "</text>if (BtnList.Contains("编辑"))
+                                       {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text> "
+                                      + "</text>if (BtnList.Contains("删除"))
+                                       {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>";
+                            }
+                        }
+               </text>}
+            ]
+        };
+        JQ.InitGrid(config);
+
+    });
+</script>
+@section Search {
+    <input id="keyword" name="keyword" type="text" class="input form-control" placeholder="部门名称" />
+}

@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "数据权限管理";
+    var BtnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "数据权限管理";
+    ViewBag.FirstItem = "系统管理";
+    ViewBag.AddUrl = "/System/Functional/Create";
+    ViewBag.EditUrl = "/System/Functional/Edit/";
+    ViewBag.DeleteUrl = "/System/Functional/DataDel";
+}
+<script type="text/javascript">
+
+    function toAuthButton(id, title) {
+        poplayer(title + '按钮权限设置', '/System/GroupButton/Index/' + id, '800', "310px");
+    }
+    $(function () {
+        var config = {
+            title: '数据权限',
+            url: '/Functional/GetFunctionalDataList',
+            postData: { keyword: $("#searchTxt").val() },
+
+
+            col: [
+                        { name: '主键', index: 'Rid', width: 60, key: true, hidden: true },
+
+                        { name: '模块名称', index: 'Module_Name', width: 50, align: "center" },
+                        { name: '分组名称', index: 'Group_Name', width: 50, align: "center" },
+                        { name: '页面名称', index: 'Right_Name', width: 50, align: "center" },
+                        { name: '页面路径', index: 'Right_Url', width: 50, align: "center" },
+                         { name: '备注', index: 'Remark', width: 50, align: "center" }@if (BtnList.Contains("编辑") || BtnList.Contains("删除")|| BtnList.Contains("授权"))
+                        {<text>,
+                        {
+                            name: '操作', index: 'Rid', title: false, sortable: false, width: 30, align: "center", formatter: function (id, a, b) {
+                                return "</text>if (BtnList.Contains("编辑"))
+                                       {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text> "
+
+                             + "</text>if (BtnList.Contains("授权"))
+                                       {<text><a title='授权' href='javascript:;' onclick='toAuthButton(\"" + id + "\",\"[ " + b.Group_Name + "->" + b.Right_Name + " ] \")' class='ml-5' style='text-decoration:none'><i class='glyphicon glyphicon-eye-open'></i></a></text>}<text>"
+                           + "</text>if (BtnList.Contains("删除"))
+                                       {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>";
+                            }
+                        }</text>}
+            ]
+        };
+        JQ.InitGrid(config);
+
+    });
+
+</script>
+
+
+@section Search {
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        模块名称：
+    </label>
+    <div class="col-sm-12">
+        <input id="Module_Name" name="Module_Name" type="text" class="input form-control" placeholder="模块名称" />
+    </div>
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        分组名称：
+    </label>
+    <div class="col-sm-12" style="z-index: 980;">
+        <input id="Group_Name" name="Group_Name" type="text" class="input form-control" placeholder="模块名称" />
+    </div>
+    <label class="col-sm-9 control-label" style="margin-top: 5px;">
+        页面名称：
+    </label>
+    <div class="col-sm-12">
+        <input id="Right_Name" type="text" class="input form-control" placeholder="页面名称" name="Right_Name" />
+    </div>
+}

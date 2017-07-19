@@ -1,0 +1,244 @@
+﻿@model IEnumerable<BS.Microservice.Web.Model.View_GroupButtonInfo>
+@{
+    Layout = "~/Views/Shared/_Single.cshtml";
+    ViewBag.Title = "权限管理";
+    int roleId = ViewBag.RoleId;
+    List<string> RoleRightList = ViewBag.RoleRightList;
+}
+<style>
+    .checkTable p {
+        float: left;
+        width: 150px;
+        line-height: 30px;
+    }
+
+    .checkTable td {
+        border: 1px solid #E4E4E4;
+        color: #5e5e5e;
+        border-collapse: collapse;
+        height: 30px;
+    }
+
+    .TDName {
+        width: 180px;
+        background-color: #F2F2F2;
+        text-align: right;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        font-weight: bold;
+    }
+
+    label {
+        font-weight: inherit;
+    }
+</style>
+<script type="text/javascript">
+    function checkboxList(objId, obj) {
+        $('#' + objId).find("input[type='checkbox']").prop("checked", obj.checked);
+    }
+    function getCheckBox() {
+        var RightInfo = new Array();
+        var data = [];
+        if ($(":checkbox[name='buttonInfo']:checked").size() <= 0) {
+            layer.msg("请选择要设置的权限！");
+            return null;
+        }
+        $(":checkbox[name='buttonInfo']:checked").each(function () {
+            RightInfo = this.value.split('|');
+            data.push({ "rf_Type": RightInfo[0], "rf_Role_Id": RightInfo[1], "rf_Right_Code": RightInfo[2], "rf_Right_Authority": RightInfo[3] });
+        })
+        return data;
+    }
+    //业务权限 只能单选
+    function OtherNoCheck(objId, Option, obj) {
+        if (!Option) {
+            if (obj.checked) {
+                $('#' + objId + ' :checkbox').attr("checked", !obj.checked);
+                obj.checked = true;
+            }
+        }
+    }
+</script>
+<div class=" form-horizontal">
+    <div class="form-center" style="overflow: auto; padding-left: 10px; padding-right: 10px;">
+        @{
+            var modelList = Model.Select(p => new { Module_Name = p.Module_Name, Module_Id = p.Module_Id }).Distinct().ToList();
+            foreach (var item in modelList)
+            {
+                var AllId = @item.Module_Id + "data";
+                var ImgId = "gtb" + @item.Module_Id;
+                var tableId = "tb" + @item.Module_Id;
+
+                <div class="ibox float-e-margins" style="border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;
+                margin-bottom: 10px; border-bottom: 1px solid #E0E0E0;">
+                    <div class="ibox-title">
+                        <h5>
+                            @item.Module_Name
+                            <input type="checkbox" id="@item.Module_Id-chkAll" title="全选" onclick="checkboxList('@AllId',this)" /><label for="@item.Module_Id-chkAll">全选</label>
+                        </h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a><a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content" style="display: block; padding: 10px;">
+                        <table id="@AllId" border="0" class="checkTable" style="width:100%">
+                            @{
+                var qureyList = Model.Where(p => p.Module_Id == @item.Module_Id);
+                var groupList = qureyList.Select(p => new { Right_Name = p.Right_Name, Group_NameId = p.Group_NameId, Module_Id = p.Module_Id }).Distinct().ToList();
+                foreach (var group in groupList)
+                {
+                    var ListId = @group.Group_NameId + "Listdata";
+
+                    <tr id="@ListId">
+                        <td class="TDName">
+                            <input type="checkbox" id="@group.Group_NameId-chkList" onclick="checkboxList('@ListId',this)" /><label for="@group.Group_NameId-chkList">&nbsp;@group.Right_Name</label>
+                        </td>
+                        <td>
+                            @{
+                    var queryButton = Model.Where(p => p.Group_NameId == @group.Group_NameId);
+                    var buttonList = queryButton.Select(p => new { Button_Name = p.ButtonName, Rid = p.Rid }).Distinct().ToList();
+
+                    foreach (var button1 in buttonList)
+                    {
+                        var strValue = "数据管理" + "|" + @roleId + "|" + @button1.Rid + "|";
+                        <p style="height: 20px;">
+                            &nbsp;
+                            @{
+                        if (RoleRightList.Contains(strValue))
+                        {
+                            <input type="checkbox" id="@button1.Rid-chkBtn" name="buttonInfo" value="@strValue" checked="checked" /><label for="@button1.Rid-chkBtn">
+                                &nbsp;@button1.Button_Name
+                            </label>
+                        }
+                        else
+                        {
+                            <input type="checkbox" id="@button1.Rid-chkBtn" name="buttonInfo" value="@strValue" /><label for="@button1.Rid-chkBtn">
+                                &nbsp;@button1.Button_Name
+                                &nbsp;
+                            </label>
+                        }
+                            }
+                        </p>
+                    }
+                            }
+                        </td>
+                    </tr>
+                }
+                            }
+                        </table>
+                    </div>
+                </div>
+
+            }
+
+            @*<div class="ibox float-e-margins" style="border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0;
+                    border-bottom: 1px solid #E0E0E0;">
+                    <div class="ibox-title">
+                        <h5>
+                            业务权限
+                            <input type="checkbox" id="BusinessAuth-chkAll" title="全选" onclick="checkboxList('BusinessAuth',this)" />
+                            <label for="BusinessAuth-chkAll">
+                                全选</label></h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a><a class="close-link"><i
+                                class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content" style="display: block; padding-bottom: 10px;">
+                        <table id="BusinessAuth" class="checkTable" style="width: 100%">
+                            @{
+                                int i = 0;
+                                foreach (var item in OpAList)
+                                {
+
+                                    bool Options = Convert.ToBoolean(@item.Options);
+                                    var BSListId = @item.Rid + "bsListdata";
+                                    string RightsOptions = @item.RightsOptions;
+
+                                <tr id="@BSListId" >
+                                    <td class="TDName">
+                                        @{
+
+                                    if (Options)
+                                    {
+                                            <input type="checkbox" id="@item.Rid-bs-chkList" onclick="checkboxList('@BSListId',this)"/><label for="@item.Rid-bs-chkList">@item.OperRational_Name</label>
+                                    }
+                                    else
+                                    {
+                                            <label>@item.OperRational_Name</label>
+                                    }
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+
+                                    if (!string.IsNullOrWhiteSpace(RightsOptions))
+                                    {
+                                        RightsOptionsList = RightsOptions.Split(',');
+                                    }
+                                    if (RightsOptionsList != null && RightsOptionsList.Length > 0)
+                                    {
+                                        foreach (string RightOption in RightsOptionsList)
+                                        {
+                                            i++;
+                                            var strValue = "业务权限" + "|" + @roleId + "|" + @item.Rid + "|" + @RightOption;
+                                            <p style="height: 20px;">
+                                                &nbsp;
+                                                @{
+                                            if (RoleBussinessList.Contains(strValue))
+                                            {
+                                                    <input type="checkbox" id="@i-bschkBtn" name="buttonInfo" value="@strValue" onclick="OtherNoCheck('@BSListId','@Options',this)" checked="checked"/><label for="@i-bschkBtn">@RightOption</label>
+
+                                            }
+                                            else
+                                            {
+                                                    <input type="checkbox" id="@i-bschkBtn" name="buttonInfo" value="@strValue" onclick="OtherNoCheck('@BSListId','@Options',this)" /><label for="@i-bschkBtn">@RightOption</label>
+                                            }
+
+                                                }
+                                            </p>
+                                        }
+                                    }
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>*@
+        }
+    </div>
+    <div style="position: fixed; bottom: 0px; height: 50px; border-top: 1px solid #DCDCDC;
+        padding: 10px; color: #333; width: 100%; float: right;">
+        <input type="button" value="关闭" id="btnClose" onclick="CloseWin()" class="btn btn-default"
+               style="float: right; margin-left: 20px;" />
+        <input type="button" value="确认" id="btnSave" class="btn btn-default" style="float: right;" />
+    </div>
+    <input id="Role_Id" type="hidden" name="Role_Id" value="@roleId" />
+</div>
+<script type="text/javascript">
+    var indx = parent.layer.getFrameIndex(window.name);
+    $("#btnSave").click(function () {
+        layer.confirm("确定要进行保存操作么？", { icon: 3, title: '提示' }, function () {
+            var RoleId = $("#Role_Id").val();
+            var data = getCheckBox();
+            if (data != null) {
+                data = { "paramData": JSON.stringify(data), "RoleId": RoleId };
+                $.post("/System/Sys_role_right/SaveData", data, function (result) {
+                    if (result.IsSuccess) {
+                        layer.alert("权限设置成功！", { icon: 1 }, function (index) {
+                            parent.layer.close(indx);
+                            layer.close(index);
+                        });
+                    } else {
+                        layer.alert("保存失败," + result.Message, { icon: 2 });
+                    }
+                }, "json");
+            }
+        });
+    });
+</script>

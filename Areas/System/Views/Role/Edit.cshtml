@@ -1,0 +1,19 @@
+﻿@model BS.Microservice.Web.Model.sys_role
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+@Html.HiddenFor(model => model.Rid)
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        角色名<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.role_name, new { placeholder = "角色名", @class = "form-control", required = "" })
+    </div>
+    <label class="col-sm-2 control-label">
+        备注
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(modelItem => modelItem.role_desc, new { placeholder = "备注", @class = "form-control" })
+    </div>
+</div>
