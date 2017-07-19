@@ -104,6 +104,7 @@
             vDic.Add("serverId", ViewData["serverId"]);
             vDic.Add("PrimaryId", ViewData["PrimaryId"]);
             Html.RenderPartial("_AlertList", 1, vDic);
+            Html.RenderPartial("_FileList", 2);
         }
     </div>
 </div>

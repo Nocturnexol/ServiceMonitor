@@ -88,13 +88,10 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                     rm.Message = "服务已存在";
                     return Json(rm);
                 }
-                else
-                {
-                    if (type.HasValue)
-                        collection.ServiceType = (ServiceTypeEnum) type.Value;
-                    rm.IsSuccess = BusinessContext.ServiceList.Add(collection);
-                    rm.IsContinue = isContinue == "1";
-                }
+                if (type.HasValue)
+                    collection.ServiceType = (ServiceTypeEnum) type.Value;
+                rm.IsSuccess = BusinessContext.ServiceList.Add(collection);
+                rm.IsContinue = isContinue == "1";
             }
             catch (Exception ex)
             {
@@ -114,7 +111,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         public ActionResult Edit(int id)
         {
 
-            ServiceEntity model = BusinessContext.ServiceList.GetModel(id);
+            var model = BusinessContext.ServiceList.GetModel(id);
             if (model == null)
             {
                 return HttpNotFound();
@@ -137,7 +134,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
         private void InitAddr(ServiceEntity model)
         {
-            ServiceCfg cfg = JsonConvert.DeserializeObject<ServiceCfg>(model.RegContent);
+            var cfg = JsonConvert.DeserializeObject<ServiceCfg>(model.RegContent);
             ViewBag.InList = cfg.InAddr;
             ViewBag.OutList = cfg.OutAddr;
         }
@@ -160,10 +157,12 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 {
                     outList = outStr.Split(',').ToList();
                 }
-                var cfg = new ServiceCfg();
-                cfg.InAddr = inList;
-                cfg.OutAddr = outList;
-                cfg.Remarks = collection.Remark;
+                var cfg = new ServiceCfg
+                {
+                    InAddr = inList,
+                    OutAddr = outList,
+                    Remarks = collection.Remark
+                };
                 var model = BusinessContext.ServiceList.GetModel(Convert.ToInt32(Request["_id"]));
                 model.ServiceName = collection.ServiceName;
                 model.SecondaryName = collection.SecondaryName;
@@ -190,7 +189,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         /// <returns></returns>
         public ActionResult Detail(int id)
         {
-            ServiceEntity model = BusinessContext.ServiceList.GetModel(id);
+            var model = BusinessContext.ServiceList.GetModel(id);
             if (model == null)
             {
                 return HttpNotFound();
@@ -218,27 +217,29 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             Session["isApproved"] = isApproved;
             Session["host"] = host;
             Session["type"] = type;
-            int currentPageIndex = page != 0 ? page : 1;
+            var currentPageIndex = page != 0 ? page : 1;
             int totalCount;
-            List<ServiceEntity> list = BusinessContext.ServiceList.GetModelList((ServiceTypeEnum?)type, sidx, sord, page,
+            var list = BusinessContext.ServiceList.GetModelList((ServiceTypeEnum?)type, sidx, sord, page,
                 rows, id,
                 keyword, isApproved, host, out totalCount);
-            JqGridData rm = new JqGridData();
-            rm.page = currentPageIndex;
-            rm.rows = list;
-            rm.total = totalCount % rows == 0 ? totalCount / rows : totalCount / rows + 1;
-            rm.records = totalCount;
+            var rm = new JqGridData
+            {
+                page = currentPageIndex,
+                rows = list,
+                total = totalCount % rows == 0 ? totalCount / rows : totalCount / rows + 1,
+                records = totalCount
+            };
             return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
 
         public ActionResult RegService(int id)
         {
-            ReturnMessage rm = new ReturnMessage(false);
+            var rm = new ReturnMessage(false);
             try
             {
-                ServiceEntity model = BusinessContext.ServiceList.GetModel(id);
-                string serverName = string.Format("{0}/{1}", model.ServiceName, model.SecondaryName);
+                var model = BusinessContext.ServiceList.GetModel(id);
+                var serverName = string.Format("{0}/{1}", model.ServiceName, model.SecondaryName);
                 model.IsApproved = true;
                 rm.IsSuccess = ServerDiscoveryHelper.ServiceRegister(serverName, model.Version, model.RegContent) &&
                                BusinessContext.ServiceList.Update(model);
@@ -251,10 +252,103 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
+        public ViewResult UploadFiles()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            var rm=new ReturnMessage(false);
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+                if (file != null && file.ContentLength > 0)
+                {
+                    var size = file.ContentLength;
+                    var md5 = CommonHelper.GetMd5HashFromFile(file);
+                    var model = BusinessContext.Files.Get(Query<FileEntity>.EQ(t => t.Md5, md5));
+                    if (model != null)
+                    {
+                        rm.Message = "文件已存在！";
+                        return Json(rm);
+                    }
+                    var path = AppDomain.CurrentDomain.BaseDirectory + "uploads/";
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    var filename = Path.GetFileName(file.FileName);
+                    if (filename == null)
+                    {
+                        rm.Message = "空文件名";
+                        return Json(rm);
+                    }
 
-        static IAppStateService appService = new AppStateServiceFactory().GetInstance();
-        static Regex reg_email = new Regex(@"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        static Regex reg_tel = new Regex(@"^1\d{10}$");
+                    var extStart = filename.LastIndexOf(".", StringComparison.Ordinal);
+                    var ext = filename.Substring(extStart);
+                    var newName = string.Format("{0}_{1}{2}", filename.Substring(0, extStart), Guid.NewGuid(), ext);
+
+                    try
+                    {
+                        var url = Path.Combine(path, filename);
+                        var entity = new FileEntity
+                        {
+                            Author = CurrentHelper.UserName,
+                            DateTime = DateTime.Now,
+                            FileName = filename,
+                            Md5 = md5,
+                            Size = size
+                        };
+                        if (global::System.IO.File.Exists(url))
+                        {
+                            url = Path.Combine(path, newName);
+                            entity.FileName = newName;
+                        }
+                        file.SaveAs(url);
+                        entity.Url = url;
+                        rm.IsSuccess = BusinessContext.Files.Add(entity);
+                    }
+                    catch (Exception e)
+                    {
+                        rm.Message = e.Message;
+                    }
+                }
+            }
+            return Json(rm);
+        }
+
+        public FileResult DownLoad(string fileName)
+        {
+            var path = AppDomain.CurrentDomain.BaseDirectory + "uploads/";
+            return File(path + fileName, "application/octet-stream");
+        }
+        public JsonResult GetFileList(int page = 1, int rows = 20, string sidx = "",
+            string sord = "asc")
+        {
+            if (string.IsNullOrEmpty(sidx))
+                sidx = "Rid";
+            var pager = new PageInfo
+            {
+                PageSize = rows,
+                CurrentPageIndex = page > 0 ? page : 1
+            };
+
+            long totalCount;
+            var rm = new JqGridData
+            {
+                page = pager.CurrentPageIndex,
+                rows = BusinessContext.Files.GetList(out totalCount, page, rows,null, sidx, sord),
+                total = (int)(totalCount % pager.PageSize == 0 ? totalCount / pager.PageSize : totalCount / pager.PageSize + 1),
+                records = (int)totalCount
+            };
+            return Json(rm, JsonRequestBehavior.AllowGet);
+        }
+
+
+        private static readonly IAppStateService AppService = new AppStateServiceFactory().GetInstance();
+        private static readonly Regex RegEmail = new Regex(@"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex RegTel = new Regex(@"^1\d{10}$");
 
         /// <summary>
         /// 分页查询数据
@@ -268,22 +362,24 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         {
 
             //分页
-            PageInfo pager = new PageInfo();
-            pager.CurrentPageIndex = page;
-            pager.PageSize = rows;
-            pager.Sidx = sidx;
-            pager.Sord = sord;
-            long total = 0;
-            QueryDocument query = new QueryDocument();
-
-            SortByDocument sortBy = new SortByDocument();
-            sortBy.Set("LatestTime", -1);
-            List<ServiceAlertContactsInfo> list = new List<ServiceAlertContactsInfo>();
-            int Id = 0;
-            if (!string.IsNullOrWhiteSpace(serviceId) && Int32.TryParse(serviceId, out Id))
+            var pager = new PageInfo
             {
-                query.Set("ServiceId", Id);
-                list = appService.GetPageListServiceAlertContactsInfos(query, sortBy, pager.CurrentPageIndex, pager.PageSize, out total);
+                CurrentPageIndex = page,
+                PageSize = rows,
+                Sidx = sidx,
+                Sord = sord
+            };
+            long total = 0;
+            var query = new QueryDocument();
+
+            var sortBy = new SortByDocument();
+            sortBy.Set("LatestTime", -1);
+            var list = new List<ServiceAlertContactsInfo>();
+            int id;
+            if (!string.IsNullOrWhiteSpace(serviceId) && int.TryParse(serviceId, out id))
+            {
+                query.Set("ServiceId", id);
+                list = AppService.GetPageListServiceAlertContactsInfos(query, sortBy, pager.CurrentPageIndex, pager.PageSize, out total);
             }
             #region 分页处理
             //翻页处理
@@ -306,161 +402,167 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateContact(ServiceAlertContactsInfo obj, string IsContinue)
+        public ActionResult CreateContact(ServiceAlertContactsInfo obj, string isContinue)
         {
-            ReturnMessage RM = new ReturnMessage();
+            var rm = new ReturnMessage();
 
             try
             {
                 obj._id = Guid.NewGuid().ToString();
                 if (string.IsNullOrWhiteSpace(obj.UserName) || string.IsNullOrWhiteSpace(obj.Tel))
                 {
-                    RM.Message = "缺少必填字段:姓名、手机号等";
-                    return Json(RM);
+                    rm.Message = "缺少必填字段:姓名、手机号等";
+                    return Json(rm);
                 }
-                if (!reg_tel.IsMatch(obj.Tel))
+                if (!RegTel.IsMatch(obj.Tel))
                 {
-                    RM.Message = "手机号格式错误";
-                    return Json(RM);
+                    rm.Message = "手机号格式错误";
+                    return Json(rm);
                 }
-                if (!string.IsNullOrWhiteSpace(obj.Email) && !reg_email.IsMatch(obj.Email))
+                if (!string.IsNullOrWhiteSpace(obj.Email) && !RegEmail.IsMatch(obj.Email))
                 {
-                    RM.Message = "邮箱格式错误";
-                    return Json(RM);
+                    rm.Message = "邮箱格式错误";
+                    return Json(rm);
                 }
 
-                QueryDocument query = new QueryDocument();
-                query.Add("UserName", obj.UserName);
-                query.Add("ServiceId", obj.ServiceId);
-                if (appService.CheckServiceAlertContactsInfos(query) > 0)
+                var query = new QueryDocument {{"UserName", obj.UserName}, {"ServiceId", obj.ServiceId}};
+                if (AppService.CheckServiceAlertContactsInfos(query) > 0)
                 {
-                    RM.Message = "该用户已经存在报警清单中";
+                    rm.Message = "该用户已经存在报警清单中";
                 }
                 else
                 {
-                    RM.IsSuccess = appService.UpsertServiceAlertContactsInfos(obj);
-                    RM.IsContinue = IsContinue == "0" ? false : true; ;
+                    rm.IsSuccess = AppService.UpsertServiceAlertContactsInfos(obj);
+                    rm.IsContinue = isContinue != "0";
                 }
             }
             catch (Exception ex)
             {
                 LogManager.Error(ex);
-                RM.Message = "保存失败!";
+                rm.Message = "保存失败!";
             }
 
-            return Json(RM);
+            return Json(rm);
         }
 
         [HttpGet]
         public ActionResult EditContact(string id)
         {
-            ServiceAlertContactsInfo obj = appService.GetServiceAlertContactsInfoById(id);
+            var obj = AppService.GetServiceAlertContactsInfoById(id);
             return View(obj);
         }
 
         [HttpPost]
         public ActionResult EditContact(string id, ServiceAlertContactsInfo obj)
         {
-            ReturnMessage RM = new ReturnMessage();
+            var rm = new ReturnMessage();
             try
             {
                 if (string.IsNullOrWhiteSpace(obj._id) || string.IsNullOrWhiteSpace(obj.Tel))
                 {
-                    RM.Message = "缺少必填字段:姓名、手机号等";
-                    return Json(RM);
+                    rm.Message = "缺少必填字段:姓名、手机号等";
+                    return Json(rm);
                 }
-                if (!reg_tel.IsMatch(obj.Tel))
+                if (!RegTel.IsMatch(obj.Tel))
                 {
-                    RM.Message = "手机号格式错误";
-                    return Json(RM);
+                    rm.Message = "手机号格式错误";
+                    return Json(rm);
                 }
-                if (!string.IsNullOrWhiteSpace(obj.Email) && !reg_email.IsMatch(obj.Email))
+                if (!string.IsNullOrWhiteSpace(obj.Email) && !RegEmail.IsMatch(obj.Email))
                 {
-                    RM.Message = "邮箱格式错误";
-                    return Json(RM);
+                    rm.Message = "邮箱格式错误";
+                    return Json(rm);
                 }
 
-                IMongoQuery query = Query.And(Query.EQ("UserName", obj.UserName), Query.EQ("ServiceId", obj.ServiceId), Query.Not(Query.EQ("_id", obj._id)));
+                var query = Query.And(Query.EQ("UserName", obj.UserName), Query.EQ("ServiceId", obj.ServiceId), Query.Not(Query.EQ("_id", obj._id)));
 
 
-                RM.IsSuccess = appService.UpsertServiceAlertContactsInfos(obj);
+                rm.IsSuccess = AppService.UpsertServiceAlertContactsInfos(obj);
 
             }
             catch (Exception ex)
             {
                 LogManager.Error(ex);
-                RM.Message = "保存失败!";
+                rm.Message = "保存失败!";
             }
 
-            return Json(RM);
+            return Json(rm);
         }
         [HttpPost]
         public ActionResult DeleteContact(string paramData)
         {
-            ReturnMessage RM = new ReturnMessage();
-            List<string> ids = paramData.Split('*').ToList();
-            RM.IsSuccess = appService.DelServiceAlertContactsInfos(ids.ToArray());
-            if (RM.IsSuccess)
-            {
-                RM.Message = "删除成功";
-            }
-            else
-            {
-                RM.Message = "删除失败";
-            }
-            return Json(RM);
+            var rm = new ReturnMessage();
+            var ids = paramData.Split('*').ToList();
+            rm.IsSuccess = AppService.DelServiceAlertContactsInfos(ids.ToArray());
+            rm.Message = rm.IsSuccess ? "删除成功" : "删除失败";
+            return Json(rm);
         }
-
+        [HttpPost]
+        public ActionResult DeleteFiles(string paramData)
+        {
+            var rm = new ReturnMessage();
+            var ids = paramData.Split(new[] {'*'}, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToList();
+            var files = BusinessContext.Files.GetList(Query<FileEntity>.In(t => t.Rid, ids));
+            foreach (var file in files)
+            {
+                if (global::System.IO.File.Exists(file.Url))
+                {
+                    global::System.IO.File.Delete(file.Url);
+                }
+            }
+            rm.IsSuccess = BusinessContext.Files.Delete(ids);
+            rm.Message = rm.IsSuccess ? "删除成功" : "删除失败";
+            return Json(rm);
+        }
         public ActionResult GetUserList(string keyword)
         {
-            ReturnMessage RM = new ReturnMessage();
-            QueryDocument query = new QueryDocument();
-            List<ServiceAlertContactsInfo> list = new List<ServiceAlertContactsInfo>();
-            list = appService.GetListServiceAlertContactsInfos(query);
-            RM.result = list;
-            RM.code = 200;
-            return Json(RM, JsonRequestBehavior.AllowGet);
+            var rm = new ReturnMessage();
+            var query = new QueryDocument();
+            var list = AppService.GetListServiceAlertContactsInfos(query);
+            rm.result = list;
+            rm.code = 200;
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SyncAlertData(string id)
         {
-            ReturnMessage RM = new ReturnMessage(false);
+            var rm = new ReturnMessage(false);
             try
             {
                 int Id = 0;
-                if (string.IsNullOrWhiteSpace(id) || !Int32.TryParse(id, out Id))
+                if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out Id))
                 {
-                    RM.Message = "无效同步服务ID";
+                    rm.Message = "无效同步服务ID";
                 }
                 else
                 {
 
-                    RM.IsSuccess = appService.SyncAlertData(Id);
+                    rm.IsSuccess = AppService.SyncAlertData(Id);
                 }
             }
             catch (Exception ex)
             {
                 LogManager.Error(ex);
-                RM.Message = ex.Message;
+                rm.Message = ex.Message;
             }
 
-            return Json(RM, JsonRequestBehavior.AllowGet);
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult OpenorCloseAlert(string id)
         {
-            ReturnMessage RM = new ReturnMessage(false);
+            var rm = new ReturnMessage(false);
             try
             {
-                int Id = 0;
-                if (string.IsNullOrWhiteSpace(id) || !Int32.TryParse(id, out Id))
+                var Id = 0;
+                if (string.IsNullOrWhiteSpace(id) || !int.TryParse(id, out Id))
                 {
-                    RM.Message = "无效服务ID";
+                    rm.Message = "无效服务ID";
                 }
                 else
                 {
-                    ServiceEntity model = BusinessContext.ServiceList.GetModel(Id);
-                    string msg = "";
+                    var model = BusinessContext.ServiceList.GetModel(Id);
+                    string msg;
                     if (model.IsAlert)
                     {
                         msg = "关闭报警";
@@ -472,25 +574,25 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                         model.IsAlert = true;
                     }
 
-                    IMongoQuery query = Query.EQ("ServiceId", Id);
-                    BsonDocument bson = new BsonDocument();
+                    var query = Query.EQ("ServiceId", Id);
+                    var bson = new BsonDocument();
                     bson.Set("IsAlert", model.IsAlert);
-                    IMongoUpdate update = new UpdateDocument() { { "$set", bson } };
+                    IMongoUpdate update = new UpdateDocument { { "$set", bson } };
                     DBContext.Mongo.Update("Microservice", "ServiceAlertList", query, update);
-                    RM.IsSuccess = BusinessContext.ServiceList.Update(model);
-                    if (RM.IsSuccess)
+                    rm.IsSuccess = BusinessContext.ServiceList.Update(model);
+                    if (rm.IsSuccess)
                     {
-                        RM.Message = msg;
+                        rm.Message = msg;
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogManager.Error(ex);
-                RM.Message = ex.Message;
+                rm.Message = ex.Message;
             }
 
-            return Json(RM, JsonRequestBehavior.AllowGet);
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Export(string filename)

@@ -119,7 +119,7 @@ namespace BS.Microservice.Web.Common
 
         static CurrentHelper()
         {
-            UserName = "tanhu";
+            UserName = "admin";
             UserPwd = "123456";
             Client.Common.CommonHelper.OauthAPI = "http://61.129.57.83:21999";
 

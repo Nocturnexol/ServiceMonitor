@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Web;
 using BS.Common;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver.Builders;
@@ -58,8 +61,12 @@ namespace BS.Microservice.Web.Common
                     BusinessContext.sys_role_right.GetList(q).Select(p => p.rf_Right_Code).ToList();
                 if (rigthCodeList != null && rigthCodeList.Count > 0)
                 {
-                    List<int> dic_funId = BusinessContext.tblGroupButton.GetList(Query<tblGroupButton>.In(t => t.Rid, rigthCodeList)).Select(p => p.Group_NameId).ToList();
-                    list = BusinessContext.FunctionalAuthority.GetList(Query<FunctionalAuthority>.In(t => t.Rid, dic_funId));
+                    List<int> dic_funId =
+                        BusinessContext.tblGroupButton.GetList(Query<tblGroupButton>.In(t => t.Rid, rigthCodeList))
+                            .Select(p => p.Group_NameId)
+                            .ToList();
+                    list =
+                        BusinessContext.FunctionalAuthority.GetList(Query<FunctionalAuthority>.In(t => t.Rid, dic_funId));
                 }
             }
             catch (Exception ex)
@@ -82,21 +89,29 @@ namespace BS.Microservice.Web.Common
             {
                 List<int> listRoleId = CurrentHelper.CurrentUser.Roles.Select(p => p.Rid).ToList();
                 // 获取业务权限对象
-                List<int> ridlist = BusinessContext.FunctionalAuthority.GetList(Query<FunctionalAuthority>.EQ(t => t.Right_Name, Func)).Select(p => p.Rid).ToList();
+                List<int> ridlist =
+                    BusinessContext.FunctionalAuthority.GetList(Query<FunctionalAuthority>.EQ(t => t.Right_Name, Func))
+                        .Select(p => p.Rid)
+                        .ToList();
 
                 // 获取用户所有的数据权限编码列表
-                List<int> rigthCodeList = BusinessContext.sys_role_right.GetList(Query.And(Query<sys_role_right>.In(t => t.rf_Role_Id, listRoleId),
-                    Query<sys_role_right>.EQ(t => t.rf_Type, "数据管理"))).Select(p => p.rf_Right_Code).Distinct().ToList();
+                List<int> rigthCodeList =
+                    BusinessContext.sys_role_right.GetList(
+                            Query.And(Query<sys_role_right>.In(t => t.rf_Role_Id, listRoleId),
+                                Query<sys_role_right>.EQ(t => t.rf_Type, "数据管理")))
+                        .Select(p => p.rf_Right_Code)
+                        .Distinct()
+                        .ToList();
 
                 if (ridlist.Count > 0 && rigthCodeList.Count > 0)
                 {
                     list = (from gb in BusinessContext.tblGroupButton.GetList()
-                            join bn in BusinessContext.tblButtonName.GetList() on gb.ButtonNameId equals bn.Rid into g
-                            from a in g.DefaultIfEmpty()
-                            join f in BusinessContext.FunctionalAuthority.GetList() on gb.Group_NameId equals f.Rid into gg
-                            from aa in gg.DefaultIfEmpty()
-                            where ridlist.Contains(gb.Group_NameId) && rigthCodeList.Contains(gb.Rid)
-                            select a.ButtonName).ToList();
+                        join bn in BusinessContext.tblButtonName.GetList() on gb.ButtonNameId equals bn.Rid into g
+                        from a in g.DefaultIfEmpty()
+                        join f in BusinessContext.FunctionalAuthority.GetList() on gb.Group_NameId equals f.Rid into gg
+                        from aa in gg.DefaultIfEmpty()
+                        where ridlist.Contains(gb.Group_NameId) && rigthCodeList.Contains(gb.Rid)
+                        select a.ButtonName).ToList();
                 }
             }
             catch (Exception ex)
@@ -107,5 +122,25 @@ namespace BS.Microservice.Web.Common
             return list;
         }
 
+        public static string GetMd5HashFromFile(HttpPostedFileBase file)
+        {
+            try
+            {
+                var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                byte[] retVal = md5.ComputeHash(file.InputStream);
+                file.InputStream.Close();
+
+                StringBuilder sb = new StringBuilder();
+                foreach (byte t in retVal)
+                {
+                    sb.Append(t.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("GetMD5HashFromFile() fail,error:" + ex.Message);
+            }
+        }
     }
 }

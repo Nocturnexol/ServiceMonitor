@@ -34,7 +34,7 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                 CurrentPageIndex = page > 0 ? page : 1
             };
 
-            List<IMongoQuery> queryList = new List<IMongoQuery>();
+            var queryList = new List<IMongoQuery>();
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -64,7 +64,7 @@ namespace BS.Microservice.Web.Areas.System.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Create(sys_role collection, string IsContinue = "0")
+        public ActionResult Create(sys_role collection, string isContinue = "0")
         {
             var rm = new ReturnMessage(false);
             if (ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                         rm.IsSuccess = res;
                         if (rm.IsSuccess)
                         {
-                            rm.IsContinue = IsContinue == "1";
+                            rm.IsContinue = isContinue == "1";
                         }
                     }
                 }

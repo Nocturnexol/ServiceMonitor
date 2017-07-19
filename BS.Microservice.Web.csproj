@@ -252,6 +252,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Model\FileEntity.cs" />
     <Compile Include="Model\FunctionalAuthority.cs" />
     <Compile Include="Model\GroupName.cs" />
     <Compile Include="Model\JqGridData.cs" />
@@ -730,6 +731,8 @@
     <Content Include="Areas\System\Views\Functional\Edit.cshtml" />
     <Content Include="Areas\System\Views\GroupButton\Index.cshtml" />
     <Content Include="Areas\System\Views\UserRole\Index.cshtml" />
+    <Content Include="Areas\Service\Views\Manage\_FileList.cshtml" />
+    <Content Include="Areas\Service\Views\Manage\UploadFiles.cshtml" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <None Include="Resource\fonts\fontawesome-webfont.eot" />
     <None Include="Resource\fonts\fontawesome-webfont.svg" />

@@ -17,17 +17,17 @@
     <div class="ibox-content" style="display: block; padding: 0px 15px 15px 15px;">
         <div class="form-group" style="margin-top: 10px; margin-bottom: 0px;">
             @if (BtnList.Contains("添加"))
-            {
-                <button  type="button" class="btn btn-default " onclick="add('@ViewBag.addUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
-                    <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
-                </button>
-            }
+{
+    <button id="btnAdd_@ViewBag.Index" type="button" class="btn btn-default " onclick="add('@ViewBag.addUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
+        <i class="glyphicon glyphicon-plus"></i>&nbsp;添加
+    </button>
+}
             @if (BtnList.Contains("编辑"))
-            {
-                <button type="button" class="btn btn-default " onclick="edit('@ViewBag.editUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
-                    <i class="fa fa-edit"></i>&nbsp;编辑
-                </button>
-            }
+{
+    <button type="button" id="btnEdit_@ViewBag.Index" class="btn btn-default " onclick="edit('@ViewBag.editUrl','@ViewBag.BlockTitle','jqGridList_@ViewBag.Index')">
+        <i class="fa fa-edit"></i>&nbsp;编辑
+    </button>
+}
             @if (BtnList.Contains("删除"))
             {
                 <button type="button" class="btn btn-default " onclick="delList('@ViewBag.deleteUrl','jqGridList_@ViewBag.Index')">

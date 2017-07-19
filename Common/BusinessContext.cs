@@ -114,5 +114,11 @@ namespace BS.Microservice.Web.Common
             get { return _groupName ?? (_groupName = new MongoBll<GroupName>()); }
         }
         private static MongoBll<GroupName> _groupName;
+
+        public static MongoBll<FileEntity> Files
+        {
+            get { return _files ?? (_files = new MongoBll<FileEntity>()); }
+        }
+        private static MongoBll<FileEntity> _files;
     }
 }
