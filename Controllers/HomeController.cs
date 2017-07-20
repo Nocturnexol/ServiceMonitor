@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using BS.Microservice.Web.Common;
 using System.Web.Security;
+using MongoDB.Driver.Builders;
 
 namespace BS.Microservice.Web.Controllers
 {
@@ -53,7 +54,15 @@ namespace BS.Microservice.Web.Controllers
                             #region 初始化用户对象
                             UserModel m_CurrentUser = new UserModel();
                             m_CurrentUser.User = user;
-                           
+                            m_CurrentUser.Roles = new List<sys_role>();
+                            List<tblUser_Roles> roleList = BusinessContext.tblUser_Roles.GetList(Query<tblUser_Roles>.EQ(t => t.LoginName, loginName));
+                            List<int> roleIds = roleList.Select(p => p.Role_Id).ToList(); 
+                            if (roleIds.Count > 0)
+                            {
+                                //strWhere = string.Format("rid in {0}", DBContext.AssemblyInCondition(roleIds));
+                                m_CurrentUser.Roles =
+                                    BusinessContext.sys_role.GetList(Query<sys_role>.In(t => t.Rid, roleIds));
+                            }
                             System.Web.HttpContext.Current.Session["User"] = m_CurrentUser;
                             #endregion
 
@@ -87,7 +96,15 @@ namespace BS.Microservice.Web.Controllers
                         #region 初始化用户对象
                         UserModel m_CurrentUser = new UserModel();
                         m_CurrentUser.User = user;
-                      
+                        m_CurrentUser.Roles = new List<sys_role>();
+                        List<tblUser_Roles> roleList = BusinessContext.tblUser_Roles.GetList(Query<tblUser_Roles>.EQ(t => t.LoginName, loginName));
+                        List<int> roleIds = roleList.Select(p => p.Role_Id).ToList();
+                        if (roleIds.Count > 0)
+                        {
+                            //strWhere = string.Format("rid in {0}", DBContext.AssemblyInCondition(roleIds));
+                            m_CurrentUser.Roles =
+                                BusinessContext.sys_role.GetList(Query<sys_role>.In(t => t.Rid, roleIds));
+                        }
 
                         System.Web.HttpContext.Current.Session["User"] = m_CurrentUser;
                         #endregion
