@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("Upload", "Manage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" id="FileUpload" name="FileUpload"/>
+          <input type="submit" class="btn btn-success" value="上传"/>
+}
+<script>
+    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+    $("form:first").submit(function() {
+        var filepath = $('#FileUpload').val();
+        if (filepath === '') {
+            parent.layer.alert("请选择文件！");
+            return false;
+        }
+        var extStart = filepath.lastIndexOf(".");
+        var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+        if (ext !== ".ZIP" &&
+            ext !== ".RAR" &&
+            ext !== ".TAR" &&
+            ext !== ".7Z" &&
+            ext !== ".JAR" &&
+            ext !== '.CAB' &&
+            ext !== '.ISO' &&
+            ext !== '.ACE') {
+            parent.layer.alert("只能上传压缩文件！");
+            return false;
+        }
+        $(this).ajaxSubmit({
+            //dataType: 'json', // 返回值类型
+            error: function(data, t, s) {
+                parent.layer.alert("上传失败：" + data.status + " " + s, { icon: 2 });
+            },
+            success: function(data) { // ajax回调方法
+                if (data.IsSuccess) {
+                    $("#jqGridList_2").trigger("reloadGrid",
+                    [
+                        {
+                            page: 1
+                        }
+                    ]);
+                    parent.layer.alert("上传成功！", { icon: 1 });
+                    parent.layer.close(index);
+                } else {
+                    parent.layer.alert(data.Message);
+                }
+            }
+        });
+        return false;
+    });
+</script>
