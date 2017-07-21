@@ -1,0 +1,67 @@
+﻿@model int
+@{
+    ViewBag.Title = "文件列表";
+    ViewBag.BlockTitle = "文件列表";
+    Layout = "~/Views/Shared/_Block.cshtml";
+    ViewBag.DeleteUrl = "/Service/Manage/DeleteFiles/";
+    ViewBag.Index = Model;
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            @*postData: { "serviceId": "@id" },*@
+            id: 'jqGridList_@Model',
+            pagerId: 'jqGridPager_@Model',
+            multiselect: true,
+            height: '100%',
+            col: [
+                    { index: 'Rid', name: 'key', key: true, hidden: true },
+                    { index: 'FileName', name: '文件名', sortable: false },
+                    { index: 'Size', name: '文件大小（字节）', sortable: false },
+                    { index: 'Author', name: '上传人', sortable: false },
+                    { index: 'DateTime', name: '上传时间', sortable: false, formatter: 'datetime' },
+                    { index: '_id', name: '操作', sortable: false,
+                        formatter: function (id, a, b) {
+                            var html = "";
+                            html += "&nbsp;&nbsp;<a title='下载' href='../../uploads/"+b.FileName+"' style='text-decoration:none'><span class=\"glyphicon glyphicon-save\" aria-hidden=\"true\"></span></a>";
+                            html += "&nbsp;&nbsp;<a title='删除' href='javascript:void(0);' onclick='delSingleRow(\"@ViewBag.DeleteUrl\",\"jqGridList_@Model\",\"" + b.Rid + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                            return html;
+                        }
+                    }
+                    ],
+            url: "/Service/Manage/GetFileList"
+        };
+        //首次加载时绑定数据
+        JQ.InitGrid(config);
+        $('#btnAdd_2').remove();
+        $('#btnEdit_2').remove();
+    });
+    function uploadFile() {
+        parent.layer.open({
+            type: 2,
+            area: ['800px', 'auto'],
+            offset: '30px',
+            fix: false,
+            closeBtn: 1,
+            maxmin: true,
+            shade: 0.4,
+            title: '上传文件',
+            content: "/Service/Manage/UploadFiles"
+        });
+    }
+    function downloadFile(fileName) {
+        $.ajax({
+            url: "/Service/Manage/Download",
+            type: "POST",
+            data: { fileName: fileName },
+            success: function (n) {
+                
+            }
+        });
+    }
+</script>
+@section Button{
+    <button type="button" class="btn btn-default " onclick="uploadFile()">
+    <i class="fa fa-dedent"></i>&nbsp;上传
+</button>
+}
