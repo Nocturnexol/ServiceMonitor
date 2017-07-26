@@ -1,56 +1,42 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<style>
-    #FileUpload {
-        width: 80%;
-        position: absolute;
-    }
-    input[type=submit] {
-        float: right;
+﻿<style>
+    .layui-box {
+        text-align: center;
+        margin-top: 22px;
     }
 </style>
-@using (Html.BeginForm("Upload", "Manage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<link href="~/Resource/js/plugins/layer/skin/layui.css" rel="stylesheet" />
+<script src="~/Resource/js/plugins/layer/layui.js"></script>
+<div class="layui-box">
+    <div class="layui-box layui-upload-button">
+        @using (Html.BeginForm("Upload", "Manage", FormMethod.Post, new { target = "layui-upload-iframe", enctype = "multipart/form-data" }))
 {
-    <input type="file" id="FileUpload" name="FileUpload"/>
-          <input type="submit" class="btn btn-success" value="上传"/>
+    <input required type="file" id="FileUpload" name="FileUpload" class="layui-upload-file" />
 }
-<script>
-    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-    $("form:first").submit(function() {
-        var filepath = $('#FileUpload').val();
-        if (filepath === '') {
-            parent.layer.alert("请选择文件！");
-            return false;
-        }
-        var extStart = filepath.lastIndexOf(".");
-        var ext = filepath.substring(extStart, filepath.length).toUpperCase();
-        if (ext !== ".ZIP" &&
-            ext !== ".RAR" &&
-            ext !== ".TAR" &&
-            ext !== ".7Z" &&
-            ext !== ".JAR" &&
-            ext !== '.CAB' &&
-            ext !== '.ISO' &&
-            ext !== '.ACE') {
-            parent.layer.alert("只能上传压缩文件！");
-            return false;
-        }
-        $(this).ajaxSubmit({
-            //dataType: 'json', // 返回值类型
-            error: function(data, t, s) {
-                parent.layer.alert("上传失败：" + data.status + " " + s, { icon: 2 });
-            },
-            success: function(data) { // ajax回调方法
-                if (data.IsSuccess) {
-                    parent.$("table#jqGridList_2").trigger("reloadGrid");
-                    parent.layer.alert("上传成功！", { icon: 1 });
-                    parent.layer.close(index);
-                } else {
-                    parent.layer.alert(data.Message);
-                }
-            }
-        });
-        return false;
-    });
-</script>
+        <span class="layui-upload-icon"><i class="layui-icon">&#xe61f;</i>上传文件</span>
+    </div>
+</div>
+    <script>
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        layui.use('upload',
+            function() {
+                layui.upload({
+                    url: '/Service/Manage/Upload',
+                    title: '请上传压缩包吧亲',
+                    ext: 'zip|rar|tar|7z|jar|cab|iso|ace',
+                    type: 'file',
+                    before: function(input) {
+                        //返回的参数item，即为当前的input DOM对象
+                        console.log('文件上传中');
+                    },
+                    success: function(res, input) {
+                        if (res.IsSuccess) {
+                            parent.$("table#jqGridList_2").trigger("reloadGrid");
+                            parent.layer.msg("上传成功！", { icon: 1 });
+                            parent.layer.close(index);
+                        } else {
+                            parent.layer.msg(res.Message);
+                        }
+                    }
+                });
+            });
+    </script>

@@ -655,8 +655,24 @@
     <Content Include="Resource\js\plugins\iCheck\skins\square\yellow.css" />
     <Content Include="Resource\js\plugins\iCheck\skins\square\yellow.png" />
     <Content Include="Resource\js\plugins\iCheck\skins\square\_all.css" />
+    <Content Include="Resource\js\plugins\layer\css\layui.css" />
+    <Content Include="Resource\js\plugins\layer\css\layui.mobile.css" />
+    <Content Include="Resource\js\plugins\layer\css\modules\code.css" />
+    <Content Include="Resource\js\plugins\layer\css\modules\laydate\icon.png" />
+    <Content Include="Resource\js\plugins\layer\css\modules\laydate\laydate.css" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\icon-ext.png" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\icon.png" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\layer.css" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\loading-0.gif" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\loading-1.gif" />
+    <Content Include="Resource\js\plugins\layer\css\modules\layer\default\loading-2.gif" />
     <Content Include="Resource\js\plugins\layer\extend\layer.ext.js" />
+    <Content Include="Resource\js\plugins\layer\font\iconfont.svg" />
     <Content Include="Resource\js\plugins\layer\layer.min.js" />
+    <Content Include="Resource\js\plugins\layer\layui.js" />
+    <Content Include="Resource\js\plugins\layer\lay\modules\jquery.js" />
+    <Content Include="Resource\js\plugins\layer\lay\modules\layer.js" />
+    <Content Include="Resource\js\plugins\layer\lay\modules\upload.js" />
     <Content Include="Resource\js\plugins\layer\skin\default\icon-ext.png" />
     <Content Include="Resource\js\plugins\layer\skin\default\icon.png" />
     <Content Include="Resource\js\plugins\layer\skin\default\loading-0.gif" />
@@ -664,6 +680,7 @@
     <Content Include="Resource\js\plugins\layer\skin\default\loading-2.gif" />
     <Content Include="Resource\js\plugins\layer\skin\layer.css" />
     <Content Include="Resource\js\plugins\layer\skin\layer.ext.css" />
+    <Content Include="Resource\js\plugins\layer\skin\layui.css" />
     <Content Include="Resource\js\plugins\layer\skin\moon\style.css" />
     <Content Include="Resource\js\plugins\metisMenu\jquery.metisMenu.js" />
     <Content Include="Resource\js\plugins\metisMenu\metisMenu.min.js" />
@@ -773,6 +790,9 @@
     <Content Include="Views\Shared\_Detail.cshtml" />
     <Content Include="Views\Shared\_Block.cshtml" />
     <Content Include="Views\Shared\_Single.cshtml" />
+    <Content Include="Resource\js\plugins\layer\font\iconfont.eot" />
+    <Content Include="Resource\js\plugins\layer\font\iconfont.ttf" />
+    <Content Include="Resource\js\plugins\layer\font\iconfont.woff" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
