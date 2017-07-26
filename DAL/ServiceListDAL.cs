@@ -133,6 +133,11 @@ namespace BS.Microservice.Web.DAL
             var query = Query.EQ("_id", id);
             return DBContext.Mongo.Remove(DBContext.DbName, Col, query);
         }
+
+        public List<ServiceEntity> GetList(IMongoQuery query)
+        {
+            return DBContext.Mongo.Find<ServiceEntity>(DBContext.DbName, Col, query);
+        }
         public ServiceEntity GetModel(IMongoQuery query)
         {
             return DBContext.Mongo.FindOne<ServiceEntity>(DBContext.DbName, Col, query);

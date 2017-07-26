@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using BS.Microservice.Web.DAL;
 using MongoDB.Driver;
@@ -33,6 +34,11 @@ namespace BS.Microservice.Web.BLL
             string sord = "asc")
         {
             return _dal.GetList(out count, page, rows, where, sidx, sord);
+        }
+
+        public object Max(Expression<Func<T, object>> expression)
+        {
+            return _dal.Max(expression);
         }
 
         public bool Add(T model)

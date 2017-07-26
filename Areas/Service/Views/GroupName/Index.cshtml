@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "服务名称管理";
+    var btnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "服务名称管理";
+    ViewBag.FirstItem = "服务管理";
+    ViewBag.AddUrl = "/Service/GroupName/Create";
+    ViewBag.EditUrl = "/Service/GroupName/Edit/";
+    ViewBag.DeleteUrl = "/Service/GroupName/Delete";
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            title: '服务名称列表',
+            url: '/GroupName/GetGroupNameList',
+            col: [
+                { name: '主键', index: 'Rid', key: true, hidden: true },
+                { name: '服务Id', index: '_id', align: "center" },
+                { name: '服务名称', index: 'ServiceName', width: 55, align: "center" },
+                { name: '服务中文名', index: 'ServiceNameCN', width: 55, align: "center" },
+                { name: '创建日期', index: 'CreateDateTime', width: 55, align: "center", formatter: 'datetime' },
+                { name: '备注', index: 'Remarks', width: 55, align: "center" },
+                {
+                    name: '操作', index: 'Rid', title: false, width: 30, sortable: false, align: "center", formatter: function (id) {
+                        return "<a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>"
+                            + "<a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                    }
+                }
+            ]
+        };
+        JQ.InitGrid(config);
+    });
+</script>
+@section Search {
+    <div>
+        <label> 服务Id</label>
+        @Html.TextBox("_id", null, new { placeholder = "服务Id", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 服务名</label>
+        @Html.TextBox("ServiceName", null, new { placeholder = "服务名", @class = "form-control" })
+    </div><br />
+}

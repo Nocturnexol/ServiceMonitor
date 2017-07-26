@@ -151,7 +151,7 @@ namespace BS.Microservice.Web.Common
             }).ToList();
         }
 
-        public static IList<SelectListItem> GetSelectListFromController<T>(string method, params object[] param)
+        public static IList<SelectListItem> CallMethodFromController<T>(string method, params object[] param)
             where T : Controller
         {
             var service = DependencyResolver.Current.GetService<T>();

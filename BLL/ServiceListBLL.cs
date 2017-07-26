@@ -41,7 +41,10 @@ namespace BS.Microservice.Web.BLL
         {
             return _dal.Delete(id);
         }
-
+        public List<ServiceEntity> GetList(IMongoQuery query)
+        {
+            return _dal.GetList(query);
+        }
         public ServiceEntity GetModel(IMongoQuery query)
         {
             return _dal.GetModel(query);

@@ -225,6 +225,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Service\Controllers\DeviceTypeController.cs" />
+    <Compile Include="Areas\Service\Controllers\GroupNameController.cs" />
     <Compile Include="Areas\Service\Controllers\ManageController.cs" />
     <Compile Include="Areas\Service\Controllers\MonitorController.cs" />
     <Compile Include="Areas\Service\Controllers\PhysicalDeviceController.cs" />
@@ -765,6 +766,9 @@
     <Content Include="Areas\Service\Views\DeviceType\Index.cshtml" />
     <Content Include="Areas\Service\Views\DeviceType\Create.cshtml" />
     <Content Include="Areas\Service\Views\DeviceType\Edit.cshtml" />
+    <Content Include="Areas\Service\Views\GroupName\Index.cshtml" />
+    <Content Include="Areas\Service\Views\GroupName\Create.cshtml" />
+    <Content Include="Areas\Service\Views\GroupName\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <None Include="Resource\fonts\fontawesome-webfont.eot" />
     <None Include="Resource\fonts\fontawesome-webfont.svg" />

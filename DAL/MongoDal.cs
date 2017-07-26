@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using BS.Microservice.Web.Common;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -38,6 +40,11 @@ namespace BS.Microservice.Web.DAL
             return cursor.ToList();
         }
 
+        public object Max(Expression<Func<T, object>> expression)
+        {
+            var cursor = _mongoCollection.FindAs<T>(null).SetSortOrder(SortBy<T>.Descending(expression)).SetLimit(1);
+            return cursor.ToList().Select(expression.Compile()).FirstOrDefault();
+        }
         public bool Add(T model)
         {
             if (typeof(T).GetProperty("Rid") != null)
@@ -64,7 +71,7 @@ namespace BS.Microservice.Web.DAL
         {
             IMongoQuery query = Query.EQ("Rid", (int)typeof(T).GetProperty("Rid").GetValue(model, null));
             var modelDb = Get(query);
-            var id = (ObjectId)modelDb.GetType().GetProperty("_id").GetValue(modelDb, null);
+            var id = modelDb.GetType().GetProperty("_id").GetValue(modelDb, null);
             typeof(T).GetProperty("_id").SetValue(model, id, null);
             //model._id = list.First()._id;
             BsonDocument bd = model.ToBsonDocument();

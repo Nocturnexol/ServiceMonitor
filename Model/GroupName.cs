@@ -7,6 +7,7 @@ namespace BS.Microservice.Web.Model
     /// </summary>
     public class GroupName
     {
+        public int Rid { get; set; }
         public int _id { set; get; }
         /// <summary>
         /// 服务名称

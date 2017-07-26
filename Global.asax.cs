@@ -9,6 +9,7 @@ using System.Web.Routing;
 using BS.Common;
 using BS.Common.Model.Mongo.ServiceModels;
 using BS.Microservice.Common;
+using BS.Microservice.Web.BLL;
 using BS.Microservice.Web.Common;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver.Builders;
@@ -32,37 +33,19 @@ namespace BS.Microservice.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
          var t=   CurrentHelper.SerCfg;
             BundleTable.EnableOptimizations = true;
-            InitGroupNameCol();
+            //InitGroupNameCol();
         }
-        public void InitGroupNameCol()
-        {
-            try
-            {
-                var maxPrimaryId =
-                    Convert.ToInt32(DBContext.Mongo.GetScalar(DBContext.DbName, "GroupName", "_id", null,
-                        SortBy.Descending("_id")));
+        //public void InitGroupNameCol()
+        //{
+        //    try
+        //    {
+               
 
-
-                var list = DBContext.Mongo.Find<ServiceEntity>(DBContext.DbName, "ServiceList",
-                    Query.GT("PrimaryId", maxPrimaryId), new List<string> {"ServiceName", "PrimaryId"});
-                var gList = list.GroupBy(p => new {p.PrimaryId, p.ServiceName}).
-                    Select(p => new GroupName
-                    {
-                        _id = p.Key.PrimaryId,
-                        ServiceName = p.Key.ServiceName,
-                        CreateDateTime = DateTime.Now,
-                        Remarks = ""
-                    }).ToList();
-                if (gList.Count > 0)
-                {
-                    DBContext.Mongo.InsertBatch(DBContext.DbName, "GroupName", gList);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                LogManager.Error(ex);
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogManager.Error(ex);
+        //    }
+        //}
     }
 }
