@@ -12,6 +12,7 @@ using BS.Microservice.Common;
 using BS.Microservice.Web.Common;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver.Builders;
+using CommonHelper = BS.Microservice.Web.Common.CommonHelper;
 
 namespace BS.Microservice.Web
 {
@@ -22,6 +23,7 @@ namespace BS.Microservice.Web
     {
         protected void Application_Start()
         {
+            CommonHelper.InitBasicType();
             AreaRegistration.RegisterAllAreas();
             ConfigHelper.InitConfig<AppSetting>();
             WebApiConfig.Register(GlobalConfiguration.Configuration);

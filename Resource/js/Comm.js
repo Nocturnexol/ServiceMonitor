@@ -148,7 +148,21 @@ function poplayer(title, url, w, h) {
     parent.popWindow = this;
     return layerId;
 }
-
+function popSelectModal(title, url) {
+    var modalq = layer.open({
+        type: 2,
+        area: ["800px", 450],
+        offset: "30px",
+        fix: false,
+        closeBtn: 1,
+        maxmin: true,
+        // shade: false,
+        shade: 0.4,
+        title: title,
+        content: url
+    });
+    return layer.full(modalq);
+}
 
 
 function addCheckAllEvent(containerId, chkId) {

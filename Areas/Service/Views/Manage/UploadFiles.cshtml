@@ -43,12 +43,7 @@
             },
             success: function(data) { // ajax回调方法
                 if (data.IsSuccess) {
-                    $("#jqGridList_2").trigger("reloadGrid",
-                    [
-                        {
-                            page: 1
-                        }
-                    ]);
+                    parent.$("table#jqGridList_2").trigger("reloadGrid");
                     parent.layer.alert("上传成功！", { icon: 1 });
                     parent.layer.close(index);
                 } else {

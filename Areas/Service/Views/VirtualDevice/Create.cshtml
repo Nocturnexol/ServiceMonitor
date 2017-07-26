@@ -1,0 +1,139 @@
+﻿@model BS.Microservice.Web.Model.VirtualDevice
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+<style>
+    label.control-label {
+        padding-right: 0;
+    }
+
+    span {
+        margin-top: 9px;
+        float: left;
+        margin-left: -5px;
+    }
+
+    div.col-sm-4 {
+        width: 30.33%;
+    }
+
+    #btnHost {
+        float: left;
+        margin-left: -48px;
+        margin-top: 4px;
+        height: 25px;
+        padding-top: 2.5px;
+        padding-left: 8px;
+        width: 27px;
+        position: relative;
+    }
+
+        #btnHost + label {
+            width: 224.33px;
+        }
+
+    #Remark {
+        width: 1012px;
+    }
+</style>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        机器名称
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.MachineName, new { placeholder = "机器名称", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966">*</span>
+    <label class="col-sm-2 control-label">
+        型号
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.ModelNum, new { placeholder = "型号", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+</div>
+@*<div class="form-group form-groupm">
+        <label class="col-sm-2 control-label">
+            设备类型<span style="color: #FF9966"> *</span>
+        </label>
+        <div class="col-sm-4">
+            @Html.DropDownListFor(m => m.DeviceType, ViewBag.TypeList as List<SelectListItem>, "-请选择-", new { placeholder = "设备类型", @class = "form-control", required = "" })
+        </div>
+    </div>*@
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        公网IP
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.PublicIP, new { placeholder = "公网IP", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+    <label class="col-sm-2 control-label">
+        内网IP
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.IntranetIP, new { placeholder = "内网IP", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        域IP
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.DomainIP, new { placeholder = "域IP", @class = "form-control" })
+    </div>
+
+    <label class="col-sm-2 control-label">
+        CPU
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.Cpu, new { placeholder = "CPU", @class = "form-control" })
+    </div>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        内存
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.Memory, new { placeholder = "内存", @class = "form-control" })
+    </div>
+    <label class="col-sm-2 control-label">
+        存储
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.Storage, new { placeholder = "存储", @class = "form-control" })
+    </div>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        宿主机
+    </label>
+    <div class="col-sm-4">
+        @Html.HiddenFor(m => m.HostDevice)
+        @Html.TextBox("HostDeviceName", "", new { placeholder = "宿主机", @class = "form-control" })
+        @*@Html.DropDownListFor(m => m.HostDevice, ViewBag.HostList as List<SelectListItem>, "-请选择-", new { placeholder = "宿主机", @class = "form-control" })*@
+    </div><a id="btnHost" class="btn btn-success"><i class="fa fa-search"></i></a>
+    <label class="col-sm-2 control-label">
+        启用日期
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { onClick = "WdatePicker();", placeholder = "启用日期", @class = "form-control" })
+    </div>
+    @*<label class="col-sm-2 control-label">
+            上架日期
+        </label>
+        <div class="col-sm-4">
+            @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { onClick = "WdatePicker();", placeholder = "上架日期", @class = "form-control" })
+        </div>*@
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        备注
+    </label>
+    <div class="col-sm-4">
+        @Html.TextAreaFor(m => m.Remark, new { placeholder = "备注", @class = "form-control", rows = 3 })
+    </div>
+</div>
+<script>
+    $('#btnHost').click(function () {
+        popSelectModal('选择宿主机', '../PhysicalDevice/Index?IsHost=True');
+    });
+
+</script>

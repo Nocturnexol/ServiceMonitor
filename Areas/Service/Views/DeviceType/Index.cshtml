@@ -1,0 +1,55 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "基础数据";
+    List<string> btnList = ViewBag.BtnList as List<string>;
+    ViewBag.SecondItem = "基础数据";
+    ViewBag.FirstItem = "系统管理";
+    ViewBag.AddUrl = "/Service/DeviceType/Create";
+    ViewBag.EditUrl = "/Service/DeviceType/Edit/";
+    ViewBag.DeleteUrl = "/Service/DeviceType/Delete";
+    ViewBag.ExportUrl = "/Service/DeviceType/DeriveData";
+}
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            title: '基础数据列表',
+            url: '/DeviceType/GetDeviceTypeList',
+            postData: { keyword: $("#searchTxt").val() },
+
+            colNames: ['主键', '类型', '编号', '名称'
+                                        , '操作'],
+            colModel: [
+                { name: 'Rid', index: 'Rid', width: 60, key: true, hidden: true },
+
+                { name: 'TypeId', index: 'TypeId', width: 55, align: "center" },
+                { name: 'Num', index: 'Num', width: 55, align: "center" },
+                { name: 'Name', index: 'Name', width: 55, align: "center" }
+
+                ,
+                {
+                    name: 'Rid', index: 'Rid', title: false, width: 30, sortable: false, align: "center", formatter: function (id) {
+                        return "<a title='编辑' href='javascript:;' onclick='edit(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>"
+                            + "<a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                    }
+                }
+
+
+            ]
+        };
+        JQ.InitTable(config);
+    });
+</script>
+@section Search {
+    <div>
+        <label> 类型</label>
+        @Html.DropDownList("TypeId", ViewBag.BasicTypeList as List<SelectListItem>, "-请选择-", new { placeholder = "类型", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 编号</label>
+        @Html.TextBox("Num", null, new { placeholder = "编号", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 名称</label>
+        @Html.TextBox("Name", null, new { placeholder = "名称", @class = "form-control" })
+    </div><br />
+}

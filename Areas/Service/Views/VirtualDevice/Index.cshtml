@@ -1,0 +1,122 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "虚拟设备";
+    List<string> btnList = ViewBag.BtnList ?? new List<string>();
+    ViewBag.SecondItem = "虚拟设备";
+    ViewBag.FirstItem = "系统管理";
+    ViewBag.AddUrl = "/Service/VirtualDevice/Create";
+    ViewBag.EditUrl = "/Service/VirtualDevice/Edit/";
+    ViewBag.DeleteUrl = "/Service/VirtualDevice/Delete";
+    ViewBag.ExportUrl = "/Service/VirtualDevice/DeriveData";
+}
+<style>
+    #ok {
+        float: right;
+        margin-top: 5px;
+        width: 66px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        var config = {
+            title: '虚拟设备列表',
+            url: '/VirtualDevice/GetVirtualDeviceList',
+            postData: { keyword: $("#searchTxt").val() },
+
+            colNames: ['主键', '机器名称', '型号', '宿主机', '公网IP', '内网IP', 'CPU', '内存', '存储', '启用日期', '备注', '操作'],
+            colModel: [
+                { name: 'Rid', index: 'Rid', width: 60, key: true, hidden: true },
+                { name: 'MachineName', index: 'MachineName', width: 55, align: "center" },
+                { name: 'ModelNum', index: 'ModelNum', width: 55, align: "center" },
+
+                { name: 'HostDevice', index: 'HostDevice', width: 55, align: "center" },
+                { name: 'PublicIP', index: 'PublicIP', width: 55, align: "center" },
+                { name: 'IntranetIP', index: 'IntranetIP', width: 55, align: "center" },
+
+                { name: 'Cpu', index: 'Cpu', width: 55, align: "center" },
+                { name: 'Memory', index: 'Memory', width: 55, align: "center" },
+                { name: 'Storage', index: 'Storage', width: 55, align: "center" },
+
+                { name: 'StartDate', index: 'StartDate', width: 55, align: "center", formatter: "date", formatoptions: { srcformat: 'y-m-d', newformat: 'y-m-d' } },
+
+                { name: 'Remark', index: 'Remark', width: 55, align: "center" }
+                ,
+                {
+                    name: 'Rid', index: 'Rid', title: false, width: 30, sortable: false, align: "center", formatter: function (id) {
+                        return "<a title='编辑' href='javascript:;' onclick='editFull(\"" + id + "\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a>"
+                            + "<a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+                    }
+
+                }
+            ]
+        };
+        JQ.InitTable(config);
+
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        console.log(index);
+        $('#ok').click(function () {
+            var rowArr = $("#jqGridList").jqGrid("getGridParam", "selarrrow");
+            if (rowArr.length !== 1) {
+                parent.layer.msg('请选择一条数据！', { icon: 0 });
+                return;
+            }
+            var rowId = $("#jqGridList").jqGrid("getGridParam", "selrow");
+            var rowData = $("#jqGridList").jqGrid("getRowData", rowId);
+            parent.$('#DeployLocale').val(rowId);
+            parent.$('#DeployLocaleName').val(rowData.MachineName);
+            parent.layer.close(index);
+        });
+    });
+</script>
+@if (ViewBag.IsDeployment != null && ViewBag.IsDeployment)
+{
+    <a id="ok" class="btn btn-warning">确定</a>
+}
+@section Search {
+    <div>
+        <label> 机器名称</label>
+        @Html.TextBox("MachineName", null, new { placeholder = "机器名称", @class = "form-control" })
+    </div>
+    <br />
+    <div>
+        <label> 型号</label>
+        @Html.TextBox("ModelNum", null, new { placeholder = "型号", @class = "form-control" })
+    </div><br />
+    @*<div>
+            <label> 宿主机</label>
+            @Html.DropDownList("HostDevice", ViewBag.HostList as List<SelectListItem>, "-请选择-", new { placeholder = "宿主机", @class = "form-control" })
+        </div><br />*@
+    <div>
+        <label> 公网IP</label>
+        @Html.TextBox("PublicIP", null, new { placeholder = "公网IP", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 内网IP</label>
+        @Html.TextBox("IntranetIP", null, new { placeholder = "内网IP", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 域IP</label>
+        @Html.TextBox("DomainIP", null, new { placeholder = "域IP", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> Cpu</label>
+        @Html.TextBox("Cpu", null, new { placeholder = "Cpu", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 内存</label>
+        @Html.TextBox("Memory", null, new { placeholder = "内存", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 存储</label>
+        @Html.TextBox("Storage", null, new { placeholder = "存储", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 上架日期</label>
+        @Html.TextBox("Date", null, new { onClick = "WdatePicker();", placeholder = "上架日期", @class = "form-control" })
+    </div><br />
+    <div>
+        <label> 启用日期</label>
+        @Html.TextBox("StartDate", null, new { onClick = "WdatePicker();", placeholder = "启用日期", @class = "form-control" })
+    </div><br />
+}

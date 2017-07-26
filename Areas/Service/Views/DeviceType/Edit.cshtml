@@ -1,0 +1,43 @@
+﻿@model BS.Microservice.Web.Model.BasicType
+@{
+    Layout = "~/Views/Shared/_Operate.cshtml";
+}
+@Html.HiddenFor(m => m.Rid)
+<style>
+    label.control-label {
+        padding-right: 0;
+    }
+
+    span {
+        margin-top: 9px;
+        float: left;
+        margin-left: -5px;
+    }
+
+    div.col-sm-4 {
+        width: 30.33%;
+    }
+</style>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        类型
+    </label>
+    <div class="col-sm-4">
+        @*@Html.TextBoxFor(m => m.TypeId, new { placeholder = "类型", @class = "form-control", required = "" })*@
+        @Html.DropDownListFor(m => m.TypeId, ViewBag.BasicTypeList as List<SelectListItem>, "-请选择-", new { placeholder = "类型", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+    <label class="col-sm-2 control-label">
+        编号
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.Num, new { placeholder = "编号", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+</div>
+<div class="form-group form-groupm">
+    <label class="col-sm-2 control-label">
+        名称
+    </label>
+    <div class="col-sm-4">
+        @Html.TextBoxFor(m => m.Name, new { placeholder = "名称", @class = "form-control", required = "" })
+    </div><span style="color: #FF9966"> *</span>
+</div>

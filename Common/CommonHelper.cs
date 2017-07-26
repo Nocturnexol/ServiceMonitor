@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 using BS.Common;
+using BS.Microservice.Web.BLL;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver.Builders;
 
@@ -12,6 +15,7 @@ namespace BS.Microservice.Web.Common
 {
     public class CommonHelper
     {
+        public static List<SelectListItem> BasicTypeList { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -120,6 +124,39 @@ namespace BS.Microservice.Web.Common
                 throw;
             }
             return list;
+        }
+        public static void InitBasicType()
+        {
+            var typeArr = ConfigurationManager.AppSettings["BasicTypes"].Split(new[] { ',' },
+                StringSplitOptions.RemoveEmptyEntries);
+            BasicTypeList = typeArr.Select((t, i) => new SelectListItem
+            {
+                Text = t,
+                Value = (i + 1).ToString()
+            }).ToList();
+        }
+        public static IList<SelectListItem> GetTypeSelectList(string typeName)
+        {
+            if (!BasicTypeList.Select(t => t.Text).Contains(typeName))
+            {
+                throw new ArgumentException("无效的类型名称");
+            }
+            var type = BasicTypeList.First(t => t.Text == typeName);
+            long count;
+            var list = new MongoBll<BasicType>().GetList(out count, 1, 50);
+            return list.Where(t => t.TypeId == int.Parse(type.Value)).Select(t => new SelectListItem
+            {
+                Text = t.Name,
+                Value = t.Num.ToString()
+            }).ToList();
+        }
+
+        public static IList<SelectListItem> GetSelectListFromController<T>(string method, params object[] param)
+            where T : Controller
+        {
+            var service = DependencyResolver.Current.GetService<T>();
+            var res = service.GetType().GetMethod(method).Invoke(service, param);
+            return res as IList<SelectListItem>;
         }
 
         public static string GetMd5HashFromFile(HttpPostedFileBase file)
