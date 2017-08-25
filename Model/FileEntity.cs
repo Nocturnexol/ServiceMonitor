@@ -7,6 +7,7 @@ namespace BS.Microservice.Web.Model
     public class FileEntity
     {
         public ObjectId _id { get; set; }
+        public int SecondaryId { get; set; }
         public int Rid { get; set; }
         public string FileName { get; set; }
         public int Size { get; set; }

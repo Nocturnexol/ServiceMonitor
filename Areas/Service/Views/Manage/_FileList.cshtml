@@ -29,7 +29,7 @@
                         }
                     }
                     ],
-            url: "/Service/Manage/GetFileList"
+            url: "/Service/Manage/GetFileList?SecondaryId=@ViewBag.SecondaryId"
         };
         //首次加载时绑定数据
         JQ.InitGrid(config);
@@ -46,7 +46,7 @@
             maxmin: true,
             shade: 0.4,
             title: '上传文件',
-            content: "/Service/Manage/UploadFiles"
+            content: "/Service/Manage/UploadFiles?SecondaryId=@ViewBag.SecondaryId"
         });
     }
     function downloadFile(fileName) {

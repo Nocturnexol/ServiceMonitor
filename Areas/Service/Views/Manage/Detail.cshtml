@@ -103,8 +103,9 @@
             ViewDataDictionary vDic = new ViewDataDictionary();
             vDic.Add("serverId", ViewData["serverId"]);
             vDic.Add("PrimaryId", ViewData["PrimaryId"]);
+            vDic.Add("SecondaryId",ViewBag.SecondaryId);
             Html.RenderPartial("_AlertList", 1, vDic);
-            Html.RenderPartial("_FileList", 2);
+            Html.RenderPartial("_FileList", 2, vDic);
         }
     </div>
 </div>

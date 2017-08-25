@@ -20,7 +20,7 @@
         layui.use('upload',
             function() {
                 layui.upload({
-                    url: '/Service/Manage/Upload',
+                    url: '/Service/Manage/Upload?SecondaryId=@ViewBag.SecondaryId',
                     title: '请上传压缩包吧亲',
                     ext: 'zip|rar|tar|7z|jar|cab|iso|ace',
                     type: 'file',

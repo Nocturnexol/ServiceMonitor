@@ -165,7 +165,7 @@ namespace BS.Microservice.Web.Common
             {
                 var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
                 byte[] retVal = md5.ComputeHash(file.InputStream);
-                file.InputStream.Close();
+                //file.InputStream.Close();
 
                 StringBuilder sb = new StringBuilder();
                 foreach (byte t in retVal)

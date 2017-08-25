@@ -196,6 +196,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             }
             ViewData["serverId"] = model._id;
             ViewData["PrimaryId"] = model.PrimaryId;
+            ViewBag.SecondaryId = model.SecondaryId;
             if (!string.IsNullOrWhiteSpace(model.RegContent))
                 InitAddr(model);
             return View(model);
@@ -252,8 +253,9 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
-        public ViewResult UploadFiles()
+        public ViewResult UploadFiles(int secondaryId)
         {
+            ViewBag.SecondaryId = secondaryId;
             return View();
         }
         [HttpPost]
@@ -273,7 +275,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                         rm.Message = "文件已存在！";
                         return Json(rm);
                     }
-                    var path = AppDomain.CurrentDomain.BaseDirectory + "uploads/";
+                    var path = AppDomain.CurrentDomain.BaseDirectory + "uploads\\";
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
@@ -298,7 +300,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                             DateTime = DateTime.Now,
                             FileName = filename,
                             Md5 = md5,
-                            Size = size
+                            Size = size,
+                            SecondaryId = int.Parse(Request["SecondaryId"])
                         };
                         if (global::System.IO.File.Exists(url))
                         {
@@ -323,7 +326,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             var path = AppDomain.CurrentDomain.BaseDirectory + "uploads/";
             return File(path + fileName, "application/octet-stream");
         }
-        public JsonResult GetFileList(int page = 1, int rows = 20, string sidx = "",
+        public JsonResult GetFileList(int secondaryId,int page = 1, int rows = 20, string sidx = "",
             string sord = "asc")
         {
             if (string.IsNullOrEmpty(sidx))
@@ -338,9 +341,13 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             var rm = new JqGridData
             {
                 page = pager.CurrentPageIndex,
-                rows = BusinessContext.Files.GetList(out totalCount, page, rows,null, sidx, sord),
-                total = (int)(totalCount % pager.PageSize == 0 ? totalCount / pager.PageSize : totalCount / pager.PageSize + 1),
-                records = (int)totalCount
+                rows =
+                    BusinessContext.Files.GetList(out totalCount, page, rows,
+                        Query<FileEntity>.EQ(t => t.SecondaryId, secondaryId), sidx, sord),
+                total =
+                    (int)
+                    (totalCount % pager.PageSize == 0 ? totalCount / pager.PageSize : totalCount / pager.PageSize + 1),
+                records = (int) totalCount
             };
             return Json(rm, JsonRequestBehavior.AllowGet);
         }
@@ -732,7 +739,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             si.Subject = "NPOI SDK Example";
             _hssfworkbook.SummaryInformation = si;
         }
-        private string WriteToFile(string filename)
+        private static string WriteToFile(string filename)
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             //创建临时文件夹 判断是否存在，不存在文件夹就创建出来
