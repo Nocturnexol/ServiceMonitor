@@ -10,17 +10,30 @@
 @Html.HiddenFor(mdoelItem => mdoelItem._id)
 @Html.HiddenFor(mdoelItem => mdoelItem.SecondaryId)
 <style type="text/css">
-    .empty
-    {
+    .empty {
         height: 30px;
     }
-    .input-group
-    {
+
+    .input-group {
         margin-bottom: 5px;
     }
-    .form-groupm
-    {
-        margin-bottom: 0px;
+
+    .form-groupm {
+        margin-bottom: 0;
+    }
+
+    .addr {
+        width: 87% !important;
+    }
+
+    .port {
+        width: 12% !important;
+        float: right !important;
+    }
+
+    .portLbl {
+        position: relative;
+        left: 73.4%;
     }
 </style>
 <script type="text/javascript">
@@ -92,12 +105,18 @@
 
 <div class="form-group form-groupm" style="padding-left: 20px;" id="inAddrdiv">
     <label class="control-label" for="inputAddons">
-        内网地址</label>
+        内网地址
+    </label>
+    <label class="control-label  portLbl">
+        内网端口
+    </label>
     @foreach (var item in InList)
     {
+        var itemArr = item.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
         <div class="input-group inAddrdiv">
             <div class="form-control-wrap">
-                <input type="text" class="form-control empty" name="inAddr" value="@item"/>
+                <input type="text" class="form-control empty addr" name="inAddr" value="@(itemArr.Length > 0 ? itemArr[0] : "")" />
+                <input type="text" class="form-control empty port" name="inPort" value="@(itemArr.Length>1?itemArr[1]:"")"/>
             </div>
             <span class="input-group-btn">
                 <button class="btn btn-outline btn-default" type="button" onclick="AddInAddr_Click(this)">
@@ -112,12 +131,18 @@
 </div>
 <div class="form-group form-groupm" style="padding-left: 20px;" id="outAddrdiv">
     <label class="control-label">
-        外网地址</label>
+        外网地址
+    </label>
+    <label class="control-label  portLbl">
+        外网端口
+    </label>
     @foreach (var item in OutList)
     {
+        var itemArr = item.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
         <div class="input-group outAddrdiv">
             <div class="form-control-wrap">
-                <input type="text" class="form-control empty" name="outAddr" value="@item"/>
+                <input type="text" class="form-control empty addr" name="outAddr" value="@(itemArr.Length > 0 ? itemArr[0] : "")" />
+                <input type="text" class="form-control empty port" name="outPort" value="@(itemArr.Length>1?itemArr[1]:"")" />
             </div>
             <span class="input-group-btn">
                 <button class="btn btn-outline btn-default" type="button" onclick="AddOutAddr_Click(this)">
@@ -132,10 +157,11 @@
 </div>
 <div class="form-group form-groupm" style="padding-left: 20px;">
     <label class="control-label">
-        备注</label>
+        备注
+    </label>
     <div class="input-group " style="width: 100%;">
         <div class="form-control-wrap">
-            @Html.TextAreaFor(modelItem => modelItem.Remark, new { @class = "form-control empty",rows=3 })
+            @Html.TextAreaFor(modelItem => modelItem.Remark, new { @class = "form-control empty", rows = 3 })
         </div>
     </div>
 </div>

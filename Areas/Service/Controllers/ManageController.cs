@@ -88,6 +88,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                     rm.Message = "服务已存在";
                     return Json(rm);
                 }
+                SetRegContent(collection);
                 if (type.HasValue)
                     collection.ServiceType = (ServiceTypeEnum) type.Value;
                 rm.IsSuccess = BusinessContext.ServiceList.Add(collection);
@@ -106,7 +107,40 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-
+        private void SetRegContent(ServiceEntity model)
+        {
+            var inList = new List<string>();
+            var outList = new List<string>();
+            var inPorts = new List<string>();
+            var outPorts = new List<string>();
+            var inStr = Request["inAddr"];
+            if (!string.IsNullOrWhiteSpace(inStr))
+            {
+                inList = inStr.Split(',').ToList();
+            }
+            var outStr = Request["outAddr"];
+            if (!string.IsNullOrWhiteSpace(outStr))
+            {
+                outList = outStr.Split(',').ToList();
+            }
+            var inPortStr = Request["inPort"];
+            if (!string.IsNullOrWhiteSpace(inStr))
+            {
+                inPorts = inPortStr.Split(',').ToList();
+            }
+            var outPortStr = Request["outPort"];
+            if (!string.IsNullOrWhiteSpace(inStr))
+            {
+                outPorts = outPortStr.Split(',').ToList();
+            }
+            var cfg = new ServiceCfg
+            {
+                InAddr = inList.Zip(inPorts, (t, p) => !string.IsNullOrEmpty(p) ? t + ":" + p : t).ToList(),
+                OutAddr = outList.Zip(outPorts, (t, p) => !string.IsNullOrEmpty(p) ? t + ":" + p : t).ToList(),
+                Remarks = model.Remark
+            };
+            model.RegContent = JsonConvert.SerializeObject(cfg);
+        }
 
         public ActionResult Edit(int id)
         {
@@ -145,32 +179,13 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
             var rm = new ReturnMessage(false);
             try
             {
-                var inList = new List<string>();
-                var outList = new List<string>();
-                var inStr = Request["inAddr"];
-                if (!string.IsNullOrWhiteSpace(inStr))
-                {
-                    inList = inStr.Split(',').ToList();
-                }
-                var outStr = Request["outAddr"];
-                if (!string.IsNullOrWhiteSpace(outStr))
-                {
-                    outList = outStr.Split(',').ToList();
-                }
-                var cfg = new ServiceCfg
-                {
-                    InAddr = inList,
-                    OutAddr = outList,
-                    Remarks = collection.Remark
-                };
                 var model = BusinessContext.ServiceList.GetModel(Convert.ToInt32(Request["_id"]));
                 model.ServiceName = collection.ServiceName;
                 model.SecondaryName = collection.SecondaryName;
                 model.Host = collection.Host;
                 model.Version = collection.Version;
                 model.Remark = collection.Remark;
-                model.RegContent = JsonConvert.SerializeObject(cfg);
-
+                SetRegContent(model);
                 rm.IsSuccess = BusinessContext.ServiceList.Update(model);
             }
             catch (Exception ex)
@@ -360,6 +375,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
         /// <summary>
         /// 分页查询数据
         /// </summary>
+        /// <param name="serviceId"></param>
         /// <param name="page"></param>
         /// <param name="rows"></param>
         /// <param name="sidx"></param>

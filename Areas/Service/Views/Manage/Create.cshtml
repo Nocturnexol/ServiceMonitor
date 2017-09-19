@@ -3,35 +3,151 @@
     ViewBag.Title = "Add";
     Layout = "~/Views/Shared/_Operate.cshtml";
 }
-<div class="form-group form-groupm">
-    <label class="col-sm-2 control-label">
-        服务名称<span style="color: #FF9966"> *</span></label>
-    <div class="col-sm-4">
-        @*@Html.TextBoxFor(modelItem => modelItem.ServiceName, new { @placeholder = "服务名称", @class = "form-control", @required = "" })*@
+<style type="text/css">
+    .empty {
+        height: 30px;
+    }
+
+    .input-group {
+        margin-bottom: 5px;
+    }
+
+    .form-groupm {
+        margin-bottom: 0;
+    }
+
+    .addr {
+        width: 87% !important;
+    }
+
+    .port {
+        width: 12% !important;
+        float: right !important;
+    }
+
+    .portLbl {
+        position: relative;
+        left: 73.4%;
+    }
+</style>
+<script type="text/javascript">
+    var inAddrdiv = null;
+    var outAddrdiv = null;
+
+    $(function () {
+        inAddrdiv = "<div class=\"input-group inAddrdiv\">" + $.trim($('.inAddrdiv').html()) + "</div>";
+        outAddrdiv = "<div class=\"input-group outAddrdiv\">" + $.trim($('.outAddrdiv').html()) + "</div>";
+    });
+
+    function AddInAddr_Click(id) {
+        $(inAddrdiv).appendTo($('#inAddrdiv'));
+
+    }
+    function DelInAddr_Click(id) {
+        if ($('.inAddrdiv').length > 1) {
+            $(id).parentsUntil(".inAddrdiv").parent().remove();
+        } else {
+            layer.alert("至少保留一个内网地址", { icon: 0 });
+        }
+    }
+    function AddOutAddr_Click(id) {
+        $(outAddrdiv).appendTo($('#outAddrdiv'));
+
+    }
+    function DelOutAddr_Click(id) {
+        if ($('.outAddrdiv').length > 1) {
+            $(id).parentsUntil(".outAddrdiv").parent().remove();
+        } else {
+            layer.alert("至少保留一个外网地址", { icon: 0 });
+        }
+    }
+    function OnKeyDown(event) {
+        console.log(event.code + "-------------" + event.key);
+    }
+</script>
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        服务名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
         @Html.DropDownListFor(m => m.ServiceName, ViewBag.ServiceList as List<SelectListItem>, "-请选择-", new { placeholder = "服务名称", @class = "form-control", required = "" })
+        @* @Html.TextBoxFor(modelItem => modelItem.ServiceName, new { placeholder = "服务名称", @class = "form-control", required = "" })*@
     </div>
-    <label class="col-sm-2 control-label">
-        二级服务名称<span style="color: #FF9966"> *</span></label>
-    <div class="col-sm-4">
+
+    <label class="control-label">
+        二级服务名称<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
         @Html.TextBoxFor(modelItem => modelItem.SecondaryName, new { placeholder = "二级服务名称", @class = "form-control", required = "" })
     </div>
 </div>
-<div class="form-group form-groupm">
-    <label class="col-sm-2 control-label">
-        部署机器<span style="color: #FF9966"> *</span></label>
-    <div class="col-sm-4">
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        部署机器<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
         @Html.TextBoxFor(modelItem => modelItem.Host, new { placeholder = "部署机器", @class = "form-control", required = "" })
     </div>
-    <label class="col-sm-2 control-label">
-        版本<span style="color: #FF9966"> *</span></label>
-    <div class="col-sm-4">
+    <label class="control-label">
+        版本<span style="color: #FF9966"> *</span>
+    </label>
+    <div class="input-group" style="width: 100%">
         @Html.TextBoxFor(modelItem => modelItem.Version, new { placeholder = "版本", @class = "form-control", required = "" })
     </div>
 </div>
-<div class="form-group form-groupm">
-    <label class="col-sm-2 control-label">
-        备注&nbsp;</label>
-    <div class="col-sm-10">
-        @Html.TextAreaFor(modelItem => modelItem.Remark, new { placeholder = "备注", @class = "form-control",rows=3 })
+
+
+<div class="form-group form-groupm" style="padding-left: 20px;" id="inAddrdiv">
+    <label class="control-label" for="inputAddons">
+        内网地址
+    </label>
+    <label class="control-label  portLbl">
+        内网端口
+    </label>
+        <div class="input-group inAddrdiv">
+            <div class="form-control-wrap">
+                <input type="text" class="form-control empty addr" name="inAddr"/>
+                <input type="text" class="form-control empty port" name="inPort"/>
+            </div>
+            <span class="input-group-btn">
+                <button class="btn btn-outline btn-default" type="button" onclick="AddInAddr_Click(this)">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+                <button class="btn btn-outline btn-default" type="button" onclick="DelInAddr_Click(this)">
+                    <i class="glyphicon glyphicon-minus"></i>
+                </button>
+            </span>
+        </div>
+</div>
+<div class="form-group form-groupm" style="padding-left: 20px;" id="outAddrdiv">
+    <label class="control-label">
+        外网地址
+    </label>
+    <label class="control-label  portLbl">
+        外网端口
+    </label>
+        <div class="input-group outAddrdiv">
+            <div class="form-control-wrap">
+                <input type="text" class="form-control empty addr" name="outAddr"/>
+                <input type="text" class="form-control empty port" name="outPort"/>
+            </div>
+            <span class="input-group-btn">
+                <button class="btn btn-outline btn-default" type="button" onclick="AddOutAddr_Click(this)">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+                <button class="btn btn-outline btn-default" type="button" onclick="DelOutAddr_Click(this)">
+                    <i class="glyphicon glyphicon-minus"></i>
+                </button>
+            </span>
+        </div>
+</div>
+<div class="form-group form-groupm" style="padding-left: 20px;">
+    <label class="control-label">
+        备注
+    </label>
+    <div class="input-group " style="width: 100%;">
+        <div class="form-control-wrap">
+            @Html.TextAreaFor(modelItem => modelItem.Remark, new { @class = "form-control empty", rows = 3 })
+        </div>
     </div>
 </div>
