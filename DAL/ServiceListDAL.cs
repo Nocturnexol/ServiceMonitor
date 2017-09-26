@@ -15,7 +15,7 @@ namespace BS.Microservice.Web.DAL
 {
     public class ServiceListDAL
     {
-        private const string Col = "ServiceEntity";
+        private const string Col = "ServiceList";
 
         //public ServiceListDAL()
         //{
