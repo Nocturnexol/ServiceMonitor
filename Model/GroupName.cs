@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BS.Microservice.Web.Model
 {
@@ -21,12 +22,16 @@ namespace BS.Microservice.Web.Model
         /// <summary>
         /// 创建日期
         /// </summary>
-        [MongoDB.Bson.Serialization.Attributes.BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreateDateTime { set; get; }
 
         /// <summary>
         /// 备注
         /// </summary>
         public string Remarks { set; get; }
+        public string CreateBy { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ModifyOn { get; set; }
+        public string ModifyBy { get; set; }
     }
 }

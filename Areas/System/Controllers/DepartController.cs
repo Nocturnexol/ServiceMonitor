@@ -82,6 +82,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                         }
                         else
                         {
+                            collection.CreateOn = DateTime.Now;
+                            collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                             var res = BusinessContext.tblDepart.Add(collection);
                             RM.IsSuccess = res;
                             RM.IsContinue = IsContinue == "1";
@@ -136,6 +138,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         RM.IsSuccess = BusinessContext.tblDepart.Update(collection);
                         if (RM.IsSuccess)
                         {

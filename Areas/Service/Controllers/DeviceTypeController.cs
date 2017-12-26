@@ -82,6 +82,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                         }
                         else
                         {
+                            collection.CreateOn = DateTime.Now;
+                            collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                             bool res = _bll.Add(collection);
                             rm.IsSuccess = res;
                             if (rm.IsSuccess)
@@ -163,6 +165,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         rm.IsSuccess = _bll.Update(collection);
                     }
                 }

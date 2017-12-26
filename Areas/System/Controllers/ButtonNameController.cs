@@ -85,6 +85,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                         }
                         else
                         {
+                            collection.CreateOn = DateTime.Now;
+                            collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                             var res = BusinessContext.tblButtonName.Add(collection);
                             rm.IsSuccess = res;
                             if (rm.IsSuccess)
@@ -141,6 +143,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         rm.IsSuccess = BusinessContext.tblButtonName.Update(collection);
                     }
 

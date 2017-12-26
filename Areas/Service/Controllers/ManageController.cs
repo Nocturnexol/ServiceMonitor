@@ -20,6 +20,7 @@ using MongoDB.Bson;
 using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using CommonHelper = BS.Microservice.Web.Common.CommonHelper;
+using ServiceEntity = BS.Microservice.Web.Model.ServiceEntity;
 
 namespace BS.Microservice.Web.Areas.Service.Controllers
 {
@@ -91,6 +92,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 SetRegContent(collection);
                 if (type.HasValue)
                     collection.ServiceType = (ServiceTypeEnum) type.Value;
+                collection.CreateOn = DateTime.Now;
+                collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                 rm.IsSuccess = BusinessContext.ServiceList.Add(collection);
                 rm.IsContinue = isContinue == "1";
             }
@@ -186,6 +189,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                 model.Version = collection.Version;
                 model.Remark = collection.Remark;
                 SetRegContent(model);
+                model.ModifyOn = DateTime.Now;
+                model.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                 rm.IsSuccess = BusinessContext.ServiceList.Update(model);
             }
             catch (Exception ex)
@@ -671,7 +676,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
 
                     var inFlag = inList.FirstOrDefault(t => t.Contains(item.Host)) != null;
                     var inAddr = inFlag
-                        ? inList.FirstOrDefault(t => t.Contains(item.Host))
+                        ? inList.First(t => t.Contains(item.Host))
                             .Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries)
                         : new string[0];
 

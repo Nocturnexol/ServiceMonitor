@@ -10,6 +10,7 @@ using BS.Microservice.Web.Common;
 using BS.Common;
 using BS.Common.Model.Mongo.ServiceModels;
 using MongoDB.Bson;
+using ServiceEntity = BS.Microservice.Web.Model.ServiceEntity;
 
 namespace BS.Microservice.Web.DAL
 {

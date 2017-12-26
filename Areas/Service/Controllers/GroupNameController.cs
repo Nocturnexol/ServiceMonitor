@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using BS.Common.Model.Mongo.ServiceModels;
 using BS.Microservice.Web.BLL;
 using BS.Microservice.Web.Common;
 using BS.Microservice.Web.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using ServiceEntity = BS.Microservice.Web.Model.ServiceEntity;
 
 namespace BS.Microservice.Web.Areas.Service.Controllers
 {
@@ -100,6 +100,7 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                             var max = (int) (_bll.Max(t => t._id) ?? 0);
                             collection._id = max + 1;
                             collection.CreateDateTime = DateTime.Now;
+                            collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                             rm.IsSuccess = _bll.Add(collection);
                             if (rm.IsSuccess)
                             {
@@ -180,6 +181,8 @@ namespace BS.Microservice.Web.Areas.Service.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         rm.IsSuccess = _bll.Update(collection);
                     }
                 }

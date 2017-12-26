@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using System;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BS.Microservice.Web.Model
 {
@@ -6,33 +8,28 @@ namespace BS.Microservice.Web.Model
     {
         public ObjectId _id { get; set; }
         #region Model
-        private int rid;
-        private string _dept;
-        private string _remark;
+
         /// <summary>
         /// 
         /// </summary>
-        public int Rid
-        {
-            set { rid = value; }
-            get { return rid; }
-        }
+        public int Rid { set; get; }
+
         /// <summary>
         /// 
         /// </summary>
-        public string dept
-        {
-            set { _dept = value; }
-            get { return _dept; }
-        }
+        public string dept { set; get; }
+
         /// <summary>
         /// 
         /// </summary>
-        public string remark
-        {
-            set { _remark = value; }
-            get { return _remark; }
-        }
+        public string remark { set; get; }
+
         #endregion Model
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ModifyOn { get; set; }
+        public string ModifyBy { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using BS.Microservice.Web.DAL;
 using BS.Microservice.Web.Model;
 using BS.Common.Model.Mongo.ServiceModels;
 using MongoDB.Driver;
+using ServiceEntity = BS.Microservice.Web.Model.ServiceEntity;
 
 namespace BS.Microservice.Web.BLL
 {

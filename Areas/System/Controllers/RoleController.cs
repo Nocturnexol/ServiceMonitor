@@ -79,6 +79,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                     }
                     else
                     {
+                        collection.CreateOn = DateTime.Now;
+                        collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                         var res = BusinessContext.sys_role.Add(collection);
                         rm.IsSuccess = res;
                         if (rm.IsSuccess)
@@ -126,6 +128,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         rm.IsSuccess = BusinessContext.sys_role.Update(collection);
                     }
                 }

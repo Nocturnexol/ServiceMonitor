@@ -116,7 +116,9 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                         obj.Module_Id = maxModule + 1;
                         obj.Group_Id = 1;
                         obj.Right_Id = 1;
-                    }
+                    } 
+                    obj.CreateOn = DateTime.Now;
+                    obj.CreateBy = CurrentHelper.CurrentUser.User.UserName;
                     var res = BusinessContext.FunctionalAuthority.Add(obj);
                     rm.IsSuccess = res;
                     if (rm.IsSuccess)
@@ -154,6 +156,8 @@ namespace BS.Microservice.Web.Areas.System.Controllers
             {
                 try
                 {
+                    collection.ModifyOn = DateTime.Now;
+                    collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                     rm.IsSuccess = BusinessContext.FunctionalAuthority.Update(collection);
                 }
                 catch (Exception ex)

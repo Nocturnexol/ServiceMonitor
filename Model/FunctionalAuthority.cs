@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace BS.Microservice.Web.Model
 {
@@ -101,5 +99,11 @@ namespace BS.Microservice.Web.Model
             get { return _remark; }
         }
         #endregion Model
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ModifyOn { get; set; }
+        public string ModifyBy { get; set; }
     }
 }

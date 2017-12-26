@@ -31,5 +31,11 @@ namespace BS.Microservice.Web.Model
         public string NetTpParam { get; set; }
         public string MachineName { get; set; }
         public string DomainIP { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? CreateOn { get; set; }
+        public string CreateBy { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? ModifyOn { get; set; }
+        public string ModifyBy { get; set; }
     }
 }

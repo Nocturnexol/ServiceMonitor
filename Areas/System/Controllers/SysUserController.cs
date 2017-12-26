@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using BS.Common;
+using BS.Microservice.Web.BLL;
 using BS.Microservice.Web.Common;
 using BS.Microservice.Web.Model;
 using MongoDB.Driver.Builders;
@@ -42,7 +43,7 @@ namespace BS.Microservice.Web.Areas.System.Controllers
 
             try
             {
-                if (collection.UserPwd == "" || string.IsNullOrEmpty(collection.UserPwd))
+                if (string.IsNullOrEmpty(collection.UserPwd))
                 {
                     //默认密码MD5加密
                     collection.UserPwd = Md5.Encode("123456");
@@ -55,7 +56,10 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                 }
                 else
                 {
-                    rm.IsSuccess = BusinessContext.User.Add(collection);
+                    collection.CreateOn = DateTime.Now;
+                    collection.CreateBy = CurrentHelper.CurrentUser.User.UserName;
+                    var newRid = BusinessContext.tblUser_Roles.GetMaxId() + 1;
+                    rm.IsSuccess = BusinessContext.User.Add(collection)&&BusinessContext.tblUser_Roles.Add(new tblUser_Roles{LoginName = collection.LoginName,Role_Id = collection.DefaultRoleId,Rid = newRid});
                     if (rm.IsSuccess)
                     {
                         rm.IsContinue = isContinue == "1";
@@ -112,7 +116,16 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                     }
                     else
                     {
+                        collection.ModifyOn = DateTime.Now;
+                        collection.ModifyBy = CurrentHelper.CurrentUser.User.UserName;
                         rm.IsSuccess = BusinessContext.User.Update(collection);
+                        new MongoBll<Log>().Add(new Log
+                        {
+                            Content =
+                                string.Format("{0}更改了用户名为{1}的记录", CurrentHelper.CurrentUser.User.UserName,
+                                    collection.UserName),
+                            Time = DateTime.Now
+                        });
                     }
                 }
                 catch (Exception ex)
@@ -121,6 +134,37 @@ namespace BS.Microservice.Web.Areas.System.Controllers
                 }
             }
             return Json(rm);
+        }
+        public ActionResult DataDel()
+        {
+            var rm = new ReturnMessage();
+            try
+            {
+                string paramData = Request.Form["paramData"];
+                if (!string.IsNullOrWhiteSpace(paramData))
+                {
+                    string[] ids = paramData.Split('*');
+                    var rIds = ids.Select(int.Parse).ToList();
+                    if (BusinessContext.User.Delete(rIds))
+                    {
+                        //OperateLogHelper.Delete(modelList);
+                        rm.IsSuccess = true;
+                        rm.Message = "删除成功！";
+                    }
+                    else
+                    {
+                        rm.IsSuccess = false;
+                        rm.Message = "删除失败！";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.IsSuccess = false;
+                rm.Message = ex.Message;
+            }
+            return Json(rm, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

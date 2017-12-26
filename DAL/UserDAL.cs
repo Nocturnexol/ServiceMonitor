@@ -49,7 +49,12 @@ namespace BS.Microservice.Web.DAL
             IMongoQuery query = Query.EQ("_id", _id);
             return DBContext.Mongo.Remove(DBContext.DbName, COL, query);
         }
-
+        public bool Delete(IList<int> rId)
+        {
+            return rId.Select(id => Query.EQ("_id", id))
+                .Select(query => DBContext.Mongo.Remove(DBContext.DbName, COL, query))
+                .Aggregate(true, (current, res) => current && res);
+        }
         public UserEntity GetModel(int _id)
         {
             IMongoQuery query = Query.EQ("_id", _id);

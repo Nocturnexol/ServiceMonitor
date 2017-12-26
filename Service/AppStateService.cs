@@ -269,7 +269,7 @@ namespace BS.Microservice.Web.Service
                 List<ServiceAlertContactsInfo> list = DBContext.Mongo.Find<ServiceAlertContactsInfo>(DBName_BSTAM, TableName_ServiceAlert, query);
                 if (list.Count > 0)
                 {
-                    ServiceEntity model = BusinessContext.ServiceList.GetModel(id);
+                    var model = BusinessContext.ServiceList.GetModel(id);
 
                     query = Query.And(Query.EQ("PrimaryId", model.PrimaryId), Query.Not(Query.EQ("_id", id)));
 

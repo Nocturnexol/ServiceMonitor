@@ -70,6 +70,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\BS.Microservice.DTO.dll</HintPath>
     </Reference>
+    <Reference Include="BS.TaskManager.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Bin\BS.TaskManager.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MongoDB.Bson, Version=1.7.0.4714, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -242,6 +246,8 @@
     <Compile Include="Areas\System\Controllers\Sys_role_rightController.cs" />
     <Compile Include="Areas\System\Controllers\UserRoleController.cs" />
     <Compile Include="Areas\System\SystemAreaRegistration.cs" />
+    <Compile Include="Areas\Task\Controllers\CronController.cs" />
+    <Compile Include="Areas\Task\TaskAreaRegistration.cs" />
     <Compile Include="BLL\MongoBll.cs" />
     <Compile Include="BLL\UserBLL.cs" />
     <Compile Include="BLL\ServiceListBLL.cs" />
@@ -261,9 +267,11 @@
     <Compile Include="Model\FunctionalAuthority.cs" />
     <Compile Include="Model\GroupName.cs" />
     <Compile Include="Model\JqGridData.cs" />
+    <Compile Include="Model\Log.cs" />
     <Compile Include="Model\PageInfo.cs" />
     <Compile Include="Model\PhysicalDevice.cs" />
     <Compile Include="Model\ReturnMessage.cs" />
+    <Compile Include="Model\ServiceEntity.cs" />
     <Compile Include="Model\SubPageResult.cs" />
     <Compile Include="Model\sys_role.cs" />
     <Compile Include="Model\sys_role_right.cs" />
@@ -711,6 +719,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Service\Views\Shared\" />
+    <Folder Include="Areas\Task\Models\" />
+    <Folder Include="Areas\Task\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -769,6 +779,8 @@
     <Content Include="Areas\Service\Views\GroupName\Index.cshtml" />
     <Content Include="Areas\Service\Views\GroupName\Create.cshtml" />
     <Content Include="Areas\Service\Views\GroupName\Edit.cshtml" />
+    <Content Include="Areas\Task\Views\Cron\Index.cshtml" />
+    <Content Include="Areas\Task\Views\Web.config" />
     <None Include="Properties\PublishProfiles\配置文件1.pubxml" />
     <None Include="Resource\fonts\fontawesome-webfont.eot" />
     <None Include="Resource\fonts\fontawesome-webfont.svg" />

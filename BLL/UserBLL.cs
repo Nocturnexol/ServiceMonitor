@@ -37,6 +37,10 @@ namespace BS.Microservice.Web.BLL
             return dal.Delete(_id);
         }
 
+        public bool Delete(IList<int> rId)
+        {
+            return dal.Delete(rId);
+        }
         public UserEntity GetModel(int _id)
         {
             return dal.GetModel(_id);
