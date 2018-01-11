@@ -99,7 +99,7 @@ function poplayer(title, url, w, h) {
 }
 
 function changePassword() {
-    poplayer('修改密码', '/System/SysUser/ChangePassword', '800', "250px");
+    poplayer('修改密码', '/System/SysUser/ChangePassword', '800', "550px");
 }
        
        

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using BS.Microservice.Web.Common
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "用户管理";
     IEnumerable<SelectListItem> DepartList = ViewData["DepartList"] as IEnumerable<SelectListItem>;
@@ -12,6 +13,21 @@
     ViewBag.ExportUrl = "/System/SysUser/DeriveData";
 }
 <script type="text/javascript">
+    function resetPwd(id) {
+        layer.confirm("确认重置密码？", { icon: 3, title: '提示' },
+           function (index) {
+               $.ajax({
+                   url: '@Url.Action("ResetPwd")',
+                   type: "POST",
+
+                   data: { "id": id },
+
+                   success: function (n) {
+                       n.IsSuccess ? (layer.alert("密码重置成功",{icon:1})) : layer.alert("密码重置失败：" + n.Message);
+                   }
+               });
+           });
+    }
     function toAuthRole(id, user) {
         var ind = poplayer(user + '角色设置', '/System/UserRole?LoginName=' + id,'800','300px');
     }
@@ -31,18 +47,20 @@
         @if (BtnList.Contains("编辑") || BtnList.Contains("角色") || BtnList.Contains("删除"))
         {
         <text>
-         oper = { name: '操作', index: '_id', title: false, sortable: false, width: 30, align: "center", formatter: function (id, a, b) {
-                    return "</text>if (BtnList.Contains("编辑"))
+        oper = { name: '操作', index: '_id', title: false, sortable: false, width: 30, align: "center", formatter: function (id, a, b) {
+                return "</text>if (BtnList.Contains("编辑"))
                                    {<text><a title='编辑' href='javascript:;' onclick='edit(\"" + id +"\")' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a></text>}<text>"
                     +"</text>if (BtnList.Contains("删除"))
                              {<text><a title='删除' href='javascript:;' onclick='delSingleRow(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6e2;</i></a></text>}<text>"
-                    ;          
-                }
-                };
-        </text>
+                    + "</text>if (CurrentHelper.CurrentUser.User.DefaultRoleId==1)
+             {<text><a title='密码重置' href='javascript:;' onclick='resetPwd(\"" + id + "\")' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe63f;</i></a></text>}<text>"
+                    ;
+            }
+        };
+                                                                                                                                                                                     </text>
         }
         if(oper!=null)
-        col.push(oper);
+            col.push(oper);
         var config={
             title: title,
             url: url,

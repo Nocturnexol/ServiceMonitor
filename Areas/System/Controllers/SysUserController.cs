@@ -184,7 +184,48 @@ namespace BS.Microservice.Web.Areas.System.Controllers
             rm.total = totalCount % rows == 0 ? totalCount / rows : totalCount / rows + 1;
             rm.records = totalCount;
             return Json(rm, JsonRequestBehavior.AllowGet);
-        } 
+        }
 
+        public ViewResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(FormCollection values)
+        {
+            var rm = new ReturnMessage();
+            var old = values["old"];
+            var np = values["np"];
+            var confirm = values["confirm"];
+            if (np != confirm)
+            {
+                rm.Message = "两次输入密码不一致";
+            }
+            else
+            {
+                var user = BusinessContext.User.GetModel(CurrentHelper.CurrentUser.User.LoginName);
+                if (user.UserPwd != Md5.Encode(old))
+                {
+                    rm.Message = "密码错误";
+                    return Json(rm);
+                }
+                user.UserPwd = Md5.Encode(np);
+                rm.IsSuccess = BusinessContext.User.Update(user);
+            }
+
+            return Json(rm);
+        }
+
+        [HttpPost]
+        public JsonResult ResetPwd(int? id)
+        {
+            var rm = new ReturnMessage();
+            if (id == null) return Json(rm);
+            var user=BusinessContext.User.GetModel(id.Value);
+            user.UserPwd = Md5.Encode("123456");
+            rm.IsSuccess = BusinessContext.User.Update(user);
+            return Json(rm);
+        }
     }
 }
